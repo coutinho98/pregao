@@ -14,7 +14,7 @@ Deploy público é obrigatório. README detalhado é obrigatório.
 
 ## Stack (não trocar sem perguntar)
 - Monorepo pnpm: `apps/api`, `apps/web`, `packages/shared` (tipos e códigos de erro)
-- API: Node 20 + NestJS + TypeScript + Prisma + PostgreSQL + Socket.IO
+- API: Node 22 LTS + NestJS + TypeScript + Prisma + PostgreSQL + Socket.IO
 - Web: React + Vite + TypeScript + TanStack Query + React Router + Tailwind + shadcn/ui
 - Testes: Vitest (ou Jest no Nest) + Supertest
 - Cripto: `node:crypto` (SHA-256) + `@noble/ed25519` (assinatura; também usado no browser)
