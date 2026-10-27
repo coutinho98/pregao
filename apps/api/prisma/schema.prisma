@@ -90,6 +90,9 @@ model ItemSnapshot {
   dimensions    String?
   placeOfOrigin String?
   sourceUrl     String
+  imageWidth    Int?
+  imageHeight   Int?
+  altText       String?
   createdAt     DateTime @default(now()) @db.Timestamptz(3)
 
   image ItemImage?
@@ -113,6 +116,7 @@ model ItemImage {
 
 model Lot {
   id                 String    @id @default(uuid()) @db.Uuid
+  number             Int       @unique @default(autoincrement())
   auctioneerId       String    @db.Uuid
   itemSnapshotId     String    @unique @db.Uuid
   startingPriceCents BigInt
