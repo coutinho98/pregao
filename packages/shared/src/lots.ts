@@ -56,3 +56,22 @@ export interface CreateLotInput {
 }
 
 export const LOT_PAGE_SIZE = 24;
+
+/** Outcome of an auctioneer's lot once the hammer falls. */
+export const LotResult = {
+  SOLD: 'SOLD',
+  UNSOLD: 'UNSOLD',
+} as const;
+
+export type LotResult = (typeof LotResult)[keyof typeof LotResult];
+
+export interface AuctioneerLot extends LotSummary {
+  /** Null while the lot is scheduled, live or waiting to be settled. */
+  result: LotResult | null;
+}
+
+export interface AuctioneerLots {
+  lots: AuctioneerLot[];
+  /** Sum of the hammer prices of sold lots, credited to the auctioneer's wallet. */
+  totalReceivedCents: number;
+}

@@ -1,4 +1,4 @@
-import type { LotDetail } from './lots';
+import type { LotDetail, LotSummary } from './lots';
 
 /** Window at the end of a lot in which an accepted bid pushes the end to now + this. */
 export const ANTI_SNIPING_WINDOW_MS = 2 * 60_000;
@@ -38,4 +38,23 @@ export interface MyLotStanding {
   position: number | null;
   totalBidders: number;
   myHighestBidCents: number | null;
+  /** Public token of the receipt, only when the user won the lot and it is settled. */
+  receiptToken: string | null;
+}
+
+/** How one of the user's lots stands for them. */
+export const MyBidResult = {
+  LEADING: 'LEADING',
+  OUTBID: 'OUTBID',
+  WON: 'WON',
+  LOST: 'LOST',
+} as const;
+
+export type MyBidResult = (typeof MyBidResult)[keyof typeof MyBidResult];
+
+export interface MyBidEntry {
+  lot: LotSummary;
+  result: MyBidResult;
+  myHighestBidCents: number;
+  receiptToken: string | null;
 }
