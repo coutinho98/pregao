@@ -1,5 +1,12 @@
-import { ANTI_SNIPING_WINDOW_MS, ErrorCode, Role } from '@pregao/shared';
+import {
+  ANTI_SNIPING_WINDOW_MS,
+  BidStanding,
+  ErrorCode,
+  type MyLotStanding,
+  Role,
+} from '@pregao/shared';
 import { LotStatus } from '../../generated/prisma/client.js';
+import { centsToNumber } from '../../common/money.js';
 
 export interface BidAttempt {
   bidderId: string;
@@ -79,4 +86,29 @@ export function bidRejection({
 export function extendedEndsAt(endsAt: Date, now: Date): Date | null {
   const candidate = now.getTime() + ANTI_SNIPING_WINDOW_MS;
   return candidate > endsAt.getTime() ? new Date(candidate) : null;
+}
+
+export interface BidderHighest {
+  bidderId: string;
+  amountCents: bigint;
+}
+
+/** Rank of a user among the lot's bidders, ordered by each one's highest bid. */
+export function standingOf(
+  userId: string,
+  leaderId: string | null,
+  highestBids: BidderHighest[],
+): Omit<MyLotStanding, 'pseudonym'> {
+  const ranked = [...highestBids].sort((a, b) => (b.amountCents > a.amountCents ? 1 : -1));
+  const index = ranked.findIndex((entry) => entry.bidderId === userId);
+  const mine = ranked[index];
+  let standing: BidStanding = BidStanding.NONE;
+  if (leaderId === userId) standing = BidStanding.WINNING;
+  else if (mine) standing = BidStanding.OUTBID;
+  return {
+    standing,
+    position: mine ? index + 1 : null,
+    totalBidders: ranked.length,
+    myHighestBidCents: mine ? centsToNumber(mine.amountCents) : null,
+  };
 }

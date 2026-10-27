@@ -3,6 +3,7 @@ import type { Bid, Lot, Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
 import type { Tx } from '../../common/prisma/transaction-runner.js';
 import type { LotWithSnapshot } from '../lots/lots.repository.js';
+import type { BidderHighest } from './bid-rules.js';
 
 export interface LotAfterBid {
   currentBidCents: bigint;
@@ -37,6 +38,24 @@ export class BidsRepository {
 
   findByLot(lotId: string): Promise<Bid[]> {
     return this.prisma.bid.findMany({ where: { lotId }, orderBy: { seq: 'desc' } });
+  }
+
+  /** The lot's current leader (null without bids), or undefined when the lot does not exist. */
+  async findLeaderId(lotId: string): Promise<string | null | undefined> {
+    const lot = await this.prisma.lot.findUnique({
+      where: { id: lotId },
+      select: { leaderId: true },
+    });
+    return lot ? lot.leaderId : undefined;
+  }
+
+  async findHighestBidPerBidder(lotId: string): Promise<BidderHighest[]> {
+    const rows = await this.prisma.bid.groupBy({
+      by: ['bidderId'],
+      where: { lotId },
+      _max: { amountCents: true },
+    });
+    return rows.map((row) => ({ bidderId: row.bidderId, amountCents: row._max.amountCents ?? 0n }));
   }
 
   async lotExists(lotId: string): Promise<boolean> {

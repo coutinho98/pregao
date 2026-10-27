@@ -1,7 +1,13 @@
 import { ErrorCode, Role } from '@pregao/shared';
 import { describe, expect, it } from 'vitest';
 import { LotStatus } from '../../generated/prisma/client.js';
-import { type BidAttempt, bidRejection, extendedEndsAt, nextMinimumBid } from './bid-rules.js';
+import {
+  type BidAttempt,
+  bidRejection,
+  extendedEndsAt,
+  nextMinimumBid,
+  standingOf,
+} from './bid-rules.js';
 
 const now = new Date('2026-10-28T20:00:00.000Z');
 const minutes = (n: number) => new Date(now.getTime() + n * 60_000);
@@ -84,5 +90,35 @@ describe('extendedEndsAt (anti-sniping)', () => {
   it('keeps the end when 2 min or more are left (exactly 2 min already ends at now + 2 min)', () => {
     expect(extendedEndsAt(minutes(2), now)).toBeNull();
     expect(extendedEndsAt(minutes(5), now)).toBeNull();
+  });
+});
+
+describe('standingOf', () => {
+  const highest = [
+    { bidderId: 'ana', amountCents: 110_000n },
+    { bidderId: 'leader', amountCents: 130_000n },
+    { bidderId: 'bia', amountCents: 120_000n },
+  ];
+
+  it('marks the leader as winning in first place', () => {
+    expect(standingOf('leader', 'leader', highest)).toEqual({
+      standing: 'WINNING',
+      position: 1,
+      totalBidders: 3,
+      myHighestBidCents: 130_000,
+    });
+  });
+
+  it('ranks an outbid bidder by their highest bid', () => {
+    expect(standingOf('ana', 'leader', highest)).toMatchObject({ standing: 'OUTBID', position: 3 });
+  });
+
+  it('has no position for someone who has not bid', () => {
+    expect(standingOf('newcomer', 'leader', highest)).toEqual({
+      standing: 'NONE',
+      position: null,
+      totalBidders: 3,
+      myHighestBidCents: null,
+    });
   });
 });

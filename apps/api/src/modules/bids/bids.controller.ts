@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ErrorCode, type PlaceBidResult, type PublicBid } from '@pregao/shared';
+import { ErrorCode, type MyLotStanding, type PlaceBidResult, type PublicBid } from '@pregao/shared';
 import { Auth, CurrentUser } from '../../common/auth/auth.decorators.js';
 import type { RequestUser } from '../../common/auth/request-user.js';
 import { ApiDomainErrors } from '../../common/openapi/api-domain-errors.decorator.js';
 import { BidsService } from './bids.service.js';
-import { PlaceBidResultDto, PublicBidDto } from './dto/bid-response.dto.js';
+import { MyLotStandingDto, PlaceBidResultDto, PublicBidDto } from './dto/bid-response.dto.js';
 import { PlaceBidDto } from './dto/place-bid.dto.js';
 
 @ApiTags('Lances')
@@ -38,6 +38,20 @@ export class BidsController {
     @Body() { amountCents }: PlaceBidDto,
   ): Promise<PlaceBidResult> {
     return this.bids.placeBid(user, lotId, amountCents);
+  }
+
+  @Get('me')
+  @Auth()
+  @ApiOperation({
+    summary: 'Sua situação no lote: raquete, ganhando/superado e posição entre os licitantes',
+  })
+  @ApiOkResponse({ type: MyLotStandingDto })
+  @ApiDomainErrors(ErrorCode.VALIDATION_FAILED, ErrorCode.NOT_FOUND)
+  standing(
+    @CurrentUser() user: RequestUser,
+    @Param('lotId', ParseUUIDPipe) lotId: string,
+  ): Promise<MyLotStanding> {
+    return this.bids.standingFor(user, lotId);
   }
 
   @Get()
