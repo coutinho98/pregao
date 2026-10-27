@@ -87,11 +87,12 @@ export class LotsService {
     return toLotDetail(lot, now);
   }
 
-  async list({ phase, q, page }: LotListQueryDto): Promise<LotPage> {
+  async list({ phase, q, sort, page }: LotListQueryDto): Promise<LotPage> {
     const now = this.clock.now();
     const { lots, total } = await this.lots.findPage({
       phase,
       q,
+      sort,
       page,
       pageSize: LOT_PAGE_SIZE,
       now,

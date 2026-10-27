@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { LotPhase, type PublicLotPhase } from '@pregao/shared';
-import { LotStatus, type Prisma } from '../../generated/prisma/client.js';
+import { LotPhase, LotSort, parseLotNumber, type PublicLotPhase } from '@pregao/shared';
+import { type Lot, LotStatus, type Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
+import { lockLotRow } from '../../common/prisma/row-locks.js';
 import type { Tx } from '../../common/prisma/transaction-runner.js';
 
 export type LotWithSnapshot = Prisma.LotGetPayload<{ include: { itemSnapshot: true } }>;
@@ -28,6 +29,7 @@ export interface NewLot {
 export interface LotPageQuery {
   phase: PublicLotPhase;
   q?: string;
+  sort: LotSort;
   page: number;
   pageSize: number;
   now: Date;
@@ -51,6 +53,31 @@ const phaseOrder: Record<PublicLotPhase, Prisma.LotOrderByWithRelationInput> = {
   [LotPhase.SCHEDULED]: { startsAt: 'asc' },
   [LotPhase.ENDED]: { endsAt: 'desc' },
 };
+
+function sortOrder(sort: LotSort, phase: PublicLotPhase): Prisma.LotOrderByWithRelationInput[] {
+  const orders: Record<LotSort, Prisma.LotOrderByWithRelationInput[]> = {
+    [LotSort.SOON]: [phaseOrder[phase]],
+    [LotSort.NEWEST]: [{ createdAt: 'desc' }],
+    [LotSort.MOST_BIDS]: [{ bidCount: 'desc' }, phaseOrder[phase]],
+    [LotSort.HIGHEST_BID]: [
+      { currentBidCents: { sort: 'desc', nulls: 'last' } },
+      phaseOrder[phase],
+    ],
+  };
+  return [...orders[sort], { number: 'asc' }];
+}
+
+/** Title, artist or the lot number ("7", "lote 007"). */
+function searchFilter(q: string): Prisma.LotWhereInput {
+  const lotNumber = parseLotNumber(q);
+  return {
+    OR: [
+      { itemSnapshot: { title: { contains: q, mode: 'insensitive' } } },
+      { itemSnapshot: { artist: { contains: q, mode: 'insensitive' } } },
+      ...(lotNumber === null ? [] : [{ number: lotNumber }]),
+    ],
+  };
+}
 
 @Injectable()
 export class LotsRepository {
@@ -84,21 +111,15 @@ export class LotsRepository {
     });
   }
 
-  async findPage({ phase, q, page, pageSize, now }: LotPageQuery) {
-    const where: Prisma.LotWhereInput = { ...phaseFilter(phase, now) };
-    if (q) {
-      where.itemSnapshot = {
-        OR: [
-          { title: { contains: q, mode: 'insensitive' } },
-          { artist: { contains: q, mode: 'insensitive' } },
-        ],
-      };
-    }
+  async findPage({ phase, q, sort, page, pageSize, now }: LotPageQuery) {
+    const where: Prisma.LotWhereInput = q
+      ? { AND: [phaseFilter(phase, now), searchFilter(q)] }
+      : phaseFilter(phase, now);
     const [lots, total] = await this.prisma.$transaction([
       this.prisma.lot.findMany({
         where,
         include: withSnapshot,
-        orderBy: [phaseOrder[phase], { number: 'asc' }],
+        orderBy: sortOrder(sort, phase),
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -130,5 +151,17 @@ export class LotsRepository {
     if (!image) return null;
     const bytes = size === 'full' ? image.imageBytes : image.thumbBytes;
     return bytes ? { mime: image.imageMime, bytes } : null;
+  }
+
+  lockLot(tx: Tx, lotId: string): Promise<Lot | null> {
+    return lockLotRow(tx, lotId);
+  }
+
+  markCancelled(tx: Tx, lotId: string, cancelledAt: Date): Promise<LotWithSnapshot> {
+    return tx.lot.update({
+      where: { id: lotId },
+      data: { status: LotStatus.CANCELLED, cancelledAt },
+      include: withSnapshot,
+    });
   }
 }

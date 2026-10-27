@@ -41,10 +41,29 @@ export interface LotPage {
   total: number;
 }
 
+/** Showcase ordering. SOON follows the phase: ending first, opening first, latest ended. */
+export const LotSort = {
+  SOON: 'SOON',
+  NEWEST: 'NEWEST',
+  MOST_BIDS: 'MOST_BIDS',
+  HIGHEST_BID: 'HIGHEST_BID',
+} as const;
+
+export type LotSort = (typeof LotSort)[keyof typeof LotSort];
+
+export const LOT_SORTS = Object.values(LotSort);
+
 export interface LotListQuery {
   phase: PublicLotPhase;
   q?: string;
+  sort?: LotSort;
   page?: number;
+}
+
+/** "7", "007", "lote 7" or "Lote 007" → 7; anything else → null. */
+export function parseLotNumber(query: string): number | null {
+  const match = /^(?:lote\s*)?0*(\d{1,9})$/i.exec(query.trim());
+  return match ? Number(match[1]) : null;
 }
 
 export interface CreateLotInput {

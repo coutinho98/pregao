@@ -153,6 +153,37 @@ describe('Lots (e2e)', () => {
     expect(byTitle.body.items.map((lot: { title: string }) => lot.title)).toEqual(['Water Lilies']);
   });
 
+  it('finds lots by number and sorts the showcase', async () => {
+    const ana = await registerUser(app, Role.BIDDER);
+    await http()
+      .post('/wallet/deposits')
+      .set('Authorization', `Bearer ${ana.accessToken}`)
+      .send({ amountCents: 1_000_000 })
+      .expect(201);
+    const first = await createLot({ externalId: '1' }).expect(201);
+    const second = await createLot({ externalId: '2', endsAt: at(30 * MINUTE) }).expect(201);
+    await http()
+      .post(`/lots/${first.body.id}/bids`)
+      .set('Authorization', `Bearer ${ana.accessToken}`)
+      .send({ amountCents: 100_000 })
+      .expect(201);
+
+    const byNumber = await http()
+      .get('/lots')
+      .query({ phase: LotPhase.LIVE, q: 'lote 002' })
+      .expect(200);
+    expect(byNumber.body.items.map((lot: { id: string }) => lot.id)).toEqual([second.body.id]);
+
+    const ids = async (sort: string) =>
+      (await http().get('/lots').query({ phase: LotPhase.LIVE, sort }).expect(200)).body.items.map(
+        (lot: { id: string }) => lot.id,
+      );
+    expect(await ids('SOON')).toEqual([second.body.id, first.body.id]);
+    expect(await ids('MOST_BIDS')).toEqual([first.body.id, second.body.id]);
+    expect(await ids('HIGHEST_BID')).toEqual([first.body.id, second.body.id]);
+    await http().get('/lots').query({ phase: LotPhase.LIVE, sort: 'CHEAPEST' }).expect(400);
+  });
+
   it('keeps the showcase, lot page and images working while the museum API is down', async () => {
     const lot = await createLot().expect(201);
 

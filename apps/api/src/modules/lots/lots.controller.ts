@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ErrorCode, type LotDetail, type LotPage, type AuctioneerLots, Role } from '@pregao/shared';
 import { Auth, CurrentUser } from '../../common/auth/auth.decorators.js';
@@ -7,12 +17,16 @@ import { ApiDomainErrors } from '../../common/openapi/api-domain-errors.decorato
 import { CreateLotDto } from './dto/create-lot.dto.js';
 import { LotListQueryDto } from './dto/lot-list-query.dto.js';
 import { AuctioneerLotsDto, LotDetailDto, LotPageDto } from './dto/lot-response.dto.js';
+import { LotCancellationService } from './lot-cancellation.service.js';
 import { LotsService } from './lots.service.js';
 
 @ApiTags('Lotes')
 @Controller('lots')
 export class LotsController {
-  constructor(private readonly lots: LotsService) {}
+  constructor(
+    private readonly lots: LotsService,
+    private readonly cancellation: LotCancellationService,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -43,6 +57,24 @@ export class LotsController {
   @ApiDomainErrors(ErrorCode.VALIDATION_FAILED, ErrorCode.NOT_FOUND)
   getDetail(@Param('id', ParseUUIDPipe) id: string): Promise<LotDetail> {
     return this.lots.getDetail(id);
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  @Auth(Role.AUCTIONEER)
+  @ApiOperation({
+    summary: 'Cancela um lote aberto do leiloeiro',
+    description:
+      'Agendado ou em pregão. Se houver líder, o valor comprometido dele é estornado (REFUND) ' +
+      'na mesma transação. O lote some da vitrine.',
+  })
+  @ApiOkResponse({ type: LotDetailDto })
+  @ApiDomainErrors(ErrorCode.VALIDATION_FAILED, ErrorCode.NOT_FOUND, ErrorCode.LOT_ENDED)
+  cancel(
+    @CurrentUser() user: RequestUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<LotDetail> {
+    return this.cancellation.cancel(user, id);
   }
 
   @Post()
