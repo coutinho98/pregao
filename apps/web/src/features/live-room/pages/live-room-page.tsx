@@ -72,7 +72,6 @@ export function LiveRoomPage() {
             size="lg"
             priority
             zoom
-            className="lg:h-[min(72vh,620px)]"
           />
           <div className="max-lg:order-last">
             <RoomTabs lot={lot.data} bids={history} myPseudonym={myPseudonym} />

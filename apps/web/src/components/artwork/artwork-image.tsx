@@ -3,13 +3,17 @@ import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 import { useArtworkZoom } from './use-artwork-zoom';
 
+/**
+ * Slot height and image cap per size. sm/md give a fixed slot so a row of works shares one
+ * baseline; lg (the lot page) has no slot, so the box follows the painting and starts at the top.
+ */
 const sizes = {
-  sm: 'h-[140px]',
-  md: 'h-[260px]',
-  lg: 'h-[min(52vh,440px)]',
+  sm: { slot: 'h-[140px]', image: 'max-h-full' },
+  md: { slot: 'h-[260px]', image: 'max-h-full' },
+  lg: { slot: '', image: 'max-h-[min(56vh,440px)] lg:max-h-[min(72vh,620px)]' },
 };
 
-const IMG = 'h-auto max-h-full w-auto max-w-full object-contain';
+const IMG = 'h-auto w-auto max-w-full object-contain';
 const SHADOW = 'shadow-[0_18px_32px_-14px_rgb(0_0_0/0.45),0_2px_6px_rgb(0_0_0/0.08)]';
 const DROP_SHADOW =
   '[filter:drop-shadow(0_16px_18px_rgb(0_0_0/0.28))_drop-shadow(0_2px_4px_rgb(0_0_0/0.08))]';
@@ -46,13 +50,13 @@ export function ArtworkImage({
     <div
       className={cn(
         'relative flex items-end justify-center',
-        sizes[size],
+        sizes[size].slot,
         zoom && DROP_SHADOW,
         className,
       )}
     >
       {zoom ? (
-        <ZoomImg src={src} alt={alt} priority={priority} />
+        <ZoomImg src={src} alt={alt} priority={priority} className={sizes[size].image} />
       ) : (
         <img
           src={src}
@@ -61,6 +65,7 @@ export function ArtworkImage({
           decoding="async"
           className={cn(
             IMG,
+            sizes[size].image,
             SHADOW,
             'transition-transform duration-500 ease-ios group-hover:-translate-y-1',
             dimmed && 'opacity-60 grayscale-[0.6]',
@@ -76,7 +81,14 @@ export function ArtworkImage({
   );
 }
 
-function ZoomImg({ src, alt, priority }: { src: string; alt: string; priority: boolean }) {
+interface ZoomImgProps {
+  src: string;
+  alt: string;
+  priority: boolean;
+  className: string;
+}
+
+function ZoomImg({ src, alt, priority, className }: ZoomImgProps) {
   const { style, handlers } = useArtworkZoom();
   return (
     <motion.img
@@ -87,7 +99,7 @@ function ZoomImg({ src, alt, priority }: { src: string; alt: string; priority: b
       draggable={false}
       style={style}
       {...handlers}
-      className={cn(IMG, 'cursor-zoom-in')}
+      className={cn(IMG, className, 'cursor-zoom-in')}
     />
   );
 }
