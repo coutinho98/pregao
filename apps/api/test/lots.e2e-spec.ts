@@ -177,6 +177,16 @@ describe('Lots (e2e)', () => {
     expect(search.body.code).toBe(ErrorCode.EXTERNAL_API_UNAVAILABLE);
   });
 
+  it('proxies catalog thumbnails so browsers never hit the museum CDN', async () => {
+    const thumbnail = await http().get('/catalog/items/2/thumbnail').expect(200);
+    expect(thumbnail.headers['content-type']).toBe('image/jpeg');
+    expect(thumbnail.body.toString()).toBe('thumb:2');
+
+    catalog.available = false;
+    const unavailable = await http().get('/catalog/items/3/thumbnail').expect(503);
+    expect(unavailable.body.code).toBe(ErrorCode.EXTERNAL_API_UNAVAILABLE);
+  });
+
   it("lists the auctioneer's own lots", async () => {
     await createLot().expect(201);
     const mine = await http()

@@ -1,5 +1,6 @@
 import type { CatalogItem } from '@pregao/shared';
 import { ArtworkFrame } from '@/components/artwork/artwork-frame';
+import { catalogThumbnailUrl } from '../api';
 import { cn } from '@/lib/cn';
 
 interface CatalogResultCardProps {
@@ -20,7 +21,7 @@ export function CatalogResultCard({ item, selected, onSelect }: CatalogResultCar
       )}
     >
       <ArtworkFrame
-        src={item.thumbnailUrl}
+        src={catalogThumbnailUrl(item.externalId)}
         alt={item.altText ?? item.title}
         width={item.imageWidth}
         height={item.imageHeight}

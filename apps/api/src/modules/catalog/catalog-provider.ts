@@ -12,6 +12,7 @@ export interface CatalogProvider {
   /** Null when the artwork does not exist or cannot be auctioned (no image, not public domain). */
   findItem(externalId: string): Promise<CatalogItem | null>;
   downloadImage(item: CatalogItem): Promise<ArtworkImage>;
+  downloadThumbnail(item: CatalogItem): Promise<Buffer>;
 }
 
 export const CATALOG_PROVIDER = Symbol('CATALOG_PROVIDER');

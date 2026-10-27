@@ -62,6 +62,10 @@ export class ArticCatalogProvider implements CatalogProvider {
     return { mime: 'image/jpeg', full, thumbnail };
   }
 
+  downloadThumbnail(item: CatalogItem): Promise<Buffer> {
+    return this.downloadBytes(item.thumbnailUrl);
+  }
+
   private async downloadBytes(url: string): Promise<Buffer> {
     const response = await this.request(url);
     return Buffer.from(await response.arrayBuffer());

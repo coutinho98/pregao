@@ -55,6 +55,11 @@ export class FakeCatalogProvider implements CatalogProvider {
     };
   }
 
+  async downloadThumbnail(item: CatalogItem): Promise<Buffer> {
+    this.ensureAvailable();
+    return Buffer.from(`thumb:${item.externalId}`);
+  }
+
   private ensureAvailable(): void {
     this.calls += 1;
     if (!this.available) throw new UpstreamError('Fake catalog is down', 400);

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { CatalogItem } from '@pregao/shared';
 import { useForm } from 'react-hook-form';
 import { ArtworkFrame } from '@/components/artwork/artwork-frame';
+import { catalogThumbnailUrl } from '../api';
 import { Button } from '@/components/ui/button';
 import { fieldAria } from '@/components/ui/field-aria';
 import { FormField } from '@/components/ui/form-field';
@@ -50,7 +51,7 @@ export function LotComposer({ item, onDone }: LotComposerProps) {
       </h2>
       <div className="grid grid-cols-[6rem_1fr] items-start gap-4">
         <ArtworkFrame
-          src={item.thumbnailUrl}
+          src={catalogThumbnailUrl(item.externalId)}
           alt={item.altText ?? item.title}
           width={item.imageWidth}
           height={item.imageHeight}

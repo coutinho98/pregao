@@ -55,3 +55,17 @@ describe('CatalogService', () => {
     });
   });
 });
+
+describe('CatalogService thumbnails', () => {
+  it('reuses search results and caches the thumbnail bytes', async () => {
+    const provider = new FakeCatalogProvider([catalogItem({ externalId: '7', title: 'Monet' })]);
+    const service = new CatalogService(provider);
+    await service.search('monet', 1);
+    const callsAfterSearch = provider.calls;
+
+    await expect(service.getThumbnail('7')).resolves.toEqual(Buffer.from('thumb:7'));
+    await service.getThumbnail('7');
+
+    expect(provider.calls).toBe(callsAfterSearch + 1);
+  });
+});

@@ -15,6 +15,7 @@ export class CatalogService {
   private readonly breaker = new CircuitBreaker({ failureThreshold: 5, cooldownMs: 30_000 });
   private readonly searchCache = new TtlCache<CatalogSearchResult>(CACHE_TTL_MS, 200);
   private readonly itemCache = new TtlCache<CatalogItem | null>(CACHE_TTL_MS, 500);
+  private readonly thumbnailCache = new TtlCache<Buffer>(60 * 60_000, 300);
 
   constructor(@Inject(CATALOG_PROVIDER) private readonly provider: CatalogProvider) {}
 
@@ -25,7 +26,20 @@ export class CatalogService {
 
     const result = await this.callUpstream(() => this.provider.search(query, page));
     this.searchCache.set(key, result);
+    // The results' thumbnails are requested right after; avoid one detail call per artwork.
+    for (const item of result.items) this.itemCache.set(item.externalId, item);
     return result;
+  }
+
+  /** Thumbnail proxied through the API: the museum's CDN blocks browsers hotlinking it. */
+  async getThumbnail(externalId: string): Promise<Buffer> {
+    const cached = this.thumbnailCache.get(externalId);
+    if (cached) return cached;
+
+    const item = await this.getItem(externalId);
+    const thumbnail = await this.callUpstream(() => this.provider.downloadThumbnail(item));
+    this.thumbnailCache.set(externalId, thumbnail);
+    return thumbnail;
   }
 
   async getItem(externalId: string): Promise<CatalogItem> {
