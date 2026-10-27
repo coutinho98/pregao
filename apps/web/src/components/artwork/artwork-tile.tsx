@@ -1,11 +1,12 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
+/** Tile size, and the moulding (--frame) and mat (--mat) of the gilded frame at that size. */
 const sizes = {
-  sm: 'h-[140px] rounded-[22px] p-4',
-  md: 'h-[260px] p-7',
-  lg: 'h-[min(52vh,440px)] p-8',
-};
+  sm: { tile: 'h-[140px] rounded-[22px] p-4', frame: { '--frame': '3px', '--mat': '4px' } },
+  md: { tile: 'h-[260px] p-7', frame: { '--frame': '5px', '--mat': '8px' } },
+  lg: { tile: 'h-[min(52vh,440px)] p-8', frame: { '--frame': '9px', '--mat': '16px' } },
+} satisfies Record<string, { tile: string; frame: Record<string, string> }>;
 
 interface ArtworkTileProps {
   src: string;
@@ -19,7 +20,7 @@ interface ArtworkTileProps {
   className?: string;
 }
 
-/** The artwork as an object resting in a grey tile: never cropped, with a soft shadow. */
+/** The artwork hanging in a grey tile, in a gilded frame that follows its real proportions. */
 export function ArtworkTile({
   src,
   alt,
@@ -29,11 +30,12 @@ export function ArtworkTile({
   corner,
   className,
 }: ArtworkTileProps) {
+  const { tile, frame } = sizes[size];
   return (
     <div
       className={cn(
-        'tile relative grid place-items-center overflow-hidden',
-        sizes[size],
+        'tile relative flex items-center justify-center overflow-hidden',
+        tile,
         className,
       )}
     >
@@ -42,8 +44,9 @@ export function ArtworkTile({
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
+        style={frame as CSSProperties}
         className={cn(
-          'h-full w-full object-contain drop-shadow-[0_16px_20px_rgb(0_0_0/0.25)] transition-transform duration-500 ease-ios',
+          'gilded-frame h-auto max-h-full w-auto max-w-full object-contain transition-transform duration-500 ease-ios group-hover:-translate-y-0.5',
           dimmed && 'opacity-60 grayscale-[0.6]',
         )}
       />

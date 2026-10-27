@@ -42,8 +42,9 @@ Tokens em `:root` e `[data-theme="dark"]`; o Tailwind consome as variáveis.
 | `--primary` / `--primary-ink` | `#141414` / branco | `#f0f0f0` / `#0a0a0b` | Ação principal |
 | `--up` | `#1f9d55` | `#3ddc84` | Você está ganhando, ao vivo, sucesso |
 | `--danger` | `#d4402f` | `#ff6b5b` | Você foi superado, erros, adulteração |
-| `--gold` | `#b88600` | `#d4a72c` | Moldura dourada da caixa de lance; arrematado (vencedor) |
+| `--gold` | `#b88600` | `#d4a72c` | Moldura dourada das obras; arrematado (vencedor) |
 | `--gilt-light` / `--gilt-dark` | `#f3e2a6` / `#7d5a00` | `#f7df8e` / `#6b4d00` | Brilho e sombra do perfil dourado |
+| `--mat-color` | `#f7f3e8` | `#ece6d4` | Passe-partout creme entre a moldura e a obra |
 
 Proibido: gradientes decorativos, cor de marca espalhada, verde/limão da Verzel.
 
@@ -62,9 +63,10 @@ Evitar: CAIXA ALTA espaçada, mais de dois pesos por bloco, destacar palavra com
 - Raios generosos: tiles 26px, cartões 22px, botões 14px, campos 12px, pílulas 999px.
 - Sombras discretas e em camadas (`--shadow-card`, `--shadow-pill`, `--shadow-float`).
 - Elementos flutuantes (dock, barra de lance) em vidro: `--card` a 85% com `backdrop-blur`.
-- **Moldura dourada** (`gilded`): a caixa de lance da sala é o único elemento emoldurado,
-  como um quadro de leilão: perfil dourado em degradê por fora e um filete fino por dentro.
-  Não usar em outros cartões, para não perder o peso.
+- **Moldura dourada** (`gilded-frame`): toda foto de obra é emoldurada como um quadro de
+  leilão, na proporção real da obra: perfil dourado em degradê, passe-partout creme e um
+  filete fino por dentro. A espessura cresce com o tamanho (miniatura, card, sala).
+  Só as obras são emolduradas; cartões e controles seguem neutros.
 - Bordas do viewport com desfoque (topo e rodapé), para o conteúdo sumir suave.
 - Ícones Lucide, finos (stroke 1.8; 2.2 quando ativos), tamanho 16–18px.
 
@@ -90,7 +92,7 @@ Curva única no estilo iOS: `cubic-bezier(0.32, 0.72, 0, 1)` (biblioteca `motion
 ### Vitrine
 Saudação conversacional com chips ("Há `3 lotes` em pregão agora; o próximo encerra às
 `17:30`."). Controle segmentado Todos · Em pregão · Próximos · Encerrados e busca.
-Lotes em tiles cinza: a obra no centro em proporção real com sombra suave, botão redondo
+Lotes em tiles cinza: a obra emoldurada no centro, em proporção real, botão redondo
 ↗ no canto; legenda abaixo com título, "Lote 007 · artista", valor em mono e estado
 (ponto verde pulsando "ao vivo", "abre 28/10, 14:00", "encerrado").
 
