@@ -28,11 +28,12 @@ export function setToken(next: string | null): void {
   listeners.forEach((notify) => notify());
 }
 
-function subscribe(listener: () => void): () => void {
+/** Called on login and logout; returns the unsubscribe function. */
+export function onTokenChange(listener: () => void): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
 
 export function useToken(): string | null {
-  return useSyncExternalStore(subscribe, getToken);
+  return useSyncExternalStore(onTokenChange, getToken);
 }

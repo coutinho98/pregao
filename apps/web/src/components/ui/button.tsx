@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'bg-parede text-sobre-parede hover:bg-tinta',
-        brass: 'bg-latao text-tinta hover:brightness-95',
+        brass: 'bg-latao text-sobre-latao hover:brightness-95',
         outline: 'border border-nevoa bg-transparent hover:border-tinta',
         ghost: 'bg-transparent hover:bg-tinta/5',
         onWall: 'border border-sobre-parede/30 text-sobre-parede hover:border-latao',

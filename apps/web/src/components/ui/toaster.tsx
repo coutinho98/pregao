@@ -14,6 +14,8 @@ export function Toaster() {
           info: 'border-latao',
           title: 'font-semibold',
           description: 'text-sm text-nevoa-texto',
+          actionButton:
+            'ml-auto shrink-0 self-center font-label text-base font-semibold text-latao-texto underline underline-offset-4',
         },
       }}
     />

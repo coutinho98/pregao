@@ -15,6 +15,8 @@
   --latao-texto: #7a5f1f;
   --selo-texto: #356b4e;
   --sobre-parede: #f1f3ee;
+  /* Ink on brass (paddles, plaques) stays dark in both themes. */
+  --sobre-latao: #17201b;
 
   color-scheme: light;
 }
@@ -46,6 +48,7 @@
   --color-latao-texto: var(--latao-texto);
   --color-selo-texto: var(--selo-texto);
   --color-sobre-parede: var(--sobre-parede);
+  --color-sobre-latao: var(--sobre-latao);
 
   --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
   --font-label: 'Big Shoulders Text', 'Arial Narrow', sans-serif;
@@ -89,5 +92,25 @@
 
   .tabular {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* The only automatic animation: a new paddle rising to the top of the bid history. */
+@keyframes paddle-raise {
+  from {
+    transform: translateY(0.75rem);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@utility animate-paddle-raise {
+  animation: paddle-raise 400ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }
