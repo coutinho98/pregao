@@ -31,3 +31,24 @@ export interface HeadFields {
 export function headMessage({ lotId, bidCount, lastHash }: HeadFields): string {
   return ['HEAD', lotId, bidCount, lastHash].join('|');
 }
+
+export interface BidFields {
+  prevHash: string;
+  lotId: string;
+  seq: number;
+  bidderPseudonym: string;
+  amountCents: number;
+  createdAt: Date;
+}
+
+/** Each bid commits to the previous hash, so changing, removing or inserting one breaks the chain. */
+export function bidMessage(fields: BidFields): string {
+  return [
+    fields.prevHash,
+    fields.lotId,
+    fields.seq,
+    fields.bidderPseudonym,
+    fields.amountCents,
+    fields.createdAt.toISOString(),
+  ].join('|');
+}

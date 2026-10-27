@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { genesisMessage, headMessage } from './audit-chain';
+import { bidMessage, genesisMessage, headMessage } from './audit-chain';
 
 describe('audit chain canonical messages', () => {
   it('serializes the genesis with fixed field order and ISO UTC time', () => {
@@ -16,5 +16,18 @@ describe('audit chain canonical messages', () => {
 
   it('serializes the head', () => {
     expect(headMessage({ lotId: 'lot-1', bidCount: 3, lastHash: 'abc' })).toBe('HEAD|lot-1|3|abc');
+  });
+
+  it('serializes a bid chained to the previous hash', () => {
+    expect(
+      bidMessage({
+        prevHash: 'h0',
+        lotId: 'lot-1',
+        seq: 1,
+        bidderPseudonym: 'Licitante #A3F9C2',
+        amountCents: 150_000,
+        createdAt: new Date('2026-10-28T20:00:01.500Z'),
+      }),
+    ).toBe('h0|lot-1|1|Licitante #A3F9C2|150000|2026-10-28T20:00:01.500Z');
   });
 });
