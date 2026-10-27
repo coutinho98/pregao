@@ -42,7 +42,7 @@ export function BidBox({
   const amount = lot.currentBidCents ?? lot.startingPriceCents;
 
   return (
-    <div className="flex flex-col gap-5 rounded-[26px] bg-card p-5 shadow-card">
+    <div className="gilded flex flex-col gap-5 rounded-[22px] p-6">
       <div>
         <div className="mb-3 flex items-center gap-2 text-[12.5px]">
           <Chip className="tabular">{formatLotNumber(lot.number)}</Chip>

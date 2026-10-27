@@ -42,7 +42,8 @@ Tokens em `:root` e `[data-theme="dark"]`; o Tailwind consome as variáveis.
 | `--primary` / `--primary-ink` | `#141414` / branco | `#f0f0f0` / `#0a0a0b` | Ação principal |
 | `--up` | `#1f9d55` | `#3ddc84` | Você está ganhando, ao vivo, sucesso |
 | `--danger` | `#d4402f` | `#ff6b5b` | Você foi superado, erros, adulteração |
-| `--gold` | `#b88600` | `#f5c542` | Arrematado (vencedor) |
+| `--gold` | `#b88600` | `#d4a72c` | Moldura dourada da caixa de lance; arrematado (vencedor) |
+| `--gilt-light` / `--gilt-dark` | `#f3e2a6` / `#7d5a00` | `#f7df8e` / `#6b4d00` | Brilho e sombra do perfil dourado |
 
 Proibido: gradientes decorativos, cor de marca espalhada, verde/limão da Verzel.
 
@@ -61,6 +62,9 @@ Evitar: CAIXA ALTA espaçada, mais de dois pesos por bloco, destacar palavra com
 - Raios generosos: tiles 26px, cartões 22px, botões 14px, campos 12px, pílulas 999px.
 - Sombras discretas e em camadas (`--shadow-card`, `--shadow-pill`, `--shadow-float`).
 - Elementos flutuantes (dock, barra de lance) em vidro: `--card` a 85% com `backdrop-blur`.
+- **Moldura dourada** (`gilded`): a caixa de lance da sala é o único elemento emoldurado,
+  como um quadro de leilão: perfil dourado em degradê por fora e um filete fino por dentro.
+  Não usar em outros cartões, para não perder o peso.
 - Bordas do viewport com desfoque (topo e rodapé), para o conteúdo sumir suave.
 - Ícones Lucide, finos (stroke 1.8; 2.2 quando ativos), tamanho 16–18px.
 
