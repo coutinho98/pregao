@@ -4,6 +4,7 @@ import { CommonModule } from './common/common.module.js';
 import { validateEnv } from './common/config/env.js';
 import { PrismaModule } from './common/prisma/prisma.module.js';
 import { HealthController } from './health/health.controller.js';
+import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { BidsModule } from './modules/bids/bids.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
@@ -24,6 +25,7 @@ import { WalletModule } from './modules/wallet/wallet.module.js';
     LotsModule,
     BidsModule,
     ReceiptsModule,
+    AuditModule,
   ],
   controllers: [HealthController],
 })
