@@ -12,22 +12,30 @@ interface BidPanelProps {
   phase: LotPhase;
   startsAt: string;
   minNextBidCents: number;
+  minIncrementCents: number;
   standing: BidStanding;
 }
 
 /**
- * The floating bar at the bottom of the room: the bid field, or why the visitor
- * cannot bid right now, in the house's voice.
+ * The bid field, or why the visitor cannot bid right now, in the house's voice. Inside the
+ * bid box on large screens; a floating bar pinned to the bottom on phones.
  */
 export function BidPanel(props: BidPanelProps) {
   return (
-    <div className="fixed inset-x-3 bottom-[calc(14px+env(safe-area-inset-bottom))] z-50 mx-auto max-w-[480px]">
+    <div className="max-lg:fixed max-lg:inset-x-3 max-lg:bottom-[calc(14px+env(safe-area-inset-bottom))] max-lg:z-50 max-lg:mx-auto max-lg:max-w-[480px]">
       <BidPanelContent {...props} />
     </div>
   );
 }
 
-function BidPanelContent({ lotId, phase, startsAt, minNextBidCents, standing }: BidPanelProps) {
+function BidPanelContent({
+  lotId,
+  phase,
+  startsAt,
+  minNextBidCents,
+  minIncrementCents,
+  standing,
+}: BidPanelProps) {
   const { user } = useSession();
   const location = useLocation();
 
@@ -65,7 +73,14 @@ function BidPanelContent({ lotId, phase, startsAt, minNextBidCents, standing }: 
   if (standing === BidStanding.WINNING) {
     return <Notice>Seu lance lidera. Aguarde outro lance para cobrir.</Notice>;
   }
-  return <BidForm key={minNextBidCents} lotId={lotId} minNextBidCents={minNextBidCents} />;
+  return (
+    <BidForm
+      key={minNextBidCents}
+      lotId={lotId}
+      minNextBidCents={minNextBidCents}
+      minIncrementCents={minIncrementCents}
+    />
+  );
 }
 
 function Notice({ children, action }: { children: ReactNode; action?: ReactNode }) {

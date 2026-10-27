@@ -6,17 +6,13 @@ import { ArtworkTile } from '@/components/artwork/artwork-tile';
 import { ErrorState } from '@/components/feedback/error-state';
 import { Page } from '@/components/layout/page';
 import { useSession } from '@/features/auth/hooks/use-session';
-import { LotFacts } from '@/features/lots/components/lot-facts';
-import { formatLotNumber } from '@/features/lots/format';
 import { useLot } from '@/features/lots/hooks/use-lot';
 import { apiUrl } from '@/lib/env';
 import { errorMessage } from '@/lib/errors';
 import { useServerNow } from '@/lib/server-clock';
-import { BidPanel } from '../components/bid-panel';
-import { BidSummary } from '../components/bid-summary';
-import { PaddleHistory } from '../components/paddle-history';
-import { RoomCountdown } from '../components/room-countdown';
-import { StandingBanner } from '../components/standing-banner';
+import { auctioneerCall } from '../auctioneer-call';
+import { BidBox } from '../components/bid-box';
+import { RoomTabs } from '../components/room-tabs';
 import { useLotBids } from '../hooks/use-lot-bids';
 import { useLotRoom } from '../hooks/use-lot-room';
 import { useMyStanding } from '../hooks/use-my-standing';
@@ -36,14 +32,14 @@ export function LiveRoomPage() {
 
   if (lot.isPending) {
     return (
-      <Page>
+      <Page width="wide">
         <p className="mt-10 text-center text-ink-3">Abrindo a sala…</p>
       </Page>
     );
   }
   if (lot.isError) {
     return (
-      <Page>
+      <Page width="wide">
         <BackToShowcase />
         <ErrorState message={errorMessage(lot.error)} onRetry={() => void lot.refetch()} />
       </Page>
@@ -51,70 +47,49 @@ export function LiveRoomPage() {
   }
 
   const phase = livePhase(lot.data, now);
-  const countdown = countdownView(lot.data, phase, now);
   const myPseudonym = standing.data?.pseudonym;
   const history = bids.data ?? [];
-  const leaderPseudonym = history[0]?.bidderPseudonym;
-  const myStanding = liveStanding(myPseudonym, history);
   const extendedRecently =
     extendedAt !== null && now.getTime() - extendedAt.getTime() < EXTENSION_NOTICE_MS;
+  const call = auctioneerCall({
+    phase,
+    bids: history,
+    remainingMs: new Date(lot.data.endsAt).getTime() - now.getTime(),
+    extendedRecently,
+    myPseudonym,
+    startingPriceCents: lot.data.startingPriceCents,
+    minNextBidCents: lot.data.minNextBidCents,
+  });
 
   return (
-    <Page className="pb-44">
+    <Page width="wide" className="max-lg:pb-56">
       <BackToShowcase />
-      <header className="mb-6 text-center">
-        <h1 className="text-[15px] font-[550] tracking-normal text-ink-2">
-          {formatLotNumber(lot.data.number)}
-        </h1>
-        {countdown && <RoomCountdown view={countdown} extendedRecently={extendedRecently} />}
-      </header>
-
-      <ArtworkTile
-        src={apiUrl(lot.data.image.url)}
-        alt={lot.data.image.altText ?? lot.data.title}
-        size="lg"
-        priority
-      />
-      <div className="mt-4 mb-5 px-1">
-        <h2 className="text-[24px]">{lot.data.title}</h2>
-        {lot.data.artist && <p className="text-[14px] text-ink-3">{lot.data.artist}</p>}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(340px,1fr)] lg:gap-10">
+        <div className="flex flex-col gap-8">
+          <ArtworkTile
+            src={apiUrl(lot.data.image.url)}
+            alt={lot.data.image.altText ?? lot.data.title}
+            size="lg"
+            priority
+            className="lg:h-[min(72vh,620px)]"
+          />
+          <div className="max-lg:order-last">
+            <RoomTabs lot={lot.data} bids={history} myPseudonym={myPseudonym} />
+          </div>
+        </div>
+        <aside className="lg:sticky lg:top-8 lg:self-start">
+          <BidBox
+            lot={lot.data}
+            phase={phase}
+            countdown={countdownView(lot.data, phase, now)}
+            bids={history}
+            call={call}
+            standing={liveStanding(myPseudonym, history)}
+            position={standing.data?.position ?? null}
+            totalBidders={standing.data?.totalBidders ?? 0}
+          />
+        </aside>
       </div>
-
-      <div aria-live="polite" className="flex flex-col gap-4">
-        <BidSummary
-          lot={lot.data}
-          phase={phase}
-          leaderPseudonym={leaderPseudonym}
-          leaderIsMe={leaderPseudonym !== undefined && leaderPseudonym === myPseudonym}
-        />
-        <StandingBanner
-          standing={myStanding}
-          position={standing.data?.position ?? null}
-          totalBidders={standing.data?.totalBidders ?? 0}
-        />
-      </div>
-
-      <SectionLabel>Raquetes levantadas</SectionLabel>
-      <PaddleHistory bids={history} myPseudonym={myPseudonym} />
-
-      <SectionLabel>Sobre a obra</SectionLabel>
-      <LotFacts lot={lot.data} />
-      <a
-        href={lot.data.sourceUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-3 inline-block px-1 text-[13.5px] text-ink-2 underline-offset-4 hover:text-ink hover:underline"
-      >
-        Ver no Art Institute of Chicago ↗
-      </a>
-
-      <BidPanel
-        lotId={lot.data.id}
-        phase={phase}
-        startsAt={lot.data.startsAt}
-        minNextBidCents={lot.data.minNextBidCents}
-        standing={myStanding}
-      />
     </Page>
   );
 }
@@ -127,13 +102,5 @@ function BackToShowcase() {
     >
       <ChevronLeft size={16} /> Vitrine
     </Link>
-  );
-}
-
-function SectionLabel({ children }: { children: string }) {
-  return (
-    <h2 className="mt-8 mb-3 px-1 text-[13px] font-medium tracking-normal text-ink-3">
-      {children}
-    </h2>
   );
 }
