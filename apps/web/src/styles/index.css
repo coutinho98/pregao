@@ -1,116 +1,174 @@
 @import 'tailwindcss';
 
-/* Tokens do DESIGN.md ("Salão de Pregão"). Variantes *-texto existem para manter
-   contraste AA quando a cor é usada como texto sobre --papel. */
+/* Tokens do docs/DESIGN.md ("Pregão"). Claro por padrão, escuro via [data-theme=dark]. */
 :root {
-  --parede: #23392f;
-  --papel: #f1f3ee;
-  --tinta: #17201b;
-  --latao: #b08d3c;
-  --lacre: #9e2a2b;
-  --selo: #3f7d5c;
-  --nevoa: #8a958e;
+  --bg: #fafafa;
+  --surface: #f1f1f1;
+  --surface-2: #e9e9e9;
+  --card: #ffffff;
+  --chip: #ececec;
+  --line: rgb(0 0 0 / 0.07);
+  --line-strong: rgb(0 0 0 / 0.13);
+  --ink: #141414;
+  --ink-2: #6c6c6c;
+  --ink-3: #a4a4a4;
+  --primary: #141414;
+  --primary-ink: #ffffff;
+  --up: #1f9d55;
+  --danger: #d4402f;
+  --gold: #b88600;
 
-  --nevoa-texto: #5b6660;
-  --latao-texto: #7a5f1f;
-  --selo-texto: #356b4e;
-  --sobre-parede: #f1f3ee;
-  /* Ink on brass (paddles, plaques) stays dark in both themes. */
-  --sobre-latao: #17201b;
+  --elev-pill:
+    0 1px 1px rgb(0 0 0 / 0.04), 0 4px 14px rgb(0 0 0 / 0.07), inset 0 0 0 1px rgb(0 0 0 / 0.04);
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 0 0 1px var(--line);
+  --elev-float: 0 24px 48px -16px rgb(0 0 0 / 0.22), 0 0 0 1px var(--line);
+  --tile-highlight: inset 0 1px 0 rgb(255 255 255 / 0.7);
 
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --parede: #1a2a23;
-  --papel: #111814;
-  --tinta: #e6eae4;
-  --lacre: #d9665c;
-  --selo: #5fa37d;
+  --bg: #0a0a0b;
+  --surface: #1a1a1d;
+  --surface-2: #232327;
+  --card: #121214;
+  --chip: #222225;
+  --line: rgb(255 255 255 / 0.07);
+  --line-strong: rgb(255 255 255 / 0.14);
+  --ink: #ededed;
+  --ink-2: #9b9ba1;
+  --ink-3: #5d5d63;
+  --primary: #f0f0f0;
+  --primary-ink: #0a0a0b;
+  --up: #3ddc84;
+  --danger: #ff6b5b;
+  --gold: #f5c542;
 
-  --nevoa-texto: #8a958e;
-  --latao-texto: #b08d3c;
-  --selo-texto: #5fa37d;
-  --sobre-parede: #e6eae4;
+  --elev-pill:
+    0 1px 1px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.45),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --elev-card: 0 0 0 1px var(--line);
+  --elev-float: 0 24px 48px -16px rgb(0 0 0 / 0.7), 0 0 0 1px var(--line);
+  --tile-highlight: inset 0 1px 0 rgb(255 255 255 / 0.04);
 
   color-scheme: dark;
 }
 
 @theme inline {
-  --color-parede: var(--parede);
-  --color-papel: var(--papel);
-  --color-tinta: var(--tinta);
-  --color-latao: var(--latao);
-  --color-lacre: var(--lacre);
-  --color-selo: var(--selo);
-  --color-nevoa: var(--nevoa);
-  --color-nevoa-texto: var(--nevoa-texto);
-  --color-latao-texto: var(--latao-texto);
-  --color-selo-texto: var(--selo-texto);
-  --color-sobre-parede: var(--sobre-parede);
-  --color-sobre-latao: var(--sobre-latao);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-chip: var(--chip);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-up: var(--up);
+  --color-danger: var(--danger);
+  --color-gold: var(--gold);
 
-  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
-  --font-label: 'Big Shoulders Text', 'Arial Narrow', sans-serif;
-  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* Escala 1.333 a partir de 16px. */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.3125rem;
-  --text-xl: 1.75rem;
-  --text-2xl: 2.3125rem;
-  --text-3xl: 3.125rem;
-  --text-4xl: 4.1875rem;
-  --text-5xl: 5.5625rem;
+  --shadow-pill: var(--elev-pill);
+  --shadow-card: var(--elev-card);
+  --shadow-float: var(--elev-float);
 
-  --radius-xs: 2px;
+  --radius-field: 12px;
+  --radius-button: 14px;
+  --radius-card: 22px;
+  --radius-tile: 26px;
+
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @layer base {
+  html {
+    font-size: 15px;
+  }
+
   body {
-    background-color: var(--papel);
-    color: var(--tinta);
-    font-family: var(--font-serif);
-    line-height: 1.6;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Variable', system-ui, sans-serif;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+      color 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
-    line-height: 1.1;
-    font-weight: 700;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  input::placeholder {
+    color: var(--ink-3);
   }
 
   :focus-visible {
-    outline: 2px solid var(--latao);
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
-
-  .tabular {
-    font-variant-numeric: tabular-nums;
-  }
 }
 
-/* The only automatic animation: a new paddle rising to the top of the bid history. */
-@keyframes paddle-raise {
-  from {
-    transform: translateY(0.75rem);
+@utility tabular {
+  font-family: 'Geist Mono Variable', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tiles: the big grey surfaces that hold an object (the artwork), as in TK7. */
+@utility tile {
+  border-radius: 26px;
+  background: var(--surface);
+  box-shadow: var(--tile-highlight);
+}
+
+/* Floating glass: dock, bid bar. */
+@utility glass {
+  background: color-mix(in srgb, var(--card) 85%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: var(--elev-pill);
+}
+
+@keyframes ping-dot {
+  to {
+    transform: scale(3);
     opacity: 0;
   }
-  to {
-    transform: none;
-    opacity: 1;
-  }
 }
 
-@utility animate-paddle-raise {
-  animation: paddle-raise 400ms ease-out;
+/* Pinging dot in the current text colour: green for live, red for outbid. */
+@utility live-dot {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 999px;
+  background: currentColor;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: ping-dot 1.6s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
+    &::after {
+      animation: none;
+    }
   }
 }

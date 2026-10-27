@@ -5,8 +5,8 @@ export function Input({ className, ...props }: ComponentProps<'input'>) {
   return (
     <input
       className={cn(
-        'h-11 w-full rounded-xs border border-nevoa bg-transparent px-3 font-serif text-base text-tinta',
-        'placeholder:text-nevoa-texto aria-invalid:border-lacre',
+        'h-[42px] w-full rounded-[12px] border-0 bg-chip px-3.5 text-[14.5px] text-ink outline-none transition-[background-color,box-shadow]',
+        'focus:bg-card focus:shadow-[0_0_0_2px_var(--ink)] aria-invalid:shadow-[0_0_0_1.5px_var(--danger)]',
         className,
       )}
       {...props}

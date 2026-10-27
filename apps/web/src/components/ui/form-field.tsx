@@ -12,17 +12,17 @@ interface FormFieldProps {
 export function FormField({ id, label, error, hint, children }: FormFieldProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="font-label text-lg font-semibold">
+      <label htmlFor={id} className="ml-1 text-[13px] font-medium text-ink-2">
         {label}
       </label>
       {children}
       {hint && !error && (
-        <p id={`${id}-hint`} className="text-sm text-nevoa-texto">
+        <p id={`${id}-hint`} className="ml-1 text-[12.5px] text-ink-3">
           {hint}
         </p>
       )}
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-sm text-lacre">
+        <p id={`${id}-error`} role="alert" className="ml-1 text-[12.5px] text-danger">
           {error}
         </p>
       )}
