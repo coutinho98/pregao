@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { BidsModule } from './modules/bids/bids.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
 import { LotsModule } from './modules/lots/lots.module.js';
+import { ReceiptsModule } from './modules/receipts/receipts.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { WalletModule } from './modules/wallet/wallet.module.js';
 
@@ -22,6 +23,7 @@ import { WalletModule } from './modules/wallet/wallet.module.js';
     CatalogModule,
     LotsModule,
     BidsModule,
+    ReceiptsModule,
   ],
   controllers: [HealthController],
 })

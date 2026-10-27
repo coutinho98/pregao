@@ -42,6 +42,11 @@ export class Env {
   @IsString()
   @MinLength(32)
   PSEUDONYM_SECRET: string;
+
+  /** How often the settlement worker looks for ended lots; 0 turns the worker off. */
+  @IsInt()
+  @Min(0)
+  SETTLEMENT_INTERVAL_MS: number = 5_000;
 }
 
 export function validateEnv(raw: Record<string, unknown>): Env {
