@@ -1,4 +1,7 @@
 import { type BidStanding, type LotDetail, LotPhase, type PublicBid } from '@pregao/shared';
+import { ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router';
+import { paths } from '@/app/paths';
 import { Chip } from '@/components/ui/chip';
 import { formatLotNumber } from '@/features/lots/format';
 import { phaseLabel } from '@/features/lots/phase-labels';
@@ -96,6 +99,12 @@ export function BidBox({
         standing={standing}
         receiptToken={receiptToken}
       />
+      <Link
+        to={paths.audit(lot.id)}
+        className="inline-flex items-center gap-1.5 self-center text-[13px] text-ink-3 transition-colors hover:text-ink"
+      >
+        <ShieldCheck size={14} /> Auditar o histórico de lances
+      </Link>
     </div>
   );
 }

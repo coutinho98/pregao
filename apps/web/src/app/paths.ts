@@ -7,4 +7,5 @@ export const paths = {
   office: '/escritorio',
   lot: (id: string) => `/lotes/${id}`,
   receipt: (token: string) => `/r/${token}`,
+  audit: (lotId: string) => `/auditoria/${lotId}`,
 } as const;

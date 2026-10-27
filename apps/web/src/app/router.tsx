@@ -79,6 +79,13 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: paths.audit(':lotId'),
+        lazy: async () => {
+          const { AuditPage } = await import('@/features/audit/pages/audit-page');
+          return { element: <AuditPage /> };
+        },
+      },
+      {
         path: '*',
         element: (
           <PlaceholderPage

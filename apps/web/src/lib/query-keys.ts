@@ -12,6 +12,7 @@ export const queryKeys = {
   },
   myBids: ['my-bids'] as const,
   receipt: (token: string) => ['receipt', token] as const,
+  audit: (lotId: string) => ['audit', lotId] as const,
   catalog: {
     search: (q: string, page: number) => ['catalog', 'search', q, page] as const,
   },

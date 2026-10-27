@@ -1,5 +1,6 @@
 import type { ReceiptView } from '@pregao/shared';
-import { Link as LinkIcon } from 'lucide-react';
+import { Link as LinkIcon, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router';
 import { ArtworkImage } from '@/components/artwork/artwork-image';
 import { PaddleMark } from '@/components/icons/paddle-mark';
 import { WaxSeal } from '@/components/icons/wax-seal';
@@ -71,6 +72,11 @@ export function ReceiptDocument({ receipt }: { receipt: ReceiptView }) {
               onClick={() => copyLink(paths.receipt(receipt.token))}
             >
               <LinkIcon size={14} /> Copiar link
+            </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link to={paths.audit(receipt.lotId)}>
+                <ShieldCheck size={14} /> Auditar
+              </Link>
             </Button>
           </div>
         </div>
