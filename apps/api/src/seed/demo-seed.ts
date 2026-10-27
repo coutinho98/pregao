@@ -105,15 +105,13 @@ export class DemoSeed {
     startsAt: string,
     endsAt: string,
   ): Promise<string> {
-    const lot = await this.app
-      .get(LotsService)
-      .create(this.userId('auctioneer'), {
-        externalId,
-        startingPriceCents,
-        minIncrementCents,
-        startsAt,
-        endsAt,
-      });
+    const lot = await this.app.get(LotsService).create(this.userId('auctioneer'), {
+      externalId,
+      startingPriceCents,
+      minIncrementCents,
+      startsAt,
+      endsAt,
+    });
     return lot.id;
   }
 
