@@ -20,3 +20,6 @@ export const fetchMyLots = () => http<AuctioneerLots>('/lots/mine');
 /** Thumbnail served by our API (the museum's CDN refuses browser hotlinks). */
 export const catalogThumbnailUrl = (externalId: string) =>
   apiUrl(`/catalog/items/${encodeURIComponent(externalId)}/thumbnail`);
+
+export const cancelLot = (lotId: string) =>
+  http<LotDetail>(`/lots/${encodeURIComponent(lotId)}/cancel`, { method: 'POST' });

@@ -1,9 +1,11 @@
 import { type AuctioneerLot, LotPhase, LotResult } from '@pregao/shared';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 import { Link } from 'react-router';
 import { paths } from '@/app/paths';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
+import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { formatLotNumber } from '@/features/lots/format';
 import { phaseLabel } from '@/features/lots/phase-labels';
 import { cn } from '@/lib/cn';
@@ -11,6 +13,7 @@ import { apiUrl } from '@/lib/env';
 import { errorMessage } from '@/lib/errors';
 import { formatDayTime } from '@/utils/date';
 import { formatCents } from '@/utils/money';
+import { useCancelLot } from '../hooks/use-cancel-lot';
 import { useMyLots } from '../hooks/use-my-lots';
 
 const resultLabel: Record<LotResult, { text: string; tone: string }> = {
@@ -58,10 +61,10 @@ function MyLotRow({ lot }: { lot: AuctioneerLot }) {
   const amount = lot.currentBidCents ?? lot.startingPriceCents;
   const result = lot.result && resultLabel[lot.result];
   return (
-    <li className="border-b border-line">
+    <li className="flex items-center gap-2 border-b border-line">
       <Link
         to={paths.lot(lot.id)}
-        className="flex items-center gap-3 px-0.5 py-3 transition-[padding] duration-300 ease-ios hover:pl-2"
+        className="flex min-w-0 grow items-center gap-3 px-0.5 py-3 transition-[padding] duration-300 ease-ios hover:pl-2"
       >
         <img
           src={apiUrl(lot.image.thumbnailUrl)}
@@ -84,6 +87,37 @@ function MyLotRow({ lot }: { lot: AuctioneerLot }) {
         </span>
         <ChevronRight size={16} className="shrink-0 text-ink-3" />
       </Link>
+      {isOpen(lot) && <CancelLotButton lot={lot} />}
     </li>
+  );
+}
+
+const isOpen = (lot: AuctioneerLot) =>
+  lot.phase === LotPhase.SCHEDULED || lot.phase === LotPhase.LIVE;
+
+function CancelLotButton({ lot }: { lot: AuctioneerLot }) {
+  const { cancelLot, isPending } = useCancelLot();
+  return (
+    <ConfirmDialog
+      danger
+      title={`Cancelar o ${formatLotNumber(lot.number)}?`}
+      description={
+        lot.currentBidCents === null
+          ? 'O lote sai da vitrine e não recebe mais lances.'
+          : `O lote sai da vitrine e o lance líder de ${formatCents(lot.currentBidCents)} volta para o saldo disponível do licitante.`
+      }
+      confirmLabel="Cancelar lote"
+      onConfirm={() => cancelLot(lot)}
+      trigger={
+        <Button
+          variant="ghost"
+          size="icon"
+          disabled={isPending}
+          aria-label={`Cancelar ${formatLotNumber(lot.number)}`}
+        >
+          <X size={16} />
+        </Button>
+      }
+    />
   );
 }

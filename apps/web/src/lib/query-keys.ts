@@ -1,10 +1,11 @@
-import type { PublicLotPhase } from '@pregao/shared';
+import type { LotSort, PublicLotPhase } from '@pregao/shared';
 
 export const queryKeys = {
   session: (token: string | null) => ['session', token] as const,
   lots: {
     all: ['lots'] as const,
-    page: (phase: PublicLotPhase, q: string) => ['lots', 'page', phase, q] as const,
+    page: (phase: PublicLotPhase, q: string, sort: LotSort) =>
+      ['lots', 'page', phase, q, sort] as const,
     detail: (id: string) => ['lots', 'detail', id] as const,
     bids: (id: string) => ['lots', 'bids', id] as const,
     standing: (id: string) => ['lots', 'standing', id] as const,

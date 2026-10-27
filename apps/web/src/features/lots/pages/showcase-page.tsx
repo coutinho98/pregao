@@ -4,12 +4,20 @@ import { PhaseFilter } from '../components/phase-filter';
 import { ShowcaseIntro } from '../components/showcase-intro';
 import { ShowcaseSearch } from '../components/showcase-search';
 import { WallSection } from '../components/wall-section';
-import { PHASE_PARAM, QUERY_PARAM, sectionsForSlug } from '../showcase-filters';
+import { SortSelect } from '../components/sort-select';
+import {
+  PHASE_PARAM,
+  QUERY_PARAM,
+  SORT_PARAM,
+  sectionsForSlug,
+  sortFromParam,
+} from '../showcase-filters';
 
 export function ShowcasePage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get(QUERY_PARAM) ?? '';
   const sections = sectionsForSlug(searchParams.get(PHASE_PARAM));
+  const sort = sortFromParam(searchParams.get(SORT_PARAM));
 
   return (
     <Page width="wide">
@@ -17,11 +25,14 @@ export function ShowcasePage() {
       <ShowcaseIntro />
       <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <PhaseFilter />
-        <ShowcaseSearch />
+        <div className="flex gap-2">
+          <ShowcaseSearch />
+          <SortSelect />
+        </div>
       </div>
       <div className="flex flex-col gap-12">
         {sections.map((section) => (
-          <WallSection key={section.phase} section={section} query={query} />
+          <WallSection key={section.phase} section={section} query={query} sort={sort} />
         ))}
       </div>
     </Page>

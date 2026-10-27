@@ -1,4 +1,4 @@
-import { LotPhase, type PublicLotPhase } from '@pregao/shared';
+import { LOT_SORTS, LotPhase, LotSort, type PublicLotPhase } from '@pregao/shared';
 
 export interface ShowcaseSection {
   phase: PublicLotPhase;
@@ -37,6 +37,18 @@ export const showcaseSections: ShowcaseSection[] = [
 export const ALL_SLUG = 'todos';
 export const PHASE_PARAM = 'fase';
 export const QUERY_PARAM = 'q';
+export const SORT_PARAM = 'ordem';
+
+export const sortLabel: Record<LotSort, string> = {
+  [LotSort.SOON]: 'Encerrando antes',
+  [LotSort.NEWEST]: 'Mais recentes',
+  [LotSort.MOST_BIDS]: 'Mais disputados',
+  [LotSort.HIGHEST_BID]: 'Maior lance',
+};
+
+export function sortFromParam(value: string | null): LotSort {
+  return LOT_SORTS.find((sort) => sort === value) ?? LotSort.SOON;
+}
 
 /** Sections to show for the ?fase= value: one when it matches, all otherwise. */
 export function sectionsForSlug(slug: string | null): ShowcaseSection[] {

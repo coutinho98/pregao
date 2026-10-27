@@ -1,4 +1,4 @@
-import type { LotSummary } from '@pregao/shared';
+import type { LotSort, LotSummary } from '@pregao/shared';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { errorMessage } from '@/lib/errors';
@@ -9,10 +9,11 @@ import { LotGrid, LotGridSkeleton } from './lot-grid';
 interface WallSectionProps {
   section: ShowcaseSection;
   query: string;
+  sort: LotSort;
 }
 
-export function WallSection({ section, query }: WallSectionProps) {
-  const { data, isPending, isError, error, refetch } = useLotPage(section.phase, query);
+export function WallSection({ section, query, sort }: WallSectionProps) {
+  const { data, isPending, isError, error, refetch } = useLotPage(section.phase, query, sort);
   const headingId = `section-${section.slug}`;
 
   return (
