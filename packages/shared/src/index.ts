@@ -1,3 +1,4 @@
+export * from './audit';
 export * from './audit-chain';
 export * from './auth';
 export * from './bids';
