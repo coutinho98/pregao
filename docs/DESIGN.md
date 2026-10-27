@@ -1,177 +1,130 @@
-# DESIGN.md — Identidade visual "Salão de Pregão"
+# DESIGN.md — Identidade visual "Pregão"
 
 Leia junto com o CLAUDE.md antes de qualquer trabalho de front-end.
 Se um componente não estiver coberto aqui, siga o espírito do conceito e pergunte.
 
+Linguagem visual herdada do TK7 (projeto do autor): monocromática, conversacional e
+tátil. Substitui a identidade anterior "Salão de Pregão" (verde-garrafa e latão).
+
 ## Conceito
 
-Uma casa de leilões de arte de verdade, não um e-commerce. O app imita o que existe
-fisicamente num pregão: paredes de galeria pintadas, plaquinhas de latão com o número
-do lote, a raquete numerada que o licitante levanta, o martelo que bate, e o lacre de
-cera que fecha um documento.
+Uma casa de leilões que parece um aparelho bem feito, não um e-commerce. A interface é
+quase toda em tons neutros; a cor aparece só quando carrega significado (ganhando,
+superado, ao vivo). O conteúdo principal é a obra: cada lote é um objeto em destaque
+dentro de um tile cinza, como a fita cassete no TK7.
 
-Isso não é decoração gratuita: cada metáfora cobre um requisito do teste.
+Dois objetos da casa de leilão ficam, redesenhados como peças monocromáticas em SVG,
+porque cobrem requisitos do teste:
 
-| Objeto físico | Requisito que ele representa |
+| Objeto | Requisito |
 |---|---|
-| Raquete numerada (paddle) | Pseudônimo por lote — o licitante é um número, nunca um nome |
-| Plaquinha de latão | Ficha do lote na vitrine (título, nº do lote, lance atual) |
-| Raquete levantada | Novo lance chegando em tempo real |
-| Martelo batido | Lote encerrado / liquidado |
-| Lacre de cera | Comprovante e cadeia de hashes; lacre partido = adulterado |
+| Raquete numerada | Pseudônimo por lote: o licitante é um número, nunca um nome |
+| Lacre | Comprovante e cadeia de hashes; lacre partido = adulterado |
 
-O que a concorrência faz (e evitamos): grade de cards idênticos com Tailwind/shadcn
-padrão, ícones Lucide em tudo, paleta azul-marinho + verde-limão da própria Verzel,
-abas genéricas "Ao vivo / Agendados / Encerrados".
+A interface fala com a pessoa em frases curtas, com dados no meio do texto em chips:
+"Boa tarde. Há `4 lotes` em pregão agora."
 
 ## Cores
 
-Inspiradas em paredes de salão de museu (verde-garrafa), molduras de latão e cera de lacre.
+Tokens em `:root` e `[data-theme="dark"]`; o Tailwind consome as variáveis.
 
-| Token | Hex | Uso |
-|---|---|---|
-| `--parede` | `#23392F` | Fundo da sala ao vivo, cabeçalho, superfícies de destaque |
-| `--papel` | `#F1F3EE` | Fundo geral no tema claro (branco frio, levemente esverdeado — não creme) |
-| `--tinta` | `#17201B` | Texto principal |
-| `--latao` | `#B08D3C` | Raquetes, plaquinhas, lance atual, foco. Nunca como fundo de área grande |
-| `--lacre` | `#9E2A2B` | "Você foi superado", lote ao vivo (ponto), adulteração, erros |
-| `--selo` | `#3F7D5C` | "Você está ganhando", auditoria íntegra, sucesso |
-| `--nevoa` | `#8A958E` | Texto secundário, bordas |
+| Token | Claro | Escuro | Uso |
+|---|---|---|---|
+| `--bg` | `#fafafa` | `#0a0a0b` | Fundo da página |
+| `--surface` | `#f1f1f1` | `#1a1a1d` | Tiles, campos, estatísticas |
+| `--surface-2` | `#e9e9e9` | `#232327` | Hover de superfícies |
+| `--card` | `#ffffff` | `#121214` | Cartões, dock, barras flutuantes |
+| `--chip` | `#ececec` | `#222225` | Chips no texto, campos de busca |
+| `--line` / `--line-strong` | preto 7% / 13% | branco 7% / 14% | Linhas finas, bordas |
+| `--ink` | `#141414` | `#ededed` | Texto principal |
+| `--ink-2` | `#6c6c6c` | `#9b9ba1` | Texto secundário |
+| `--ink-3` | `#a4a4a4` | `#5d5d63` | Rótulos, metadados (nunca texto essencial) |
+| `--primary` / `--primary-ink` | `#141414` / branco | `#f0f0f0` / `#0a0a0b` | Ação principal |
+| `--up` | `#1f9d55` | `#3ddc84` | Você está ganhando, ao vivo, sucesso |
+| `--danger` | `#d4402f` | `#ff6b5b` | Você foi superado, erros, adulteração |
+| `--gold` | `#b88600` | `#f5c542` | Arrematado (vencedor) |
 
-Tema escuro = "luzes da galeria apagadas": `--papel` vira `#111814`, `--parede` vira
-`#1A2A23`, `--tinta` vira `#E6EAE4`. Latão, lacre e selo mantêm o tom, só ajustar
-contraste (checar WCAG AA). Todas as cores como CSS variables em `:root` e
-`[data-theme="dark"]`; Tailwind consome as variáveis.
-
-Proibido: gradientes decorativos, sombra cinza genérica em tudo, a paleta da Verzel.
+Proibido: gradientes decorativos, cor de marca espalhada, verde/limão da Verzel.
 
 ## Tipografia
 
-Duas famílias, papéis bem separados (Google Fonts):
+- **Inter Variable** para tudo. Base 15px, line-height 1.5. Títulos com peso 600–650 e
+  `letter-spacing` negativo (−0,02em a −0,03em). Rótulos pequenos em 12–13px, `--ink-3`.
+- **Geist Mono Variable** para números que mudam ou que precisam alinhar: valores,
+  countdown, relógio, pseudônimos, hashes. Sempre `tabular-nums`.
+- Fontes servidas pelo app (`@fontsource-variable`), sem Google Fonts.
 
-- **Big Shoulders Display / Big Shoulders Text** — números e chamadas: nº do lote,
-  raquetes, lance atual, contagem regressiva, botões. Condensada e alta, como placas
-  de pregão. (Foi desenhada para Chicago, e os itens vêm do Art Institute of Chicago.)
-- **Source Serif 4** — texto corrido: descrição da obra, atributos, comprovante,
-  explicação da auditoria. Tom de catálogo de leilão.
+Evitar: CAIXA ALTA espaçada, mais de dois pesos por bloco, destacar palavra com outra cor.
 
-Escala (base 16px, razão ~1.333): 12 · 14 · 16 · 21 · 28 · 37 · 50 · 67 · 89.
-O lance atual na sala ao vivo usa 89px+ em Big Shoulders Display.
-Números sempre com `font-variant-numeric: tabular-nums` (valores e countdown não pulam).
-Serif com line-height 1.6; linhas de texto com no máximo ~70 caracteres.
+## Formas e superfícies
 
-Evitar: labels em CAIXA ALTA espaçada, fonte monospace para dados, destacar uma
-palavra do título com outra cor, "→" no fim de botões.
+- Raios generosos: tiles 26px, cartões 22px, botões 14px, campos 12px, pílulas 999px.
+- Sombras discretas e em camadas (`--shadow-card`, `--shadow-pill`, `--shadow-float`).
+- Elementos flutuantes (dock, barra de lance) em vidro: `--card` a 85% com `backdrop-blur`.
+- Bordas do viewport com desfoque (topo e rodapé), para o conteúdo sumir suave.
+- Ícones Lucide, finos (stroke 1.8; 2.2 quando ativos), tamanho 16–18px.
 
-## Formas
+## Movimento
 
-- Raio pequeno e intencional: 2px em plaquinhas e campos; raquetes têm o formato
-  próprio (círculo/oval com cabo). Nada de "tudo com rounded-xl".
-- Imagens das obras sem corte forçado: respeitar a proporção original, com uma
-  moldura fina de latão (borda 1px `--latao` + respiro de 8px em `--papel`).
-- Bordas só quando separam informação. Sem sombras, exceto a raquete levantada.
+Curva única no estilo iOS: `cubic-bezier(0.32, 0.72, 0, 1)` (biblioteca `motion`).
+- Página entra com opacidade + 6px de deslize (280ms).
+- Dock: a pílula do item ativo desliza entre itens (`layoutId`) e o rótulo se expande.
+- Controles segmentados e switches com knob que desliza.
+- Novo lance na sala: a linha entra no topo do histórico (opacidade + deslize, ~350ms).
+- Tudo respeita `prefers-reduced-motion`.
+
+## Estrutura
+
+- **Marca** no topo à esquerda (raquete pequena + "PREGÃO" em mono); à direita, tema e conta.
+- **Dock** flutuante no rodapé com a navegação do papel (Vitrine, Carteira, Meus arremates
+  ou Escritório). Some na sala ao vivo, onde dá lugar à barra de lance.
+- **Rodapé** com relógio do servidor ao vivo: "Pregão · bons lances 14:02:11".
+- Coluna estreita (máx. ~560px) para texto, formulários e sala; a vitrine abre em grade.
 
 ## Telas
 
-### Vitrine — "a parede do salão"
-Pendurada como uma parede de salão (salon hang): obras em alturas diferentes, na
-proporção real, em grade masonry. Embaixo de cada obra, uma plaquinha de latão.
+### Vitrine
+Saudação conversacional com chips ("Há `3 lotes` em pregão agora; o próximo encerra às
+`17:30`."). Controle segmentado Todos · Em pregão · Próximos · Encerrados e busca.
+Lotes em tiles cinza: a obra no centro em proporção real com sombra suave, botão redondo
+↗ no canto; legenda abaixo com título, "Lote 007 · artista", valor em mono e estado
+(ponto verde pulsando "ao vivo", "abre 28/10, 14:00", "encerrado").
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ Casa de Leilões        Em pregão · Próximas · Martelo batido │  ← filtro
-├──────────────────────────────────────────────────────────────┤
-│ ┌────────┐  ┌──────────────┐  ┌──────┐   ┌────────┐          │
-│ │        │  │              │  │      │   │        │          │
-│ │  obra  │  │     obra     │  │ obra │   │  obra  │          │
-│ │        │  └──────────────┘  │      │   └────────┘          │
-│ └────────┘  ▭ Lote 014        └──────┘   ▭ Lote 021          │
-│ ▭ Lote 007    R$ 4.300  ● 02:11 ▭ Lote 009   abre 28/10 14h  │
-│   R$ 1.250                      martelo R$ 900               │
-└──────────────────────────────────────────────────────────────┘
-```
-Ordem: lotes em pregão primeiro (com ponto `--lacre` pulsando discretamente), depois
-próximos, depois encerrados em tons dessaturados. Busca e filtros numa linha discreta.
+### Sala do lote ao vivo
+Coluna central. "Lote 007" em `--ink-2`, countdown grande em mono com marcas (ticks) que
+apagam no fim; últimos 2 minutos em `--danger` com "um lance agora prorroga em 2 min".
+Tile da obra. Frase de estado: "Lance atual `R$ 4.300` · `Licitante #A3F9C2`".
+Banner "Você está ganhando" (ponto verde) / "Você foi superado" (vermelho) com a posição.
+Histórico em lista com linhas finas, raquete mono em cada linha e "Você" nos seus lances.
+Barra flutuante no rodapé: campo com o mínimo pré-preenchido + botão "Dar lance".
+Recusas aparecem logo acima da barra, dizendo o que fazer.
 
-### Sala do lote ao vivo — o momento memorável
-Toda a tela em `--parede`. A obra iluminada à esquerda; à direita, o pódio.
-
-```
-┌───────────────────────────────┬──────────────────────────────┐
-│                               │ Lote 014                     │
-│                               │ Lance atual                  │
-│          [ obra ]             │ R$ 4.300                     │  ← Big Shoulders 89px
-│                               │ (raquete #A3F9 levantada)    │
-│                               │ ▬▬▬▬▬▬▬▬▬▬▬▬▱▱▱  02:11       │  ← barra que esvazia
-│                               │                              │
-│ Título da obra (serif)        │ ● Você está ganhando         │  ← selo / lacre
-│ Artista, ano, técnica         │ Sua posição: 1º de 4         │
-│                               │ [ R$ 4.400 ]  [ Dar lance ]  │
-│                               │                              │
-│                               │ Raquetes levantadas          │
-│                               │  #A3F9  R$ 4.300   19:02:41  │
-│                               │  Você   R$ 4.100   19:02:10  │
-│                               │  #7C21  R$ 3.900   19:01:55  │
-└───────────────────────────────┴──────────────────────────────┘
-```
-- A ÚNICA animação automática do app: quando chega um lance, uma raquete com o
-  pseudônimo sobe no topo do histórico e o valor do lance atual troca. ~400ms.
-  Respeitar `prefers-reduced-motion` (sem movimento, só troca).
-- Anti-sniping: quando o prazo é estendido, a barra volta a encher e aparece a frase
-  "Prazo estendido em 2 minutos por lance no fim".
-- "Você foi superado" em `--lacre`, ocupando a largura do pódio, com o novo mínimo
-  já preenchido no campo.
-- Recusas de lance aparecem logo abaixo do botão, na voz da casa, dizendo o que
-  fazer: "O lance mínimo agora é R$ 4.400." / "Seu saldo disponível é R$ 1.200.
-  Deposite mais na carteira para continuar."
-- Lote encerrado: a raquete do vencedor fica, e aparece "Martelo batido em R$ 4.300".
-
-### Carteira — "livro-caixa"
-Três números em Big Shoulders lado a lado (total, comprometido, disponível), com a
-barra de saldo dividida em duas cores (comprometido em latão). Abaixo, o extrato
-como um livro-caixa em serif, com valores alinhados à direita.
+### Carteira
+Três tiles de estatística (total, comprometido, disponível) e uma barra fina dividida.
+Depósito com chips de valores rápidos. Extrato em lista com linhas finas.
 
 ### Meus arremates
-Lista simples. Cada item: miniatura emoldurada, nº do lote, situação ("Liderando",
-"Superado", "Arrematado por R$ X"), e nos vencidos o botão "Copiar link do comprovante".
+Lista: miniatura, lote, estado ("Liderando", "Superado", "Arrematado por R$ X") e
+"Copiar link do comprovante" nos vencidos.
 
-### Comprovante público — "nota de arremate"
-Página que parece um documento de casa de leilões: cabeçalho da casa, nº do lote,
-obra, valor, raquete vencedora (pseudônimo), data, e um **lacre de cera** (SVG em
-`--lacre`) com os 6 primeiros caracteres do hash final gravados. Link para a auditoria.
-Gerar também imagem Open Graph para o link ficar bonito quando compartilhado.
+### Comprovante público
+Cartão de documento com o lacre (SVG mono) e os 6 primeiros caracteres do hash final.
 
-### Auditoria — "cadeia de lacres"
-Os lances em sequência vertical, cada um um lacre ligado ao anterior por um fio.
-Verificação no navegador, um lacre de cada vez (rápido, sem enrolação):
-- Íntegro: todos os lacres em `--selo`, frase "Histórico íntegro: 12 lances
-  verificados com a chave pública da casa."
-- Adulterado: o primeiro lacre com problema aparece partido em `--lacre`, com o
-  motivo em linguagem simples ("O valor do lance 7 foi alterado depois de registrado").
-  Os seguintes ficam acinzentados.
-- Uma seção recolhível "Como verificamos" explica a técnica em 4 frases.
+### Auditoria
+Lista de lances encadeados, um lacre por linha; íntegro em `--up`, o primeiro problema
+em `--danger` com o motivo em linguagem simples; seguintes esmaecidos.
 
-### Painel do leiloeiro — "escritório da casa"
-Aqui a metáfora recua: é uma ferramenta de trabalho. Fundo `--papel`, tabela clara.
-Busca no acervo do museu com resultados em grade emoldurada; formulário do lote ao
-lado com prévia da plaquinha em tempo real. Tabela de resultados com total recebido.
+### Escritório do leiloeiro
+Busca no acervo em grade de tiles pequenos; formulário em cartão com prévia do tile;
+lista "Seus lotes".
 
 ## Texto da interface
 
-Vocabulário fixo (o mesmo nome do começo ao fim do fluxo):
-lote, lance, dar lance, raquete, em pregão, próximas sessões, martelo batido,
-arrematar, comprovante de arremate, carteira, depositar, saldo comprometido.
+Frases curtas, voz ativa, sem pedir desculpas. Vocabulário fixo: lote, lance, dar lance,
+raquete, em pregão, encerrado, arrematar, comprovante, carteira, depositar, comprometido.
+Estado vazio convida a agir.
 
-Frases curtas, voz ativa, sem pedir desculpas. Estado vazio convida a agir:
-"Nenhum lote em pregão agora. Veja as próximas sessões."
+## Acessibilidade
 
-## Implementação
-
-- Pode usar Radix/shadcn como base de acessibilidade, mas reestilizar tudo com os
-  tokens acima — nada pode ficar com a cara padrão do shadcn.
-- Ícones: poucos, e desenhados no tema (raquete, martelo, lacre como SVG próprios).
-  Evitar espalhar Lucide.
-- Acessibilidade: foco visível em `--latao` (outline 2px), contraste AA nos dois temas,
-  textos de status anunciados com `aria-live="polite"` na sala ao vivo.
-- Responsivo: na sala ao vivo em mobile, obra em cima (altura limitada), pódio fixo
-  embaixo com o botão de lance sempre visível.
+Foco visível (outline 2px `--ink`), contraste AA nos dois temas (`--ink-3` só para
+rótulos), `aria-live="polite"` para lance atual e estado na sala, alvos de toque ≥ 40px.
