@@ -38,6 +38,10 @@ export class Env {
 
   @IsEmail()
   AIC_CONTACT_EMAIL: string;
+
+  @IsString()
+  @MinLength(32)
+  PSEUDONYM_SECRET: string;
 }
 
 export function validateEnv(raw: Record<string, unknown>): Env {
