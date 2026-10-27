@@ -60,6 +60,12 @@ export function BidBox({
             {phase === LotPhase.LIVE && <span className="live-dot" aria-hidden="true" />}
             {phaseLabel[phase]}
           </span>
+          <Link
+            to={paths.audit(lot.id)}
+            className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-full bg-chip px-3 text-[12.5px] font-[550] text-ink transition-colors hover:bg-surface-2"
+          >
+            <ShieldCheck size={14} /> Auditar
+          </Link>
         </div>
         <h1 className="text-[26px] leading-tight">{lot.title}</h1>
         {lot.artist && (
@@ -99,12 +105,6 @@ export function BidBox({
         standing={standing}
         receiptToken={receiptToken}
       />
-      <Link
-        to={paths.audit(lot.id)}
-        className="inline-flex items-center gap-1.5 self-center text-[13px] text-ink-3 transition-colors hover:text-ink"
-      >
-        <ShieldCheck size={14} /> Auditar o histórico de lances
-      </Link>
     </div>
   );
 }
