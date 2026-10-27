@@ -159,30 +159,6 @@
   box-shadow: var(--tile-highlight);
 }
 
-/* Slow zoom inside the artwork's own frame: the image grows while an inverse clip keeps the
-   visible box still, (1 - 1/1.06) / 2 = 2.83% per side. clip-path also cuts box-shadow, so the
-   parent carries the shadow as a drop-shadow. */
-@utility artwork-zoom {
-  clip-path: inset(0);
-  transition:
-    transform 1.6s cubic-bezier(0.22, 1, 0.36, 1),
-    clip-path 1.6s cubic-bezier(0.22, 1, 0.36, 1);
-
-  &:hover {
-    transform: scale(1.06);
-    clip-path: inset(2.83%);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    &:hover {
-      transform: none;
-      clip-path: inset(0);
-    }
-  }
-}
-
 /* Artwork titles read like an auction catalogue: serif italic, against the neutral sans. */
 @utility artwork-title {
   font-family: 'Playfair Display Variable', Georgia, serif;

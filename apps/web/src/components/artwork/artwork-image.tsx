@@ -1,5 +1,7 @@
+import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
+import { useArtworkZoom } from './use-artwork-zoom';
 
 const sizes = {
   sm: 'h-[140px]',
@@ -7,6 +9,7 @@ const sizes = {
   lg: 'h-[min(52vh,440px)]',
 };
 
+const IMG = 'h-auto max-h-full w-auto max-w-full object-contain';
 const SHADOW = 'shadow-[0_18px_32px_-14px_rgb(0_0_0/0.45),0_2px_6px_rgb(0_0_0/0.08)]';
 const DROP_SHADOW =
   '[filter:drop-shadow(0_16px_18px_rgb(0_0_0/0.28))_drop-shadow(0_2px_4px_rgb(0_0_0/0.08))]';
@@ -18,7 +21,7 @@ interface ArtworkImageProps {
   /** Ended lots fade out a little. */
   dimmed?: boolean;
   priority?: boolean;
-  /** Slow zoom on hover, for the one artwork a page is about. */
+  /** Magnifier that follows the mouse, for the one artwork a page is about. */
   zoom?: boolean;
   /** Small round button pinned to the bottom-right corner (e.g. select in the catalogue). */
   corner?: ReactNode;
@@ -48,24 +51,43 @@ export function ArtworkImage({
         className,
       )}
     >
-      <img
-        src={src}
-        alt={alt}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
-        className={cn(
-          'h-auto max-h-full w-auto max-w-full object-contain',
-          zoom && 'artwork-zoom',
-          !zoom && SHADOW,
-          !zoom && 'transition-transform duration-500 ease-ios group-hover:-translate-y-1',
-          dimmed && 'opacity-60 grayscale-[0.6]',
-        )}
-      />
+      {zoom ? (
+        <ZoomImg src={src} alt={alt} priority={priority} />
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          className={cn(
+            IMG,
+            SHADOW,
+            'transition-transform duration-500 ease-ios group-hover:-translate-y-1',
+            dimmed && 'opacity-60 grayscale-[0.6]',
+          )}
+        />
+      )}
       {corner && (
         <span className="absolute right-2 bottom-2 z-10 grid size-[30px] place-items-center rounded-full bg-card text-ink shadow-pill transition-transform duration-300 ease-ios group-hover:scale-110">
           {corner}
         </span>
       )}
     </div>
+  );
+}
+
+function ZoomImg({ src, alt, priority }: { src: string; alt: string; priority: boolean }) {
+  const { style, handlers } = useArtworkZoom();
+  return (
+    <motion.img
+      src={src}
+      alt={alt}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding="async"
+      draggable={false}
+      style={style}
+      {...handlers}
+      className={cn(IMG, 'cursor-zoom-in')}
+    />
   );
 }
