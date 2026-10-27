@@ -9,14 +9,14 @@ import {
   PHASE_PARAM,
   QUERY_PARAM,
   SORT_PARAM,
-  sectionsForSlug,
+  sectionForSlug,
   sortFromParam,
 } from '../showcase-filters';
 
 export function ShowcasePage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get(QUERY_PARAM) ?? '';
-  const sections = sectionsForSlug(searchParams.get(PHASE_PARAM));
+  const section = sectionForSlug(searchParams.get(PHASE_PARAM));
   const sort = sortFromParam(searchParams.get(SORT_PARAM));
 
   return (
@@ -30,11 +30,7 @@ export function ShowcasePage() {
           <SortSelect />
         </div>
       </div>
-      <div className="flex flex-col gap-12">
-        {sections.map((section) => (
-          <WallSection key={section.phase} section={section} query={query} sort={sort} />
-        ))}
-      </div>
+      <WallSection key={section.phase} section={section} query={query} sort={sort} />
     </Page>
   );
 }

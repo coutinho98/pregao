@@ -14,16 +14,9 @@ interface WallSectionProps {
 
 export function WallSection({ section, query, sort }: WallSectionProps) {
   const { data, isPending, isError, error, refetch } = useLotPage(section.phase, query, sort);
-  const headingId = `section-${section.slug}`;
 
   return (
-    <section aria-labelledby={headingId}>
-      <div className="mb-3 flex items-baseline justify-between px-1 text-[13px] font-medium text-ink-3">
-        <h2 id={headingId} className="text-[13px] font-medium tracking-normal">
-          {section.title}
-        </h2>
-        {data && data.total > 0 && <span className="tabular">{data.total}</span>}
-      </div>
+    <section aria-label={section.label}>
       <SectionContent
         isPending={isPending}
         error={isError ? errorMessage(error) : null}
