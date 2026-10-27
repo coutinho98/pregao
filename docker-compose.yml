@@ -1,3 +1,5 @@
+# Full demo from scratch: `docker compose up --build`, then open http://localhost:8080.
+# The secrets below are throwaway values for this local demo only; production reads its own env.
 services:
   postgres:
     image: postgres:17-alpine
@@ -6,7 +8,7 @@ services:
       POSTGRES_PASSWORD: pregao
       POSTGRES_DB: pregao
     ports:
-      - '5440:5432'
+      - '${POSTGRES_PORT:-5440}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./apps/api/prisma/init:/docker-entrypoint-initdb.d:ro
@@ -15,6 +17,39 @@ services:
       interval: 2s
       timeout: 3s
       retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    # Applies migrations, seeds the demo if the database is empty, then serves.
+    command: ['pnpm', 'start:demo']
+    environment:
+      DATABASE_URL: postgresql://pregao:pregao@postgres:5432/pregao
+      DIRECT_URL: postgresql://pregao:pregao@postgres:5432/pregao
+      PORT: 3000
+      CORS_ORIGINS: http://localhost:${WEB_PORT:-8080}
+      JWT_SECRET: ${JWT_SECRET:-local-demo-jwt-secret-not-for-production}
+      JWT_EXPIRES_IN: 12h
+      AUDIT_PRIVATE_KEY: ${AUDIT_PRIVATE_KEY:-1111111111111111111111111111111111111111111111111111111111111111}
+      PSEUDONYM_SECRET: ${PSEUDONYM_SECRET:-local-demo-pseudonym-secret-not-for-production}
+      AIC_CONTACT_EMAIL: ${AIC_CONTACT_EMAIL:-demo@example.com}
+    ports:
+      - '${API_PORT:-3000}:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: http://localhost:${API_PORT:-3000}
+    ports:
+      - '${WEB_PORT:-8080}:80'
+    depends_on:
+      - api
 
 volumes:
   pgdata:
