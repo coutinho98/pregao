@@ -1,0 +1,28 @@
+export const ErrorCode = {
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+
+  EMAIL_TAKEN: 'EMAIL_TAKEN',
+  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+
+  NOT_STARTED: 'NOT_STARTED',
+  LOT_ENDED: 'LOT_ENDED',
+  ALREADY_WINNING: 'ALREADY_WINNING',
+  BELOW_MINIMUM: 'BELOW_MINIMUM',
+  INSUFFICIENT_FUNDS: 'INSUFFICIENT_FUNDS',
+  AUCTIONEER_CANNOT_BID: 'AUCTIONEER_CANNOT_BID',
+
+  EXTERNAL_API_UNAVAILABLE: 'EXTERNAL_API_UNAVAILABLE',
+} as const;
+
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
+
+export interface ApiErrorBody {
+  code: ErrorCode;
+  message: string;
+  details?: Record<string, unknown>;
+  minNextBidCents?: number;
+}
