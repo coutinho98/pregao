@@ -1,0 +1,46 @@
+# Casa de Leilões
+
+Casa de leilões online com lances ao vivo, carteira simulada, comprovante de arremate
+e histórico de lances à prova de adulteração. Teste técnico Elite Dev (Verzel).
+
+> README em construção. A versão completa (deploy, decisões técnicas, auditoria e
+> limitações) chega ao fim do projeto.
+
+## Stack
+
+- **API:** Node 22, NestJS, Prisma 7, PostgreSQL. Documentação OpenAPI interativa com Scalar em `/docs`.
+- **Web:** React 19, Vite, TanStack Query, React Router, Tailwind 4, componentes shadcn/Radix reestilizados.
+- **Monorepo:** pnpm (`apps/api`, `apps/web`, `packages/shared`).
+
+## Como rodar localmente
+
+Pré-requisitos: Node 22 (`.nvmrc`), pnpm (via `corepack enable`) e Docker.
+
+```bash
+pnpm install
+docker compose up -d postgres          # Postgres em localhost:5440 (cria também o banco de testes)
+
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+
+pnpm --filter @pregao/api db:deploy    # aplica as migrations
+pnpm dev                               # API em :3000, web em :5173
+```
+
+- Aplicação: http://localhost:5173
+- Documentação da API (Scalar): http://localhost:3000/docs
+- Spec OpenAPI: http://localhost:3000/docs/openapi.json
+
+## Scripts
+
+| Comando | O que faz |
+|---|---|
+| `pnpm dev` | API, web e `packages/shared` em modo watch |
+| `pnpm lint` | ESLint no monorepo |
+| `pnpm typecheck` | TypeScript em todos os pacotes |
+| `pnpm test` | Testes unitários e de integração (a API usa o Postgres real em `TEST_DATABASE_URL`) |
+| `pnpm build` | Build de produção |
+
+## Variáveis de ambiente
+
+Veja `apps/api/.env.example` e `apps/web/.env.example`.
