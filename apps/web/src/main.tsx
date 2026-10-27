@@ -7,7 +7,6 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/geist-mono';
 import '@fontsource-variable/playfair-display';
 import '@fontsource-variable/playfair-display/wght-italic.css';
-import '@fontsource-variable/caveat';
 import './styles/index.css';
 
 createRoot(document.getElementById('root')!).render(

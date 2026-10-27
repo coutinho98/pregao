@@ -78,7 +78,6 @@
   --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-serif: 'Playfair Display Variable', Georgia, serif;
-  --font-hand: 'Caveat Variable', 'Segoe Print', cursive;
 
   --shadow-pill: var(--elev-pill);
   --shadow-card: var(--elev-card);
