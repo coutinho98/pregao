@@ -1,0 +1,183 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  AUCTIONEER
+  BIDDER
+}
+
+enum LotStatus {
+  ACTIVE
+  CANCELLED
+  SETTLED
+}
+
+enum LedgerEntryType {
+  DEPOSIT
+  HOLD
+  RELEASE
+  DEBIT
+  CREDIT
+  REFUND
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  wallet      Wallet?
+  ownLots     Lot[]     @relation("LotAuctioneer")
+  leadingLots Lot[]     @relation("LotLeader")
+  bids        Bid[]
+  receipts    Receipt[]
+
+  @@map("users")
+}
+
+model Wallet {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @unique @db.Uuid
+  totalCents     BigInt   @default(0)
+  committedCents BigInt   @default(0)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(3)
+
+  user    User           @relation(fields: [userId], references: [id])
+  entries WalletLedger[]
+
+  @@map("wallets")
+}
+
+model WalletLedger {
+  id                  String          @id @default(uuid()) @db.Uuid
+  walletId            String          @db.Uuid
+  type                LedgerEntryType
+  amountCents         BigInt
+  totalAfterCents     BigInt
+  committedAfterCents BigInt
+  lotId               String?         @db.Uuid
+  bidId               String?         @db.Uuid
+  createdAt           DateTime        @default(now()) @db.Timestamptz(3)
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  lot    Lot?   @relation(fields: [lotId], references: [id])
+  bid    Bid?   @relation(fields: [bidId], references: [id])
+
+  @@index([walletId, createdAt])
+  @@index([lotId])
+  @@map("wallet_ledger")
+}
+
+model ItemSnapshot {
+  id            String   @id @default(uuid()) @db.Uuid
+  source        String
+  externalId    String
+  title         String
+  artist        String?
+  dateDisplay   String?
+  medium        String?
+  dimensions    String?
+  placeOfOrigin String?
+  sourceUrl     String
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+
+  image ItemImage?
+  lot   Lot?
+
+  @@index([source, externalId])
+  @@map("item_snapshots")
+}
+
+model ItemImage {
+  id         String @id @default(uuid()) @db.Uuid
+  snapshotId String @unique @db.Uuid
+  imageMime  String
+  imageBytes Bytes
+  thumbBytes Bytes
+
+  snapshot ItemSnapshot @relation(fields: [snapshotId], references: [id])
+
+  @@map("item_images")
+}
+
+model Lot {
+  id                 String    @id @default(uuid()) @db.Uuid
+  auctioneerId       String    @db.Uuid
+  itemSnapshotId     String    @unique @db.Uuid
+  startingPriceCents BigInt
+  minIncrementCents  BigInt
+  startsAt           DateTime  @db.Timestamptz(3)
+  endsAt             DateTime  @db.Timestamptz(3)
+  originalEndsAt     DateTime  @db.Timestamptz(3)
+  status             LotStatus @default(ACTIVE)
+  currentBidCents    BigInt?
+  leaderId           String?   @db.Uuid
+  bidCount           Int       @default(0)
+  genesisHash        String
+  lastHash           String
+  headSignature      String
+  settledAt          DateTime? @db.Timestamptz(3)
+  cancelledAt        DateTime? @db.Timestamptz(3)
+  createdAt          DateTime  @default(now()) @db.Timestamptz(3)
+
+  auctioneer   User           @relation("LotAuctioneer", fields: [auctioneerId], references: [id])
+  leader       User?          @relation("LotLeader", fields: [leaderId], references: [id])
+  itemSnapshot ItemSnapshot   @relation(fields: [itemSnapshotId], references: [id])
+  bids         Bid[]
+  receipt      Receipt?
+  ledger       WalletLedger[]
+
+  @@index([status, startsAt])
+  @@index([status, endsAt])
+  @@index([auctioneerId, createdAt])
+  @@map("lots")
+}
+
+model Bid {
+  id              String   @id @default(uuid()) @db.Uuid
+  lotId           String   @db.Uuid
+  seq             Int
+  bidderId        String   @db.Uuid
+  bidderPseudonym String
+  amountCents     BigInt
+  prevHash        String
+  hash            String   @unique
+  signature       String
+  createdAt       DateTime @db.Timestamptz(3)
+
+  lot    Lot            @relation(fields: [lotId], references: [id])
+  bidder User           @relation(fields: [bidderId], references: [id])
+  ledger WalletLedger[]
+
+  @@unique([lotId, seq])
+  @@index([bidderId, lotId])
+  @@map("bids")
+}
+
+model Receipt {
+  id              String   @id @default(uuid()) @db.Uuid
+  lotId           String   @unique @db.Uuid
+  winnerId        String   @db.Uuid
+  winnerPseudonym String
+  amountCents     BigInt
+  bidCount        Int
+  finalHash       String
+  publicToken     String   @unique
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  lot    Lot  @relation(fields: [lotId], references: [id])
+  winner User @relation(fields: [winnerId], references: [id])
+
+  @@map("receipts")
+}
