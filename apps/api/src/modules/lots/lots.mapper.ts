@@ -1,6 +1,13 @@
-import { deriveLotPhase, type LotDetail, type LotSummary, minNextBidCents } from '@pregao/shared';
+import {
+  type CatalogItem,
+  deriveLotPhase,
+  type LotDetail,
+  type LotSummary,
+  minNextBidCents,
+} from '@pregao/shared';
 import { centsToNumber } from '../../common/money.js';
-import type { LotWithSnapshot } from './lots.repository.js';
+import { CATALOG_SOURCE } from '../catalog/catalog-provider.js';
+import type { LotWithSnapshot, NewLot } from './lots.repository.js';
 
 export function toLotSummary(lot: LotWithSnapshot, now: Date): LotSummary {
   const { itemSnapshot: snapshot } = lot;
@@ -42,5 +49,23 @@ export function toLotDetail(lot: LotWithSnapshot, now: Date): LotDetail {
       currentBidCents: summary.currentBidCents,
     }),
     serverNow: now.toISOString(),
+  };
+}
+
+/** What we keep of the museum's record, so the lot never needs the museum again. */
+export function snapshotFromCatalogItem(item: CatalogItem): NewLot['snapshot'] {
+  return {
+    source: CATALOG_SOURCE,
+    externalId: item.externalId,
+    title: item.title,
+    artist: item.artist,
+    dateDisplay: item.dateDisplay,
+    medium: item.medium,
+    dimensions: item.dimensions,
+    placeOfOrigin: item.placeOfOrigin,
+    sourceUrl: item.sourceUrl,
+    imageWidth: item.imageWidth,
+    imageHeight: item.imageHeight,
+    altText: item.altText,
   };
 }

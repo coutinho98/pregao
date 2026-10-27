@@ -16,7 +16,7 @@ import { CatalogService } from '../catalog/catalog.service.js';
 import type { CreateLotDto } from './dto/create-lot.dto.js';
 import type { LotListQueryDto } from './dto/lot-list-query.dto.js';
 import { lotScheduleProblem } from './lot-rules.js';
-import { toLotDetail, toLotSummary } from './lots.mapper.js';
+import { snapshotFromCatalogItem, toLotDetail, toLotSummary } from './lots.mapper.js';
 import { type ImageSize, LotsRepository } from './lots.repository.js';
 
 const ALREADY_LISTED_MESSAGE = 'Esta obra já está em um lote aberto. Escolha outra obra do acervo.';
@@ -68,20 +68,7 @@ export class LotsService {
           lastHash: seal.genesisHash,
           headSignature: seal.headSignature,
         },
-        snapshot: {
-          source: CATALOG_SOURCE,
-          externalId: item.externalId,
-          title: item.title,
-          artist: item.artist,
-          dateDisplay: item.dateDisplay,
-          medium: item.medium,
-          dimensions: item.dimensions,
-          placeOfOrigin: item.placeOfOrigin,
-          sourceUrl: item.sourceUrl,
-          imageWidth: item.imageWidth,
-          imageHeight: item.imageHeight,
-          altText: item.altText,
-        },
+        snapshot: snapshotFromCatalogItem(item),
         image: {
           imageMime: image.mime,
           imageBytes: new Uint8Array(image.full),
