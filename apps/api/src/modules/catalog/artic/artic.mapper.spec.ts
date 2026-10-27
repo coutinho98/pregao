@@ -26,7 +26,7 @@ describe('toCatalogItem', () => {
       dimensions: '89.9 × 94.1 cm',
       placeOfOrigin: 'France',
       sourceUrl: 'https://museum.test/artworks/16568',
-      imageUrl: 'https://iiif.test/iiif/2/abc-123/full/843,/0/default.jpg',
+      imageUrl: 'https://iiif.test/iiif/2/abc-123/full/1686,/0/default.jpg',
       thumbnailUrl: 'https://iiif.test/iiif/2/abc-123/full/400,/0/default.jpg',
       imageWidth: 8808,
       imageHeight: 8460,

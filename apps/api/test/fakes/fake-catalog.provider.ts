@@ -13,7 +13,7 @@ export function catalogItem(overrides: Partial<CatalogItem> = {}): CatalogItem {
     dimensions: '89.9 × 94.1 cm',
     placeOfOrigin: 'France',
     sourceUrl: `https://museum.test/artworks/${externalId}`,
-    imageUrl: `https://iiif.test/${externalId}/843.jpg`,
+    imageUrl: `https://iiif.test/${externalId}/1686.jpg`,
     thumbnailUrl: `https://iiif.test/${externalId}/400.jpg`,
     imageWidth: 800,
     imageHeight: 600,

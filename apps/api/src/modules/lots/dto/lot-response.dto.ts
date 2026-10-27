@@ -11,7 +11,7 @@ import {
 } from '@pregao/shared';
 
 export class LotImageDto implements LotImage {
-  @ApiProperty({ example: '/images/9b1d…', description: 'Caminho na API (843px)' })
+  @ApiProperty({ example: '/images/9b1d…', description: 'Caminho na API (1686px)' })
   url: string;
 
   @ApiProperty({ example: '/images/9b1d…?size=thumb', description: 'Caminho na API (400px)' })

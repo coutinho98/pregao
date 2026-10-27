@@ -57,7 +57,7 @@ export function toCatalogItem(artwork: ArticArtwork, config: ArticConfig): Catal
     dimensions: blankToNull(artwork.dimensions),
     placeOfOrigin: blankToNull(artwork.place_of_origin),
     sourceUrl: `${config.website_url}/artworks/${artwork.id}`,
-    imageUrl: `${iiifBase}/843,/0/default.jpg`,
+    imageUrl: `${iiifBase}/1686,/0/default.jpg`,
     thumbnailUrl: `${iiifBase}/400,/0/default.jpg`,
     imageWidth: artwork.thumbnail?.width ?? null,
     imageHeight: artwork.thumbnail?.height ?? null,

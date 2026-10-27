@@ -26,7 +26,7 @@ export class CatalogItemDto implements CatalogItem {
   @ApiProperty({ example: 'https://www.artic.edu/artworks/16568' })
   sourceUrl: string;
 
-  @ApiProperty({ description: 'Imagem IIIF (843px) no museu' })
+  @ApiProperty({ description: 'Imagem IIIF (1686px) no museu' })
   imageUrl: string;
 
   @ApiProperty({ description: 'Miniatura IIIF (400px) no museu' })

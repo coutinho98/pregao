@@ -8,7 +8,7 @@ export class ImageQueryDto {
   @ApiPropertyOptional({
     enum: IMAGE_SIZES,
     default: 'full',
-    description: 'full = 843px, thumb = 400px',
+    description: 'full = 1686px, thumb = 400px',
   })
   @IsIn(IMAGE_SIZES)
   size: ImageSize = 'full';

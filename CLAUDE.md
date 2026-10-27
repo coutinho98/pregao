@@ -70,7 +70,8 @@ Deploy público é obrigatório. README detalhado é obrigatório.
   dimensions,place_of_origin,image_id,is_public_domain`) para respostas leves.
 - Só obras em domínio público: `query[term][is_public_domain]=true`
   (licenciamento; citar no README). Descartar resultados com `image_id` nulo.
-- Imagem (IIIF): `{config.iiif_url}/{image_id}/full/843,/0/default.jpg`.
+- Imagem (IIIF): `{config.iiif_url}/{image_id}/full/1686,/0/default.jpg`
+  (o dobro do tamanho sugerido, para ficar nítida em tela retina; ~1 MB por obra).
   Ler `iiif_url` do campo `config` da resposta, não hardcodar. Miniatura: `400,`.
 - Limite: 60 req/min por IP (anônimo). Cache + circuit breaker são obrigatórios.
 - Enviar o header `AIC-User-Agent: casa-de-leiloes-verzel (<email do .env>)`.
