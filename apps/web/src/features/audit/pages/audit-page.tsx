@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router';
 import { paths } from '@/app/paths';
 import { ErrorState } from '@/components/feedback/error-state';
 import { Page } from '@/components/layout/page';
+import { BlurIn } from '@/components/motion/blur-in';
 import { formatLotNumber } from '@/features/lots/format';
 import { errorMessage } from '@/lib/errors';
 import { chainLinks } from '../chain-links';
@@ -34,9 +35,11 @@ export function AuditPage() {
             <p className="text-[13px] text-ink-3">
               Auditoria · {formatLotNumber(audit.data.trail.lotNumber)}
             </p>
-            <h1 className="text-[26px]">{audit.data.trail.title}</h1>
+            <h1 className="artwork-title text-[30px] leading-tight">{audit.data.trail.title}</h1>
           </header>
-          <AuditVerdict result={audit.data.result} lastHash={audit.data.trail.head.lastHash} />
+          <BlurIn delay={0.1}>
+            <AuditVerdict result={audit.data.result} lastHash={audit.data.trail.head.lastHash} />
+          </BlurIn>
           <SealChain links={chainLinks(audit.data.trail, audit.data.result)} />
           <HowWeVerify publicKey={audit.data.trail.publicKey} />
         </div>

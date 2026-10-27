@@ -26,7 +26,7 @@ export function CatalogResultCard({ item, selected, onSelect }: CatalogResultCar
       />
       <span
         className={cn(
-          'mt-2 block truncate px-0.5 text-[13.5px] font-semibold underline-offset-4',
+          'artwork-title mt-2 block truncate px-0.5 text-[15px] underline-offset-4',
           selected && 'underline decoration-2',
         )}
       >

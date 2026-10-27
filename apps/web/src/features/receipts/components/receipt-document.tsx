@@ -2,6 +2,7 @@ import type { ReceiptView } from '@pregao/shared';
 import { Link as LinkIcon, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router';
 import { ArtworkImage } from '@/components/artwork/artwork-image';
+import { BlurIn } from '@/components/motion/blur-in';
 import { PaddleMark } from '@/components/icons/paddle-mark';
 import { WaxSeal } from '@/components/icons/wax-seal';
 import { Button } from '@/components/ui/button';
@@ -37,15 +38,20 @@ export function ReceiptDocument({ receipt }: { receipt: ReceiptView }) {
           src={apiUrl(receipt.image.thumbnailUrl)}
           alt={receipt.image.altText ?? receipt.title}
           size="md"
+          className="h-[210px]"
           priority
         />
         <div>
-          <h1 className="text-[26px] leading-tight">{receipt.title}</h1>
+          <h1 className="artwork-title text-[30px] leading-tight">{receipt.title}</h1>
           {receipt.artist && <p className="mt-1 text-[14px] text-ink-3">{receipt.artist}</p>}
           <p className="mt-5 text-[13px] text-ink-3">Arrematado por</p>
-          <p className="tabular text-[40px] leading-[1.1] font-semibold tracking-[-0.03em]">
+          <BlurIn
+            as="p"
+            delay={0.15}
+            className="tabular text-[40px] leading-[1.1] font-semibold tracking-[-0.03em]"
+          >
             {formatCents(receipt.amountCents)}
-          </p>
+          </BlurIn>
         </div>
       </div>
 
@@ -64,7 +70,7 @@ export function ReceiptDocument({ receipt }: { receipt: ReceiptView }) {
       <footer className="mt-6 flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 text-[12.5px] text-ink-3">
           <p>Hash final da cadeia de lances</p>
-          <p className="tabular mt-1 break-all text-ink-2">{receipt.finalHash}</p>
+          <p className="tabular mt-1 text-[11.5px] break-all text-ink-2">{receipt.finalHash}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button
               variant="secondary"

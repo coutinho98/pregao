@@ -2,6 +2,7 @@ import { type BidStanding, type LotDetail, LotPhase, type PublicBid } from '@pre
 import { ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router';
 import { paths } from '@/app/paths';
+import { BlurIn } from '@/components/motion/blur-in';
 import { Chip } from '@/components/ui/chip';
 import { formatLotNumber } from '@/features/lots/format';
 import { phaseLabel } from '@/features/lots/phase-labels';
@@ -67,7 +68,7 @@ export function BidBox({
             <ShieldCheck size={14} /> Auditar
           </Link>
         </div>
-        <h1 className="text-[26px] leading-tight">{lot.title}</h1>
+        <h1 className="artwork-title text-[30px] leading-[1.15]">{lot.title}</h1>
         {lot.artist && (
           <p className="mt-1 text-[14px] text-ink-3">
             {lot.artist}
@@ -78,9 +79,13 @@ export function BidBox({
 
       <div aria-live="polite" className="border-t border-line pt-4">
         <p className="text-[13px] text-ink-3">{amountLabel(phase, lot.currentBidCents !== null)}</p>
-        <p className="tabular text-[40px] leading-[1.1] font-semibold tracking-[-0.03em]">
+        <BlurIn
+          key={amount}
+          as="p"
+          className="tabular text-[40px] leading-[1.1] font-semibold tracking-[-0.03em]"
+        >
           {formatCents(amount)}
-        </p>
+        </BlurIn>
         <p className="mt-1 text-[13px] text-ink-2">
           <span className="tabular">{lot.bidCount}</span> {lot.bidCount === 1 ? 'lance' : 'lances'}{' '}
           · <span className="tabular">{bidders}</span> {bidders === 1 ? 'licitante' : 'licitantes'}

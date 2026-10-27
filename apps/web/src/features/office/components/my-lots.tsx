@@ -72,7 +72,7 @@ function MyLotRow({ lot }: { lot: AuctioneerLot }) {
           className="size-11 shrink-0 rounded-[10px] bg-surface object-cover"
         />
         <span className="flex min-w-0 grow flex-col gap-px">
-          <b className="truncate text-[14.5px] font-[560]">{lot.title}</b>
+          <b className="artwork-title truncate text-[16px]">{lot.title}</b>
           <span className="truncate text-[12.5px] text-ink-3">
             {formatLotNumber(lot.number)} · {phaseLabel[lot.phase]} · termina{' '}
             {formatDayTime(lot.endsAt)}

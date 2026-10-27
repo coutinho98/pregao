@@ -25,7 +25,7 @@ export function MyBidRow({ entry }: { entry: MyBidEntry }) {
           className="size-14 shrink-0 rounded-[10px] bg-surface object-cover"
         />
         <span className="flex min-w-0 flex-col gap-px">
-          <b className="truncate text-[14.5px] font-[560]">{lot.title}</b>
+          <b className="artwork-title truncate text-[16px]">{lot.title}</b>
           <span className="truncate text-[12.5px] text-ink-3">
             {formatLotNumber(lot.number)} · encerra {formatDayTime(lot.endsAt)}
           </span>
@@ -37,7 +37,7 @@ export function MyBidRow({ entry }: { entry: MyBidEntry }) {
           <span className="tabular block text-[14.5px] font-medium">
             {formatCents(lot.currentBidCents ?? myHighestBidCents)}
           </span>
-          <span className="tabular block text-[11.5px] text-ink-3">
+          <span className="tabular block text-[11.5px] whitespace-nowrap text-ink-3">
             seu maior: {formatCents(myHighestBidCents)}
           </span>
         </span>

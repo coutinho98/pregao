@@ -35,7 +35,7 @@ export function LotPreview({ item, control }: LotPreviewProps) {
       />
       <figcaption className="flex items-start justify-between gap-3 px-1 pt-3">
         <span className="min-w-0">
-          <b className="block truncate text-[14px] font-semibold">{item.title}</b>
+          <b className="artwork-title block truncate text-[15px]">{item.title}</b>
           <span className="block truncate text-[12px] text-ink-3">
             Novo lote{item.artist && ` · ${item.artist}`}
           </span>
