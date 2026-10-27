@@ -159,36 +159,26 @@
   box-shadow: var(--tile-highlight);
 }
 
-/* Gallery light: a soft spotlight that follows the pointer over an artwork. The element sets
-   --px/--py (0..1) on pointer move; without a pointer it rests a little above the centre. */
-@utility gallery-light {
-  position: relative;
-  isolation: isolate;
+/* Slow zoom inside the artwork's own frame: the image grows while an inverse clip keeps the
+   visible box still, (1 - 1/1.06) / 2 = 2.83% per side. clip-path also cuts box-shadow, so the
+   parent carries the shadow as a drop-shadow. */
+@utility artwork-zoom {
+  clip-path: inset(0);
+  transition:
+    transform 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 1.6s cubic-bezier(0.22, 1, 0.36, 1);
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0;
-    background: radial-gradient(
-      circle at calc(var(--px, 0.5) * 100%) calc(var(--py, 0.35) * 100%),
-      rgb(255 255 255 / 0.32),
-      rgb(255 255 255 / 0.08) 28%,
-      transparent 55%
-    );
-    mix-blend-mode: soft-light;
-    transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
-  &:hover::after {
-    opacity: 1;
+  &:hover {
+    transform: scale(1.06);
+    clip-path: inset(2.83%);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &::after {
-      transition: none;
+    transition: none;
+
+    &:hover {
+      transform: none;
+      clip-path: inset(0);
     }
   }
 }

@@ -71,6 +71,7 @@ export function LiveRoomPage() {
             alt={lot.data.image.altText ?? lot.data.title}
             size="lg"
             priority
+            zoom
             className="lg:h-[min(72vh,620px)]"
           />
           <div className="max-lg:order-last">
