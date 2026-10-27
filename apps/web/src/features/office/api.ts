@@ -1,0 +1,12 @@
+import type { CatalogSearchResult, CreateLotInput, LotDetail, LotSummary } from '@pregao/shared';
+import { http } from '@/lib/http';
+
+export function searchCatalog(q: string, page: number): Promise<CatalogSearchResult> {
+  const params = new URLSearchParams({ q, page: String(page) });
+  return http<CatalogSearchResult>(`/catalog/search?${params}`);
+}
+
+export const createLot = (input: CreateLotInput) =>
+  http<LotDetail>('/lots', { method: 'POST', body: input });
+
+export const fetchMyLots = () => http<LotSummary[]>('/lots/mine');
