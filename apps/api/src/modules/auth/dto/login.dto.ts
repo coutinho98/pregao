@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { PASSWORD_MAX_LENGTH } from '@pregao/shared';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsString, MaxLength } from 'class-validator';
-import { normalizeEmail } from './transforms.js';
+import { normalizeEmail } from '../../../common/validation/transforms.js';
 
 export class LoginDto {
   @ApiProperty({ example: 'ana@exemplo.com' })

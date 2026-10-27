@@ -8,7 +8,7 @@ import {
 } from '@pregao/shared';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsIn, IsString, Length, MaxLength } from 'class-validator';
-import { normalizeEmail, trim } from './transforms.js';
+import { normalizeEmail, trim } from '../../../common/validation/transforms.js';
 
 export class RegisterDto {
   @ApiProperty({ example: 'Ana Souza', maxLength: NAME_MAX_LENGTH })

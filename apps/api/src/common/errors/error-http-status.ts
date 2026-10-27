@@ -16,6 +16,9 @@ export const ERROR_HTTP_STATUS: Record<ErrorCode, HttpStatus> = {
   INSUFFICIENT_FUNDS: HttpStatus.UNPROCESSABLE_ENTITY,
   AUCTIONEER_CANNOT_BID: HttpStatus.FORBIDDEN,
   EXTERNAL_API_UNAVAILABLE: HttpStatus.SERVICE_UNAVAILABLE,
+  ARTWORK_NOT_FOUND: HttpStatus.NOT_FOUND,
+  ARTWORK_ALREADY_LISTED: HttpStatus.CONFLICT,
+  INVALID_LOT_SCHEDULE: HttpStatus.UNPROCESSABLE_ENTITY,
 };
 
 export function errorCodeForHttpStatus(status: number): ErrorCode {

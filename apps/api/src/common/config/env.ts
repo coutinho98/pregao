@@ -1,5 +1,15 @@
 import { plainToInstance } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, Max, Min, MinLength, validateSync } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  Max,
+  Min,
+  MinLength,
+  validateSync,
+} from 'class-validator';
 
 export class Env {
   @IsString()
@@ -22,6 +32,12 @@ export class Env {
   @IsString()
   @IsNotEmpty()
   JWT_EXPIRES_IN: string = '12h';
+
+  @Matches(/^[0-9a-f]{64}$/i, { message: 'AUDIT_PRIVATE_KEY must be 32 bytes in hex (64 chars)' })
+  AUDIT_PRIVATE_KEY: string;
+
+  @IsEmail()
+  AIC_CONTACT_EMAIL: string;
 }
 
 export function validateEnv(raw: Record<string, unknown>): Env {
