@@ -5,13 +5,17 @@ import { Auth, CurrentUser } from '../../common/auth/auth.decorators.js';
 import type { RequestUser } from '../../common/auth/request-user.js';
 import { ApiDomainErrors } from '../../common/openapi/api-domain-errors.decorator.js';
 import { BidsService } from './bids.service.js';
+import { MyBidsService } from './my-bids.service.js';
 import { MyLotStandingDto, PlaceBidResultDto, PublicBidDto } from './dto/bid-response.dto.js';
 import { PlaceBidDto } from './dto/place-bid.dto.js';
 
 @ApiTags('Lances')
 @Controller('lots/:lotId/bids')
 export class BidsController {
-  constructor(private readonly bids: BidsService) {}
+  constructor(
+    private readonly bids: BidsService,
+    private readonly myBids: MyBidsService,
+  ) {}
 
   @Post()
   @Auth()
@@ -51,7 +55,7 @@ export class BidsController {
     @CurrentUser() user: RequestUser,
     @Param('lotId', ParseUUIDPipe) lotId: string,
   ): Promise<MyLotStanding> {
-    return this.bids.standingFor(user, lotId);
+    return this.myBids.standingFor(user, lotId);
   }
 
   @Get()

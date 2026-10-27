@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  type AuctioneerLot,
+  type AuctioneerLots,
   type LotDetail,
   type LotImage,
   type LotPage,
   LotPhase,
+  LotResult,
   type LotSummary,
 } from '@pregao/shared';
 
@@ -100,4 +103,21 @@ export class LotPageDto implements LotPage {
 
   @ApiProperty({ example: 3 })
   total: number;
+}
+
+export class AuctioneerLotDto extends LotSummaryDto implements AuctioneerLot {
+  @ApiProperty({
+    enum: Object.values(LotResult),
+    nullable: true,
+    description: 'SOLD ou UNSOLD depois da liquidação; null antes',
+  })
+  result: LotResult | null;
+}
+
+export class AuctioneerLotsDto implements AuctioneerLots {
+  @ApiProperty({ type: [AuctioneerLotDto] })
+  lots: AuctioneerLotDto[];
+
+  @ApiProperty({ example: 430000, description: 'Soma dos arremates creditados na carteira' })
+  totalReceivedCents: number;
 }

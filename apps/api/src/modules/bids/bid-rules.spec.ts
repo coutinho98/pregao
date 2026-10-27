@@ -5,6 +5,7 @@ import {
   type BidAttempt,
   bidRejection,
   extendedEndsAt,
+  myBidResult,
   nextMinimumBid,
   standingOf,
 } from './bid-rules.js';
@@ -120,5 +121,23 @@ describe('standingOf', () => {
       totalBidders: 3,
       myHighestBidCents: null,
     });
+  });
+});
+
+describe('myBidResult', () => {
+  const timing = { status: LotStatus.ACTIVE, startsAt: minutes(-60), endsAt: minutes(60) };
+
+  it('is leading or outbid while the lot is live', () => {
+    expect(myBidResult({ ...timing, leaderId: 'ana' }, 'ana', now)).toBe('LEADING');
+    expect(myBidResult({ ...timing, leaderId: 'bia' }, 'ana', now)).toBe('OUTBID');
+  });
+
+  it('is won or lost once the lot ends, settled or not yet', () => {
+    const ended = { ...timing, endsAt: minutes(-1) };
+    expect(myBidResult({ ...ended, leaderId: 'ana' }, 'ana', now)).toBe('WON');
+    expect(myBidResult({ ...ended, leaderId: 'bia' }, 'ana', now)).toBe('LOST');
+    expect(myBidResult({ ...timing, status: LotStatus.SETTLED, leaderId: 'ana' }, 'ana', now)).toBe(
+      'WON',
+    );
   });
 });

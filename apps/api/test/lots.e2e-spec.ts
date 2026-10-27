@@ -193,6 +193,6 @@ describe('Lots (e2e)', () => {
       .get('/lots/mine')
       .set('Authorization', `Bearer ${auctioneerToken}`)
       .expect(200);
-    expect(mine.body).toHaveLength(1);
+    expect(mine.body.lots).toHaveLength(1);
   });
 });

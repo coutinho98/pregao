@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   BidStanding,
+  type MyBidEntry,
+  MyBidResult,
   type MyLotStanding,
   type PlaceBidResult,
   type PublicBid,
 } from '@pregao/shared';
-import { LotDetailDto } from '../../lots/dto/lot-response.dto.js';
+import { LotDetailDto, LotSummaryDto } from '../../lots/dto/lot-response.dto.js';
 
 export class MyLotStandingDto implements MyLotStanding {
   @ApiProperty({ example: 'Licitante #A3F9C2', description: 'Sua raquete neste lote' })
@@ -27,6 +29,31 @@ export class MyLotStandingDto implements MyLotStanding {
 
   @ApiProperty({ type: Number, nullable: true, example: 150000 })
   myHighestBidCents: number | null;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description: 'Token do comprovante, só para o vencedor depois da liquidação',
+  })
+  receiptToken: string | null;
+}
+
+export class MyBidEntryDto implements MyBidEntry {
+  @ApiProperty({ type: LotSummaryDto })
+  lot: LotSummaryDto;
+
+  @ApiProperty({ enum: Object.values(MyBidResult) })
+  result: MyBidResult;
+
+  @ApiProperty({ example: 150000, description: 'Seu maior lance neste lote' })
+  myHighestBidCents: number;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description: 'Token do comprovante, se você venceu',
+  })
+  receiptToken: string | null;
 }
 
 export class PublicBidDto implements PublicBid {

@@ -5,6 +5,10 @@ import type { Tx } from '../../common/prisma/transaction-runner.js';
 import type { LotWithSnapshot } from '../lots/lots.repository.js';
 import type { BidderHighest } from './bid-rules.js';
 
+export type LotWithReceipt = Prisma.LotGetPayload<{
+  include: { itemSnapshot: true; receipt: { select: { publicToken: true; winnerId: true } } };
+}>;
+
 export interface LotAfterBid {
   currentBidCents: bigint;
   leaderId: string;
@@ -56,6 +60,32 @@ export class BidsRepository {
       _max: { amountCents: true },
     });
     return rows.map((row) => ({ bidderId: row.bidderId, amountCents: row._max.amountCents ?? 0n }));
+  }
+
+  async findReceiptToken(lotId: string, winnerId: string): Promise<string | null> {
+    const receipt = await this.prisma.receipt.findFirst({
+      where: { lotId, winnerId },
+      select: { publicToken: true },
+    });
+    return receipt?.publicToken ?? null;
+  }
+
+  /** Lots the user bid on, newest end first, with the receipt when there is one. */
+  findLotsBidBy(bidderId: string): Promise<LotWithReceipt[]> {
+    return this.prisma.lot.findMany({
+      where: { bids: { some: { bidderId } } },
+      include: { itemSnapshot: true, receipt: { select: { publicToken: true, winnerId: true } } },
+      orderBy: { endsAt: 'desc' },
+    });
+  }
+
+  async findHighestBidPerLot(bidderId: string): Promise<Map<string, bigint>> {
+    const rows = await this.prisma.bid.groupBy({
+      by: ['lotId'],
+      where: { bidderId },
+      _max: { amountCents: true },
+    });
+    return new Map(rows.map((row) => [row.lotId, row._max.amountCents ?? 0n]));
   }
 
   async lotExists(lotId: string): Promise<boolean> {

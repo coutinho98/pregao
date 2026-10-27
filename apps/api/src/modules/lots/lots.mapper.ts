@@ -1,10 +1,14 @@
 import {
+  type AuctioneerLot,
   type CatalogItem,
   deriveLotPhase,
   type LotDetail,
+  type LotImage,
+  LotResult,
   type LotSummary,
   minNextBidCents,
 } from '@pregao/shared';
+import { type ItemSnapshot, LotStatus } from '../../generated/prisma/client.js';
 import { centsToNumber } from '../../common/money.js';
 import { CATALOG_SOURCE } from '../catalog/catalog-provider.js';
 import type { LotWithSnapshot, NewLot } from './lots.repository.js';
@@ -23,14 +27,26 @@ export function toLotSummary(lot: LotWithSnapshot, now: Date): LotSummary {
     startingPriceCents: centsToNumber(lot.startingPriceCents),
     currentBidCents: lot.currentBidCents === null ? null : centsToNumber(lot.currentBidCents),
     bidCount: lot.bidCount,
-    image: {
-      url: `/images/${snapshot.id}`,
-      thumbnailUrl: `/images/${snapshot.id}?size=thumb`,
-      width: snapshot.imageWidth,
-      height: snapshot.imageHeight,
-      altText: snapshot.altText,
-    },
+    image: toLotImage(snapshot),
   };
+}
+
+/** Image paths served by the API from the snapshot (never the museum's URLs). */
+export function toLotImage(snapshot: ItemSnapshot): LotImage {
+  return {
+    url: `/images/${snapshot.id}`,
+    thumbnailUrl: `/images/${snapshot.id}?size=thumb`,
+    width: snapshot.imageWidth,
+    height: snapshot.imageHeight,
+    altText: snapshot.altText,
+  };
+}
+
+/** Sold or unsold once settled; null while the hammer has not fallen yet. */
+export function toAuctioneerLot(lot: LotWithSnapshot, now: Date): AuctioneerLot {
+  let result: AuctioneerLot['result'] = null;
+  if (lot.status === LotStatus.SETTLED) result = lot.leaderId ? LotResult.SOLD : LotResult.UNSOLD;
+  return { ...toLotSummary(lot, now), result };
 }
 
 export function toLotDetail(lot: LotWithSnapshot, now: Date): LotDetail {

@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ErrorCode, type LotDetail, type LotPage, type LotSummary, Role } from '@pregao/shared';
+import { ErrorCode, type LotDetail, type LotPage, type AuctioneerLots, Role } from '@pregao/shared';
 import { Auth, CurrentUser } from '../../common/auth/auth.decorators.js';
 import type { RequestUser } from '../../common/auth/request-user.js';
 import { ApiDomainErrors } from '../../common/openapi/api-domain-errors.decorator.js';
 import { CreateLotDto } from './dto/create-lot.dto.js';
 import { LotListQueryDto } from './dto/lot-list-query.dto.js';
-import { LotDetailDto, LotPageDto, LotSummaryDto } from './dto/lot-response.dto.js';
+import { AuctioneerLotsDto, LotDetailDto, LotPageDto } from './dto/lot-response.dto.js';
 import { LotsService } from './lots.service.js';
 
 @ApiTags('Lotes')
@@ -27,9 +27,11 @@ export class LotsController {
 
   @Get('mine')
   @Auth(Role.AUCTIONEER)
-  @ApiOperation({ summary: 'Lotes do leiloeiro autenticado, incluindo cancelados' })
-  @ApiOkResponse({ type: [LotSummaryDto] })
-  listMine(@CurrentUser() user: RequestUser): Promise<LotSummary[]> {
+  @ApiOperation({
+    summary: 'Lotes do leiloeiro autenticado com o resultado de cada um e o total recebido',
+  })
+  @ApiOkResponse({ type: AuctioneerLotsDto })
+  listMine(@CurrentUser() user: RequestUser): Promise<AuctioneerLots> {
     return this.lots.listByAuctioneer(user.id);
   }
 

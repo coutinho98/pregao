@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import {
+  type AuctioneerLots,
   ErrorCode,
   LOT_PAGE_SIZE,
   type LotDetail,
   type LotPage,
-  type LotSummary,
+  LotResult,
 } from '@pregao/shared';
 import { randomUUID } from 'node:crypto';
 import { DomainError } from '../../common/errors/domain-error.js';
@@ -13,10 +14,16 @@ import { Clock } from '../../common/time/clock.js';
 import { AuditChainService } from '../audit/audit-chain.service.js';
 import { CATALOG_SOURCE } from '../catalog/catalog-provider.js';
 import { CatalogService } from '../catalog/catalog.service.js';
+import { SettlementService } from '../settlement/settlement.service.js';
 import type { CreateLotDto } from './dto/create-lot.dto.js';
 import type { LotListQueryDto } from './dto/lot-list-query.dto.js';
 import { lotScheduleProblem } from './lot-rules.js';
-import { snapshotFromCatalogItem, toLotDetail, toLotSummary } from './lots.mapper.js';
+import {
+  snapshotFromCatalogItem,
+  toAuctioneerLot,
+  toLotDetail,
+  toLotSummary,
+} from './lots.mapper.js';
 import { type ImageSize, LotsRepository } from './lots.repository.js';
 
 const ALREADY_LISTED_MESSAGE = 'Esta obra já está em um lote aberto. Escolha outra obra do acervo.';
@@ -27,6 +34,7 @@ export class LotsService {
     private readonly lots: LotsRepository,
     private readonly catalog: CatalogService,
     private readonly auditChain: AuditChainService,
+    private readonly settlement: SettlementService,
     private readonly transactions: TransactionRunner,
     private readonly clock: Clock,
   ) {}
@@ -96,13 +104,22 @@ export class LotsService {
     };
   }
 
-  async listByAuctioneer(auctioneerId: string): Promise<LotSummary[]> {
+  /** The auctioneer's lots with their results; ended lots are settled first. */
+  async listByAuctioneer(auctioneerId: string): Promise<AuctioneerLots> {
+    await this.settlement.settleDueWhere({ auctioneerId });
     const now = this.clock.now();
-    const lots = await this.lots.findByAuctioneer(auctioneerId);
-    return lots.map((lot) => toLotSummary(lot, now));
+    const lots = (await this.lots.findByAuctioneer(auctioneerId)).map((lot) =>
+      toAuctioneerLot(lot, now),
+    );
+    const totalReceivedCents = lots
+      .filter((lot) => lot.result === LotResult.SOLD)
+      .reduce((total, lot) => total + (lot.currentBidCents ?? 0), 0);
+    return { lots, totalReceivedCents };
   }
 
+  /** A lot read after its end is settled on the spot, so nobody sees a stale "live" lot. */
   async getDetail(id: string): Promise<LotDetail> {
+    await this.settlement.settleIfDue(id);
     const lot = await this.lots.findById(id);
     if (!lot) throw new DomainError(ErrorCode.NOT_FOUND, 'Lote não encontrado.');
     return toLotDetail(lot, this.clock.now());

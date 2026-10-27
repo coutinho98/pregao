@@ -1,7 +1,10 @@
 import {
   ANTI_SNIPING_WINDOW_MS,
   BidStanding,
+  deriveLotPhase,
   ErrorCode,
+  LotPhase,
+  MyBidResult,
   type MyLotStanding,
   Role,
 } from '@pregao/shared';
@@ -98,7 +101,7 @@ export function standingOf(
   userId: string,
   leaderId: string | null,
   highestBids: BidderHighest[],
-): Omit<MyLotStanding, 'pseudonym'> {
+): Omit<MyLotStanding, 'pseudonym' | 'receiptToken'> {
   const ranked = [...highestBids].sort((a, b) => (b.amountCents > a.amountCents ? 1 : -1));
   const index = ranked.findIndex((entry) => entry.bidderId === userId);
   const mine = ranked[index];
@@ -111,4 +114,19 @@ export function standingOf(
     totalBidders: ranked.length,
     myHighestBidCents: mine ? centsToNumber(mine.amountCents) : null,
   };
+}
+
+/**
+ * How a lot the user bid on stands for them. Ended lots (by the clock or settled) are won
+ * by whoever leads at the hammer.
+ */
+export function myBidResult(
+  lot: { status: LotStatus; startsAt: Date; endsAt: Date; leaderId: string | null },
+  userId: string,
+  now: Date,
+): MyBidResult {
+  const leads = lot.leaderId === userId;
+  if (deriveLotPhase(lot, now) === LotPhase.ENDED)
+    return leads ? MyBidResult.WON : MyBidResult.LOST;
+  return leads ? MyBidResult.LEADING : MyBidResult.OUTBID;
 }
