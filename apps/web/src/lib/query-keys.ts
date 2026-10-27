@@ -10,6 +10,8 @@ export const queryKeys = {
     standing: (id: string) => ['lots', 'standing', id] as const,
     mine: ['lots', 'mine'] as const,
   },
+  myBids: ['my-bids'] as const,
+  receipt: (token: string) => ['receipt', token] as const,
   catalog: {
     search: (q: string, page: number) => ['catalog', 'search', q, page] as const,
   },

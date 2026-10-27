@@ -69,6 +69,9 @@ export function useLotRoom(lotId: string): { extendedAt: Date | null } {
       if (payload.lotId !== lotId) return;
       syncServerClock(payload.serverNow);
       refetchRoom();
+      // The winner was just charged and the receipt exists now.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.wallet.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.myBids });
     };
 
     socket.on('connect', join);

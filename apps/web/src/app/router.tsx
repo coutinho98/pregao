@@ -60,14 +60,23 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.myBids,
-        element: (
-          <RequireAuth roles={[Role.BIDDER]}>
-            <PlaceholderPage
-              title="Meus arremates"
-              description="Os lotes em que você levantou a raquete."
-            />
-          </RequireAuth>
-        ),
+        lazy: async () => {
+          const { MyBidsPage } = await import('@/features/my-bids/pages/my-bids-page');
+          return {
+            element: (
+              <RequireAuth roles={[Role.BIDDER]}>
+                <MyBidsPage />
+              </RequireAuth>
+            ),
+          };
+        },
+      },
+      {
+        path: paths.receipt(':token'),
+        lazy: async () => {
+          const { ReceiptPage } = await import('@/features/receipts/pages/receipt-page');
+          return { element: <ReceiptPage /> };
+        },
       },
       {
         path: '*',

@@ -14,6 +14,7 @@ interface BidPanelProps {
   minNextBidCents: number;
   minIncrementCents: number;
   standing: BidStanding;
+  receiptToken: string | null;
 }
 
 /**
@@ -35,15 +36,28 @@ function BidPanelContent({
   minNextBidCents,
   minIncrementCents,
   standing,
+  receiptToken,
 }: BidPanelProps) {
   const { user } = useSession();
   const location = useLocation();
 
   if (phase === LotPhase.CANCELLED) return <Notice>Este lote foi cancelado.</Notice>;
   if (phase === LotPhase.ENDED) {
+    if (standing !== BidStanding.WINNING) return <Notice>O martelo foi batido.</Notice>;
     return (
-      <Notice>
-        {standing === BidStanding.WINNING ? 'Você arrematou este lote.' : 'O martelo foi batido.'}
+      <Notice
+        action={
+          receiptToken && (
+            <Link
+              to={paths.receipt(receiptToken)}
+              className="inline-flex h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-[14px] font-[550] text-primary-ink"
+            >
+              Ver comprovante <ChevronRight size={15} />
+            </Link>
+          )
+        }
+      >
+        Você arrematou este lote.
       </Notice>
     );
   }

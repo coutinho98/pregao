@@ -6,4 +6,5 @@ export const paths = {
   myBids: '/meus-arremates',
   office: '/escritorio',
   lot: (id: string) => `/lotes/${id}`,
+  receipt: (token: string) => `/r/${token}`,
 } as const;

@@ -87,6 +87,7 @@ export function LiveRoomPage() {
             standing={liveStanding(myPseudonym, history)}
             position={standing.data?.position ?? null}
             totalBidders={standing.data?.totalBidders ?? 0}
+            receiptToken={standing.data?.receiptToken ?? null}
           />
         </aside>
       </div>

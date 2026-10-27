@@ -20,6 +20,7 @@ interface BidBoxProps {
   standing: BidStanding;
   position: number | null;
   totalBidders: number;
+  receiptToken: string | null;
 }
 
 function amountLabel(phase: LotPhase, hasBids: boolean): string {
@@ -37,6 +38,7 @@ export function BidBox({
   standing,
   position,
   totalBidders,
+  receiptToken,
 }: BidBoxProps) {
   const bidders = new Set(bids.map((bid) => bid.bidderPseudonym)).size;
   const amount = lot.currentBidCents ?? lot.startingPriceCents;
@@ -92,6 +94,7 @@ export function BidBox({
         minNextBidCents={lot.minNextBidCents}
         minIncrementCents={lot.minIncrementCents}
         standing={standing}
+        receiptToken={receiptToken}
       />
     </div>
   );
