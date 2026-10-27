@@ -16,7 +16,7 @@ export function LotPlaque({ lotLabel, title, artist, status, className }: LotPla
   return (
     <div
       className={cn(
-        'inline-flex max-w-full flex-col rounded-xs bg-latao px-3 py-2 text-tinta',
+        'inline-flex max-w-full flex-col rounded-xs bg-latao px-3 py-2 text-sobre-latao',
         className,
       )}
     >

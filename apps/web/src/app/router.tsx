@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
       {
         path: paths.lot(':id'),
         lazy: async () => {
-          const { LotPage } = await import('@/features/lots/pages/lot-page');
-          return { element: <LotPage /> };
+          const { LiveRoomPage } = await import('@/features/live-room/pages/live-room-page');
+          return { element: <LiveRoomPage /> };
         },
       },
       {
