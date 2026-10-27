@@ -30,6 +30,14 @@ Lotes da demo: um em pregão por 30 dias já com lances, um que encerra em pouca
 um agendado, um arrematado com comprovante e um arrematado **adulterado de propósito**
 direto no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 
+**Veja a auditoria funcionando no deploy** (pública, sem login; a verificação roda no seu navegador):
+
+| Lote | Auditoria | Resultado esperado |
+|---|---|---|
+| 001 · Water Lilies (em pregão) | [abrir](https://pregao-m6sh.onrender.com/auditoria/ce88ba51-22cb-46a6-9f06-ed1a3953fb51) | Histórico íntegro |
+| 004 · Paris Street (arrematado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/7cd75e65-2532-4797-a439-ec4fa8f53d1c) | Íntegro, incluindo o comprovante |
+| 005 · Sainte-Adresse (adulterado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/9b4d1e5b-32d9-4103-834d-77dfb76dce6c) | Adulteração detectada no lance 2 |
+
 ## Stack
 
 - **API:** Node 22, NestJS, Prisma 7, PostgreSQL, Socket.IO. Documentação OpenAPI interativa com Scalar em `/docs`.
