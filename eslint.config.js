@@ -21,8 +21,13 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/api/**/*.ts'],
+    files: ['apps/api/**/*.{ts,mts}'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // Command-line scripts talk to the person running them through the terminal.
+    files: ['apps/api/scripts/**'],
+    rules: { 'no-console': 'off' },
   },
   {
     files: ['apps/web/**/*.{ts,tsx}'],

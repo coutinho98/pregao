@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "tamper:demo": "pnpm --filter @pregao/api tamper:demo"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

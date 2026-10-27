@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src", "test", "vitest.config.mts", "prisma.config.ts"]
+  "include": ["src", "test", "vitest.config.mts", "prisma.config.ts", "scripts"]
 }
