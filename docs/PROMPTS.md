@@ -12,7 +12,7 @@ Como usar:
 - Para o visual, instale também o Impeccable (citado no feedback da Verzel):
   `npx -y skills add pbakaus/impeccable --skill impeccable --agent claude-code`
   e use os comandos de crítica/polimento dele nas telas prontas, sempre respeitando
-  o DESIGN.md.
+  o `docs/DESIGN.md`.
 
 ---
 
@@ -36,7 +36,7 @@ auth com JWT (register/login/me) e papéis AUCTIONEER/BIDDER, guards por papel,
 Documentação da API com Scalar em /docs (spec gerado pelo @nestjs/swagger, sem Swagger UI),
 já documentando os endpoints de auth com DTOs e esquema Bearer.
 No front: login, cadastro, layout com navegação por papel e toggle de dark mode,
-seguindo os tokens de cor e tipografia do DESIGN.md.
+seguindo os tokens de cor e tipografia do `docs/DESIGN.md`.
 Ao final, me diga exatamente como fazer deploy da API no Render (ou Railway), do banco
 no Neon e do front na Vercel, incluindo variáveis de ambiente e CORS.
 ```

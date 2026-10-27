@@ -102,7 +102,7 @@ Deploy público é obrigatório. README detalhado é obrigatório.
 - Front refaz fetch completo ao reconectar.
 
 ## Design
-Toda tela segue o DESIGN.md (identidade "Salão de Pregão"). Leia antes de mexer no front.
+Toda tela segue o `docs/DESIGN.md` (identidade "Salão de Pregão"). Leia antes de mexer no front.
 
 ## Lições do teste anterior na Verzel (feedback real)
 Elogiado: UX real (toasts, feedback de ações, estados, menu mobile em sheet), vídeo

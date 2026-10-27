@@ -22,7 +22,7 @@ Baseado no PDF do desafio e no feedback real da Verzel num teste anterior.
   do deploy, para o avaliador reconhecer na hora que o pedido foi atendido.
 - **Organização do código.** Rodar a skill `cleanup-pass` no projeto inteiro antes
   de entregar.
-- **Visual com identidade própria.** Seguir o DESIGN.md. Nada de neobrutalismo
+- **Visual com identidade própria.** Seguir o `docs/DESIGN.md`. Nada de neobrutalismo
   ou visual de template.
 
 ## Roteiro do vídeo
