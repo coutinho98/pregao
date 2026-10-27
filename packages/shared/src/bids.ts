@@ -20,3 +20,22 @@ export interface PlaceBidResult {
   /** True when this bid triggered the anti-sniping extension. */
   extended: boolean;
 }
+
+export const BidStanding = {
+  WINNING: 'WINNING',
+  OUTBID: 'OUTBID',
+  NONE: 'NONE',
+} as const;
+
+export type BidStanding = (typeof BidStanding)[keyof typeof BidStanding];
+
+/** Where the authenticated user stands in one lot. Only the user sees their own standing. */
+export interface MyLotStanding {
+  /** The user's paddle number in this lot, so the room can show "Você". */
+  pseudonym: string;
+  standing: BidStanding;
+  /** 1-based rank among distinct bidders by their highest bid; null without bids. */
+  position: number | null;
+  totalBidders: number;
+  myHighestBidCents: number | null;
+}

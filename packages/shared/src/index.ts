@@ -7,4 +7,5 @@ export * from './lot-phase';
 export * from './lot-rules';
 export * from './lots';
 export * from './roles';
+export * from './socket-events';
 export * from './wallet';
