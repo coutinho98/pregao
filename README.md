@@ -41,6 +41,16 @@ pnpm dev                               # API em :3000, web em :5173
 | `pnpm test` | Testes unitários e de integração (a API usa o Postgres real em `TEST_DATABASE_URL`) |
 | `pnpm build` | Build de produção |
 
+## Imagem Docker da API
+
+`apps/api/Dockerfile` usa a raiz do repositório como contexto. Ao iniciar, o container
+aplica as migrations (`prisma migrate deploy`) e sobe a API na porta `PORT` (padrão 3000).
+
+```bash
+docker build -f apps/api/Dockerfile -t pregao-api .
+docker run -p 3000:3000 --env-file apps/api/.env pregao-api
+```
+
 ## Variáveis de ambiente
 
 Veja `apps/api/.env.example` e `apps/web/.env.example`.
