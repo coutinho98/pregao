@@ -47,14 +47,16 @@ export const router = createBrowserRouter([
       },
       {
         path: paths.wallet,
-        element: (
-          <RequireAuth roles={[Role.BIDDER]}>
-            <PlaceholderPage
-              title="Carteira"
-              description="Seu livro-caixa: saldo total, comprometido e disponível."
-            />
-          </RequireAuth>
-        ),
+        lazy: async () => {
+          const { WalletPage } = await import('@/features/wallet/pages/wallet-page');
+          return {
+            element: (
+              <RequireAuth roles={[Role.BIDDER]}>
+                <WalletPage />
+              </RequireAuth>
+            ),
+          };
+        },
       },
       {
         path: paths.myBids,

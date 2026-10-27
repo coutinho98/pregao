@@ -11,4 +11,9 @@ export const queryKeys = {
   catalog: {
     search: (q: string, page: number) => ['catalog', 'search', q, page] as const,
   },
+  wallet: {
+    all: ['wallet'] as const,
+    summary: ['wallet', 'summary'] as const,
+    ledger: ['wallet', 'ledger'] as const,
+  },
 };
