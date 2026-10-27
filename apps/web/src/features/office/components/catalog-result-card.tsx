@@ -1,6 +1,6 @@
 import type { CatalogItem } from '@pregao/shared';
 import { Check, Plus } from 'lucide-react';
-import { ArtworkTile } from '@/components/artwork/artwork-tile';
+import { ArtworkImage } from '@/components/artwork/artwork-image';
 import { cn } from '@/lib/cn';
 import { catalogThumbnailUrl } from '../api';
 
@@ -18,14 +18,20 @@ export function CatalogResultCard({ item, selected, onSelect }: CatalogResultCar
       aria-pressed={selected}
       className="group block w-full text-left"
     >
-      <ArtworkTile
+      <ArtworkImage
         src={catalogThumbnailUrl(item.externalId)}
         alt={item.altText ?? item.title}
         size="sm"
-        className={cn('transition-shadow', selected && 'shadow-[0_0_0_2px_var(--ink)]')}
         corner={selected ? <Check size={15} /> : <Plus size={15} />}
       />
-      <span className="mt-2 block truncate px-0.5 text-[13.5px] font-semibold">{item.title}</span>
+      <span
+        className={cn(
+          'mt-2 block truncate px-0.5 text-[13.5px] font-semibold underline-offset-4',
+          selected && 'underline decoration-2',
+        )}
+      >
+        {item.title}
+      </span>
       <span className="block truncate px-0.5 text-[12px] text-ink-3">
         {[item.artist, item.dateDisplay].filter(Boolean).join(', ')}
       </span>

@@ -1,6 +1,6 @@
 import { type CatalogItem, LotPhase } from '@pregao/shared';
 import { type Control, useWatch } from 'react-hook-form';
-import { ArtworkTile } from '@/components/artwork/artwork-tile';
+import { ArtworkImage } from '@/components/artwork/artwork-image';
 import { lotStatus } from '@/features/lots/lot-status';
 import { formatCents, parseBrlToCents } from '@/utils/money';
 import { catalogThumbnailUrl } from '../api';
@@ -28,7 +28,7 @@ export function LotPreview({ item, control }: LotPreviewProps) {
 
   return (
     <figure>
-      <ArtworkTile
+      <ArtworkImage
         src={catalogThumbnailUrl(item.externalId)}
         alt={item.altText ?? item.title}
         size="sm"

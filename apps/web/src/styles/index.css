@@ -17,9 +17,6 @@
   --up: #1f9d55;
   --danger: #d4402f;
   --gold: #b88600;
-  --gilt-light: #f3e2a6;
-  --gilt-dark: #7d5a00;
-  --mat-color: #f7f3e8;
 
   --elev-pill:
     0 1px 1px rgb(0 0 0 / 0.04), 0 4px 14px rgb(0 0 0 / 0.07), inset 0 0 0 1px rgb(0 0 0 / 0.04);
@@ -45,10 +42,7 @@
   --primary-ink: #0a0a0b;
   --up: #3ddc84;
   --danger: #ff6b5b;
-  --gold: #d4a72c;
-  --gilt-light: #f7df8e;
-  --gilt-dark: #6b4d00;
-  --mat-color: #ece6d4;
+  --gold: #f5c542;
 
   --elev-pill:
     0 1px 1px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.45),
@@ -137,32 +131,6 @@
   border-radius: 26px;
   background: var(--surface);
   box-shadow: var(--tile-highlight);
-}
-
-/* Classic gilded picture frame, drawn on the <img> itself so it follows each artwork's
-   proportions: a gradient gold moulding, a cream mat (padding) and a thin inner fillet.
-   Thickness comes from --frame and --mat, set per size. */
-@utility gilded-frame {
-  box-sizing: border-box;
-  border: var(--frame, 6px) solid transparent;
-  padding: var(--mat, 10px);
-  background:
-    linear-gradient(var(--mat-color), var(--mat-color)) padding-box,
-    linear-gradient(
-        135deg,
-        var(--gilt-light) 0%,
-        var(--gold) 26%,
-        var(--gilt-dark) 48%,
-        var(--gilt-light) 62%,
-        var(--gold) 80%,
-        var(--gilt-dark) 100%
-      )
-      border-box;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--gilt-dark) 70%, transparent),
-    inset 0 0 0 2px color-mix(in srgb, var(--gilt-light) 60%, transparent),
-    0 18px 30px -12px rgb(0 0 0 / 0.45),
-    0 3px 6px rgb(0 0 0 / 0.12);
 }
 
 /* Floating glass: dock, bid bar. */

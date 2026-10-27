@@ -2,7 +2,7 @@ import { Role } from '@pregao/shared';
 import { ChevronLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 import { paths } from '@/app/paths';
-import { ArtworkTile } from '@/components/artwork/artwork-tile';
+import { ArtworkImage } from '@/components/artwork/artwork-image';
 import { ErrorState } from '@/components/feedback/error-state';
 import { Page } from '@/components/layout/page';
 import { useSession } from '@/features/auth/hooks/use-session';
@@ -66,7 +66,7 @@ export function LiveRoomPage() {
       <BackToShowcase />
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(340px,1fr)] lg:gap-10">
         <div className="flex flex-col gap-8">
-          <ArtworkTile
+          <ArtworkImage
             src={apiUrl(lot.data.image.url)}
             alt={lot.data.image.altText ?? lot.data.title}
             size="lg"
