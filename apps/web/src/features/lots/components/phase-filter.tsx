@@ -1,43 +1,33 @@
-import { Link, useSearchParams } from 'react-router';
-import { cn } from '@/lib/cn';
-import { PHASE_PARAM, showcaseSections } from '../showcase-filters';
+import { useSearchParams } from 'react-router';
+import { Segmented } from '@/components/ui/segmented';
+import { ALL_SLUG, PHASE_PARAM, showcaseSections } from '../showcase-filters';
 
-const options = [{ slug: '', title: 'Todos' }, ...showcaseSections];
+const options = [
+  { value: ALL_SLUG, label: 'Todos' },
+  ...showcaseSections.map(({ slug, label }) => ({ value: slug, label })),
+];
 
+/** Phase filter kept in the URL (?fase=), so it survives reloads and can be shared. */
 export function PhaseFilter() {
-  const [searchParams] = useSearchParams();
-  const current = searchParams.get(PHASE_PARAM) ?? '';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const current = searchParams.get(PHASE_PARAM) ?? ALL_SLUG;
 
-  const hrefFor = (slug: string) => {
+  const select = (slug: string) => {
     const next = new URLSearchParams(searchParams);
-    if (slug) next.set(PHASE_PARAM, slug);
-    else next.delete(PHASE_PARAM);
-    return `?${next}`;
+    if (slug === ALL_SLUG) next.delete(PHASE_PARAM);
+    else next.set(PHASE_PARAM, slug);
+    setSearchParams(next, { replace: true });
   };
 
   return (
-    <nav aria-label="Filtrar por fase">
-      <ul className="flex flex-wrap items-center gap-x-1 font-label text-lg">
-        {options.map(({ slug, title }, index) => (
-          <li key={slug} className="flex items-center gap-x-1">
-            {index > 0 && (
-              <span aria-hidden="true" className="text-nevoa">
-                ·
-              </span>
-            )}
-            <Link
-              to={hrefFor(slug)}
-              aria-current={current === slug ? 'page' : undefined}
-              className={cn(
-                'px-1 font-semibold underline-offset-8 decoration-2 hover:underline',
-                current === slug ? 'underline decoration-latao' : 'text-nevoa-texto',
-              )}
-            >
-              {title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none]">
+      <Segmented
+        id="phase"
+        label="Filtrar por fase"
+        options={options}
+        value={current}
+        onChange={select}
+      />
+    </div>
   );
 }

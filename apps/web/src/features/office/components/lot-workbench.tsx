@@ -9,9 +9,9 @@ export function LotWorkbench() {
   const [selected, setSelected] = useState<CatalogItem | null>(null);
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_26rem]">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
       <CatalogBrowser selectedId={selected?.externalId ?? null} onSelect={setSelected} />
-      <aside className="lg:sticky lg:top-6 lg:self-start">
+      <aside className="lg:sticky lg:top-8 lg:self-start">
         {selected ? (
           <LotComposer key={selected.externalId} item={selected} onDone={() => setSelected(null)} />
         ) : (

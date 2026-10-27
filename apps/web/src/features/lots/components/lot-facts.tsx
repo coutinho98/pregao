@@ -17,11 +17,11 @@ const factLabels: { key: keyof ArtworkFacts; label: string }[] = [
 export function LotFacts({ lot }: { lot: ArtworkFacts }) {
   const facts = factLabels.filter(({ key }) => lot[key]);
   return (
-    <dl className="grid max-w-[70ch] grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+    <dl className="border-t border-line">
       {facts.map(({ key, label }) => (
-        <div key={key} className="contents">
-          <dt className="font-label text-base font-semibold text-nevoa-texto">{label}</dt>
-          <dd>{lot[key]}</dd>
+        <div key={key} className="flex justify-between gap-6 border-b border-line py-3 text-[14px]">
+          <dt className="shrink-0 text-ink-3">{label}</dt>
+          <dd className="text-right">{lot[key]}</dd>
         </div>
       ))}
     </dl>

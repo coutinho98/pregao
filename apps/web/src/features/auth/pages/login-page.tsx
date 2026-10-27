@@ -9,14 +9,14 @@ export function LoginPage() {
 
   return (
     <AuthFrame
-      title="Entrar no salão"
-      lead="Acompanhe os lotes em pregão, dê lances e guarde seus comprovantes de arremate."
+      title="Bem-vindo de volta."
+      lead="Entre para acompanhar os lotes em pregão, dar lances e guardar seus comprovantes."
       footer={
         <p>
           Ainda não tem conta?{' '}
           <Link
             to={registerLink}
-            className="font-semibold text-latao-texto underline underline-offset-4"
+            className="font-[560] text-ink underline-offset-4 hover:underline"
           >
             Cadastre-se
           </Link>

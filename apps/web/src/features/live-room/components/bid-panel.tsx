@@ -1,4 +1,5 @@
 import { BidStanding, LotPhase, Role } from '@pregao/shared';
+import { ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router';
 import { paths } from '@/app/paths';
@@ -14,8 +15,19 @@ interface BidPanelProps {
   standing: BidStanding;
 }
 
-/** What the visitor can do right now: bid, or why not, in the house's voice. */
-export function BidPanel({ lotId, phase, startsAt, minNextBidCents, standing }: BidPanelProps) {
+/**
+ * The floating bar at the bottom of the room: the bid field, or why the visitor
+ * cannot bid right now, in the house's voice.
+ */
+export function BidPanel(props: BidPanelProps) {
+  return (
+    <div className="fixed inset-x-3 bottom-[calc(14px+env(safe-area-inset-bottom))] z-50 mx-auto max-w-[480px]">
+      <BidPanelContent {...props} />
+    </div>
+  );
+}
+
+function BidPanelContent({ lotId, phase, startsAt, minNextBidCents, standing }: BidPanelProps) {
   const { user } = useSession();
   const location = useLocation();
 
@@ -33,14 +45,17 @@ export function BidPanel({ lotId, phase, startsAt, minNextBidCents, standing }: 
   if (!user) {
     const next = encodeURIComponent(location.pathname);
     return (
-      <Notice>
-        <Link
-          to={`${paths.login}?next=${next}`}
-          className="font-semibold text-latao underline underline-offset-4"
-        >
-          Entre como licitante
-        </Link>{' '}
-        para dar lances.
+      <Notice
+        action={
+          <Link
+            to={`${paths.login}?next=${next}`}
+            className="inline-flex h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-[14px] font-[550] text-primary-ink"
+          >
+            Entrar <ChevronRight size={15} />
+          </Link>
+        }
+      >
+        Entre como licitante para dar lances.
       </Notice>
     );
   }
@@ -53,6 +68,11 @@ export function BidPanel({ lotId, phase, startsAt, minNextBidCents, standing }: 
   return <BidForm key={minNextBidCents} lotId={lotId} minNextBidCents={minNextBidCents} />;
 }
 
-function Notice({ children }: { children: ReactNode }) {
-  return <p className="border-l-2 border-latao py-2 pl-4 text-lg">{children}</p>;
+function Notice({ children, action }: { children: ReactNode; action?: ReactNode }) {
+  return (
+    <div className="glass flex min-h-[58px] items-center gap-3 rounded-full py-1.5 pr-1.5 pl-5 text-[14px] text-ink-2">
+      <span className="grow">{children}</span>
+      {action}
+    </div>
+  );
 }

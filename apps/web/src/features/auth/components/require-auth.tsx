@@ -13,7 +13,8 @@ export function RequireAuth({ roles, children }: RequireAuthProps) {
   const { user, isLoading } = useSession();
   const location = useLocation();
 
-  if (isLoading) return <p className="px-4 py-10 text-nevoa-texto">Carregando sua conta…</p>;
+  if (isLoading)
+    return <p className="mx-auto max-w-[560px] px-5 py-10 text-ink-3">Carregando sua conta…</p>;
   if (!user) {
     const next = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`${paths.login}?next=${next}`} replace />;

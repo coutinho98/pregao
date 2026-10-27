@@ -27,36 +27,36 @@ export function DepositForm() {
   return (
     <form
       noValidate
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-3 rounded-[22px] bg-card p-4 shadow-card"
       onSubmit={handleSubmit(({ amount }) => deposit({ amountCents: amount }))}
     >
       <FormField
         id="amount"
-        label="Valor do depósito (R$)"
+        label="Quanto depositar (R$)"
         hint="Depósito simulado: nenhum dinheiro real é movimentado."
         error={error}
       >
         <Input
           inputMode="decimal"
           placeholder="5.000"
+          className="tabular text-[17px] font-semibold"
           {...fieldAria('amount', error)}
           {...register('amount')}
         />
       </FormField>
-      <div className="flex flex-wrap gap-2" aria-label="Valores sugeridos">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Valores sugeridos">
         {QUICK_AMOUNTS_CENTS.map((cents) => (
-          <Button
+          <button
             key={cents}
             type="button"
-            variant="outline"
-            size="sm"
             onClick={() => setValue('amount', String(cents / 100), { shouldValidate: true })}
+            className="tabular h-8 rounded-full bg-surface px-3 text-[12.5px] text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink"
           >
-            {formatCents(cents)}
-          </Button>
+            + {formatCents(cents)}
+          </button>
         ))}
       </div>
-      <Button type="submit" size="lg" disabled={isPending} className="self-start">
+      <Button type="submit" variant="primary" disabled={isPending} className="mt-1 w-full">
         {isPending ? 'Depositando…' : 'Depositar'}
       </Button>
     </form>

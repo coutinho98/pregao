@@ -1,44 +1,39 @@
 import { LotPhase, type LotSummary } from '@pregao/shared';
 import { formatWhen } from '@/utils/date';
-import { formatCents } from '@/utils/money';
 
-export interface PlaqueStatus {
-  /** The amount shown big on the plaque. */
+export type LotStatusKind = 'live' | 'scheduled' | 'ended' | 'hammered';
+
+export interface LotStatus {
+  /** What the amount means right now. */
   amountLabel: string;
   amountCents: number;
-  /** Short line under the amount, in the house's vocabulary. */
+  kind: LotStatusKind;
+  /** Short note in the house's vocabulary: "ao vivo · termina 17:30". */
   note: string;
-  live: boolean;
 }
 
-type PlaqueLot = Pick<
+type StatusLot = Pick<
   LotSummary,
   'phase' | 'startsAt' | 'endsAt' | 'startingPriceCents' | 'currentBidCents'
 >;
 
-export function plaqueStatus(lot: PlaqueLot, now: Date = new Date()): PlaqueStatus {
+export function lotStatus(lot: StatusLot, now: Date = new Date()): LotStatus {
   const opening = { amountLabel: 'Lance inicial', amountCents: lot.startingPriceCents };
 
   if (lot.phase === LotPhase.SCHEDULED) {
-    return { ...opening, note: `Abre ${formatWhen(lot.startsAt, now)}`, live: false };
+    return { ...opening, kind: 'scheduled', note: `abre ${formatWhen(lot.startsAt, now)}` };
   }
   if (lot.phase === LotPhase.LIVE) {
-    if (lot.currentBidCents === null) {
-      return { ...opening, note: `Em pregão · termina ${formatWhen(lot.endsAt, now)}`, live: true };
-    }
-    return {
-      amountLabel: 'Lance atual',
-      amountCents: lot.currentBidCents,
-      note: `Em pregão · termina ${formatWhen(lot.endsAt, now)}`,
-      live: true,
-    };
+    const note = `ao vivo · termina ${formatWhen(lot.endsAt, now)}`;
+    if (lot.currentBidCents === null) return { ...opening, kind: 'live', note };
+    return { amountLabel: 'Lance atual', amountCents: lot.currentBidCents, kind: 'live', note };
   }
   if (lot.currentBidCents === null)
-    return { ...opening, note: 'Encerrado sem lances', live: false };
+    return { ...opening, kind: 'ended', note: 'encerrado sem lances' };
   return {
-    amountLabel: 'Martelo batido',
+    amountLabel: 'Arrematado',
     amountCents: lot.currentBidCents,
-    note: `Arrematado por ${formatCents(lot.currentBidCents)}`,
-    live: false,
+    kind: 'hammered',
+    note: 'martelo batido',
   };
 }

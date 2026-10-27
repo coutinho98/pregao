@@ -1,0 +1,45 @@
+import type { LotSummary } from '@pregao/shared';
+import { ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router';
+import { paths } from '@/app/paths';
+import { ArtworkTile } from '@/components/artwork/artwork-tile';
+import { cn } from '@/lib/cn';
+import { apiUrl } from '@/lib/env';
+import { formatCents } from '@/utils/money';
+import { formatLotNumber } from '../format';
+import { lotStatus } from '../lot-status';
+
+export function LotCard({ lot, now }: { lot: LotSummary; now: Date }) {
+  const status = lotStatus(lot, now);
+  return (
+    <Link to={paths.lot(lot.id)} className="group block">
+      <ArtworkTile
+        src={apiUrl(lot.image.thumbnailUrl)}
+        alt={lot.image.altText ?? lot.title}
+        dimmed={status.kind === 'ended' || status.kind === 'hammered'}
+        corner={<ArrowUpRight size={16} />}
+      />
+      <div className="flex items-start justify-between gap-3 px-1 pt-3">
+        <div className="min-w-0">
+          <h3 className="truncate text-[14.5px] font-semibold tracking-[-0.005em]">{lot.title}</h3>
+          <p className="truncate text-[12.5px] text-ink-3">
+            {formatLotNumber(lot.number)}
+            {lot.artist && ` · ${lot.artist}`}
+          </p>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className="tabular text-[14px] font-medium">{formatCents(status.amountCents)}</p>
+          <p
+            className={cn(
+              'inline-flex items-center gap-1.5 text-[12px]',
+              status.kind === 'live' ? 'text-up' : 'text-ink-3',
+            )}
+          >
+            {status.kind === 'live' && <span className="live-dot" aria-hidden="true" />}
+            {status.note}
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+}

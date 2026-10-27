@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,15 @@ export function CatalogResults({
       </EmptyState>
     );
   }
-  if (search.isPending) return <p className="text-nevoa-texto">Consultando o acervo do museu…</p>;
+  if (search.isPending) {
+    return (
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3" aria-busy="true">
+        {[0, 1, 2].map((key) => (
+          <div key={key} className="tile h-[140px] rounded-[22px] motion-safe:animate-pulse" />
+        ))}
+      </div>
+    );
+  }
   if (search.isError) {
     return (
       <ErrorState message={errorMessage(search.error)} onRetry={() => void search.refetch()} />
@@ -38,7 +47,7 @@ export function CatalogResults({
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3">
         {items.map((item) => (
           <li key={item.externalId}>
             <CatalogResultCard
@@ -49,20 +58,27 @@ export function CatalogResults({
           </li>
         ))}
       </ul>
-      <nav aria-label="Páginas do acervo" className="flex items-center gap-3">
-        <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>
-          Anterior
+      <nav aria-label="Páginas do acervo" className="flex items-center justify-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Página anterior"
+          disabled={page <= 1}
+          onClick={() => onPage(page - 1)}
+        >
+          <ChevronLeft size={17} />
         </Button>
-        <span className="tabular font-label text-base">
-          Página {page} de {totalPages}
+        <span className="tabular text-[13px] text-ink-2">
+          {page} / {totalPages}
         </span>
         <Button
-          variant="outline"
-          size="sm"
+          variant="ghost"
+          size="icon"
+          aria-label="Próxima página"
           disabled={page >= totalPages}
           onClick={() => onPage(page + 1)}
         >
-          Próxima
+          <ChevronRight size={17} />
         </Button>
       </nav>
     </>

@@ -17,7 +17,7 @@ export function LoginForm() {
 
   return (
     <form
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
       noValidate
       onSubmit={handleSubmit((input) => login(input))}
     >
@@ -37,7 +37,7 @@ export function LoginForm() {
           {...register('password')}
         />
       </FormField>
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" variant="primary" disabled={isPending} className="mt-2 w-full">
         {isPending ? 'Entrando…' : 'Entrar'}
       </Button>
     </form>

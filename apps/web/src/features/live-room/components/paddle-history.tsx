@@ -1,5 +1,7 @@
 import type { PublicBid } from '@pregao/shared';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '@/lib/cn';
+import { EASE } from '@/lib/motion';
 import { formatClockTime } from '@/utils/date';
 import { formatCents } from '@/utils/money';
 import { paddleCode } from '../bid-history';
@@ -10,41 +12,48 @@ interface PaddleHistoryProps {
   myPseudonym: string | undefined;
 }
 
-/** "Raquetes levantadas": every bid, newest on top; the top one rises in when it arrives. */
+/** Every paddle raised in the lot, newest on top; a new one slides in. */
 export function PaddleHistory({ bids, myPseudonym }: PaddleHistoryProps) {
   if (bids.length === 0) {
     return (
-      <p className="text-nevoa-texto">
+      <p className="border-y border-line py-4 text-[14px] text-ink-3">
         Nenhuma raquete levantada ainda. O primeiro lance abre o pregão.
       </p>
     );
   }
   return (
-    <ol className="flex flex-col divide-y divide-sobre-parede/15">
-      {bids.map((bid, index) => {
-        const mine = bid.bidderPseudonym === myPseudonym;
-        return (
-          <li
-            key={bid.seq}
-            className={cn(
-              'grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 py-2',
-              index === 0 && 'animate-paddle-raise',
-              index > 0 && 'opacity-75',
-            )}
-          >
-            <Paddle pseudonym={bid.bidderPseudonym} size="sm" label={mine ? 'Você' : undefined} />
-            <span className="font-label text-lg font-semibold">
-              {mine ? 'Você' : paddleCode(bid.bidderPseudonym)}
-              <span className="tabular ml-3 font-serif text-sm font-normal text-nevoa-texto">
-                {formatClockTime(bid.createdAt)}
+    <ol className="border-t border-line">
+      <AnimatePresence initial={false}>
+        {bids.map((bid, index) => {
+          const mine = bid.bidderPseudonym === myPseudonym;
+          return (
+            <motion.li
+              key={bid.seq}
+              layout="position"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className={cn(
+                'flex items-center gap-3 border-b border-line py-2.5',
+                index > 0 && 'text-ink-2',
+              )}
+            >
+              <Paddle pseudonym={bid.bidderPseudonym} mine={mine} />
+              <span className="flex grow flex-col">
+                <b className={cn('text-[14.5px] font-[560]', index === 0 && 'text-ink')}>
+                  {mine ? 'Você' : `Licitante ${paddleCode(bid.bidderPseudonym)}`}
+                </b>
+                <small className="tabular text-[11.5px] text-ink-3">
+                  #{bid.seq} · {formatClockTime(bid.createdAt)}
+                </small>
               </span>
-            </span>
-            <span className="tabular font-display text-xl font-bold">
-              {formatCents(bid.amountCents)}
-            </span>
-          </li>
-        );
-      })}
+              <span className={cn('tabular text-[15px] font-medium', index === 0 && 'text-ink')}>
+                {formatCents(bid.amountCents)}
+              </span>
+            </motion.li>
+          );
+        })}
+      </AnimatePresence>
     </ol>
   );
 }

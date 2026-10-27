@@ -1,28 +1,28 @@
 import { Role } from '@pregao/shared';
-import type { ComponentType, ComponentProps } from 'react';
+import { Gavel } from 'lucide-react';
+import type { ComponentType } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { GavelIcon } from '@/components/icons/gavel-icon';
-import { PaddleIcon } from '@/components/icons/paddle-icon';
+import { PaddleMark } from '@/components/icons/paddle-mark';
 
 interface RoleOption {
   role: Role;
   title: string;
   description: string;
-  Icon: ComponentType<ComponentProps<'svg'>>;
+  Icon: ComponentType<{ className?: string }>;
 }
 
 const roleOptions: RoleOption[] = [
   {
     role: Role.BIDDER,
     title: 'Quero dar lances',
-    description: 'Deposite na carteira, levante a raquete e arremate obras.',
-    Icon: PaddleIcon,
+    description: 'Deposite na carteira e arremate obras.',
+    Icon: ({ className }) => <PaddleMark className={className} />,
   },
   {
     role: Role.AUCTIONEER,
-    title: 'Quero leiloar obras',
-    description: 'Monte lotes com obras do acervo e acompanhe os resultados.',
-    Icon: GavelIcon,
+    title: 'Quero leiloar',
+    description: 'Monte lotes com obras do acervo.',
+    Icon: ({ className }) => <Gavel className={className} strokeWidth={1.8} />,
   },
 ];
 
@@ -33,25 +33,25 @@ interface RoleChoiceProps {
 
 export function RoleChoice({ field, error }: RoleChoiceProps) {
   return (
-    <fieldset className="flex flex-col gap-2" aria-describedby={error ? 'role-error' : undefined}>
-      <legend className="mb-1.5 font-label text-lg font-semibold">Como você vai participar?</legend>
-      <div className="grid gap-3 sm:grid-cols-2">
+    <fieldset className="flex flex-col gap-1.5" aria-describedby={error ? 'role-error' : undefined}>
+      <legend className="mb-1.5 ml-1 text-[13px] font-medium text-ink-2">
+        Como você vai participar?
+      </legend>
+      <div className="grid grid-cols-2 gap-2">
         {roleOptions.map(({ role, title, description, Icon }) => (
           <label
             key={role}
-            className="flex cursor-pointer gap-3 rounded-xs border border-nevoa p-3 has-[:checked]:border-latao has-[:checked]:bg-latao/10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-latao"
+            className="flex cursor-pointer flex-col gap-2 rounded-[16px] bg-surface p-3.5 transition-[background-color,box-shadow] has-[:checked]:bg-card has-[:checked]:shadow-[0_0_0_2px_var(--ink)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ink"
           >
             <input type="radio" value={role} className="sr-only" {...field} />
-            <Icon className="mt-1 h-8 w-8 shrink-0 text-latao" />
-            <span className="flex flex-col">
-              <span className="font-label text-lg font-semibold">{title}</span>
-              <span className="text-sm text-nevoa-texto">{description}</span>
-            </span>
+            <Icon className="size-5 text-ink" />
+            <span className="text-[14.5px] font-semibold">{title}</span>
+            <span className="text-[12.5px] leading-snug text-ink-2">{description}</span>
           </label>
         ))}
       </div>
       {error && (
-        <p id="role-error" role="alert" className="text-sm text-lacre">
+        <p id="role-error" role="alert" className="ml-1 text-[12.5px] text-danger">
           {error}
         </p>
       )}

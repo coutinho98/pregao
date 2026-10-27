@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { formatCents } from '@/utils/money';
 import { usePlaceBid } from '../hooks/use-place-bid';
 import { type BidFormInput, type BidFormValues, bidSchema, centsToInput } from '../schemas';
@@ -28,30 +27,41 @@ export function BidForm({ lotId, minNextBidCents }: BidFormProps) {
   const message = errors.amount?.message ?? refusal;
 
   return (
-    <form
-      noValidate
-      onSubmit={handleSubmit(({ amount }) => placeBid(amount))}
-      className="flex flex-col gap-2"
-    >
-      <label htmlFor="bid-amount" className="font-label text-base font-semibold">
-        Seu lance (mínimo {formatCents(minNextBidCents)})
-      </label>
-      <div className="flex gap-2">
-        <Input
+    <form noValidate onSubmit={handleSubmit(({ amount }) => placeBid(amount))}>
+      <p
+        id="bid-message"
+        aria-live="polite"
+        className={
+          message
+            ? 'mb-2 px-3 text-[13px] font-medium text-danger'
+            : 'mb-2 px-3 text-[13px] text-ink-3'
+        }
+      >
+        {message ?? `Mínimo agora: ${formatCents(minNextBidCents)}`}
+      </p>
+      <div className="glass flex items-center gap-2 rounded-full p-1.5 pl-5">
+        <label htmlFor="bid-amount" className="tabular text-[15px] text-ink-3">
+          R$
+        </label>
+        <input
           id="bid-amount"
           inputMode="decimal"
-          className="h-14 bg-papel font-display text-2xl font-bold"
+          autoComplete="off"
           aria-invalid={message ? true : undefined}
           aria-describedby="bid-message"
+          className="tabular h-[46px] min-w-0 grow bg-transparent text-[19px] font-semibold outline-none"
           {...register('amount')}
         />
-        <Button type="submit" variant="brass" size="lg" disabled={isPending} className="shrink-0">
+        <Button
+          type="submit"
+          variant="primary"
+          size="pill"
+          disabled={isPending}
+          className="shrink-0"
+        >
           {isPending ? 'Enviando…' : 'Dar lance'}
         </Button>
       </div>
-      <p id="bid-message" aria-live="polite" className="min-h-6 text-base font-semibold text-lacre">
-        {message}
-      </p>
     </form>
   );
 }

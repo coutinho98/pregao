@@ -1,10 +1,10 @@
+import type { LotSummary } from '@pregao/shared';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { errorMessage } from '@/lib/errors';
 import { useLotPage } from '../hooks/use-lot-page';
 import type { ShowcaseSection } from '../showcase-filters';
-import { SalonWall } from './salon-wall';
-import { SalonWallSkeleton } from './salon-wall-skeleton';
+import { LotGrid, LotGridSkeleton } from './lot-grid';
 
 interface WallSectionProps {
   section: ShowcaseSection;
@@ -13,19 +13,17 @@ interface WallSectionProps {
 
 export function WallSection({ section, query }: WallSectionProps) {
   const { data, isPending, isError, error, refetch } = useLotPage(section.phase, query);
-  const headingId = `wall-${section.slug}`;
+  const headingId = `section-${section.slug}`;
 
   return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-6">
-      <h2 id={headingId} className="text-2xl">
-        {section.title}
-        {data && data.total > 0 && (
-          <span className="tabular ml-3 font-label text-lg font-semibold text-nevoa-texto">
-            {data.total}
-          </span>
-        )}
-      </h2>
-      <WallContent
+    <section aria-labelledby={headingId}>
+      <div className="mb-3 flex items-baseline justify-between px-1 text-[13px] font-medium text-ink-3">
+        <h2 id={headingId} className="text-[13px] font-medium tracking-normal">
+          {section.title}
+        </h2>
+        {data && data.total > 0 && <span className="tabular">{data.total}</span>}
+      </div>
+      <SectionContent
         isPending={isPending}
         error={isError ? errorMessage(error) : null}
         onRetry={() => void refetch()}
@@ -36,17 +34,17 @@ export function WallSection({ section, query }: WallSectionProps) {
   );
 }
 
-interface WallContentProps {
+interface SectionContentProps {
   isPending: boolean;
   error: string | null;
   onRetry: () => void;
   empty: string;
-  lots: Parameters<typeof SalonWall>[0]['lots'];
+  lots: LotSummary[];
 }
 
-function WallContent({ isPending, error, onRetry, empty, lots }: WallContentProps) {
-  if (isPending) return <SalonWallSkeleton />;
+function SectionContent({ isPending, error, onRetry, empty, lots }: SectionContentProps) {
+  if (isPending) return <LotGridSkeleton />;
   if (error) return <ErrorState message={error} onRetry={onRetry} />;
   if (lots.length === 0) return <EmptyState>{empty}</EmptyState>;
-  return <SalonWall lots={lots} />;
+  return <LotGrid lots={lots} />;
 }

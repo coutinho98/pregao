@@ -3,33 +3,27 @@ import { paddleCode } from '../bid-history';
 
 interface PaddleProps {
   pseudonym: string;
-  label?: string;
-  size?: 'sm' | 'lg';
+  mine?: boolean;
   className?: string;
 }
 
-/** The numbered bidder paddle: the only identity a bidder has in the room. */
-export function Paddle({ pseudonym, label, size = 'lg', className }: PaddleProps) {
-  const large = size === 'lg';
+/** A bidder's paddle, as a small mono object: the only identity a bidder has in the room. */
+export function Paddle({ pseudonym, mine = false, className }: PaddleProps) {
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center',
-        large && 'drop-shadow-[0_8px_14px_rgb(0_0_0/0.35)]',
-        className,
-      )}
-      aria-label={label ?? pseudonym}
+    <span
       role="img"
+      aria-label={mine ? 'Você' : pseudonym}
+      className={cn('inline-flex flex-col items-center', className)}
     >
-      <div
+      <span
         className={cn(
-          'flex items-center justify-center rounded-full bg-latao font-display font-bold text-sobre-latao',
-          large ? 'h-20 w-20 text-lg' : 'h-9 w-9 text-[0.6rem]',
+          'grid size-8 place-items-center rounded-full font-mono text-[8.5px] font-bold tracking-tight',
+          mine ? 'bg-ink text-bg' : 'bg-chip text-ink-2',
         )}
       >
-        {label ?? paddleCode(pseudonym)}
-      </div>
-      <div className={cn('rounded-b-xs bg-latao/80', large ? 'h-9 w-3' : 'h-3 w-1.5')} />
-    </div>
+        {mine ? 'você' : paddleCode(pseudonym).slice(1, 5)}
+      </span>
+      <span className={cn('h-2 w-1 rounded-b-[2px]', mine ? 'bg-ink' : 'bg-chip')} />
+    </span>
   );
 }

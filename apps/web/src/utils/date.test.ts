@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { formatCountdown, formatDayTime, formatWhen } from './date';
+import { formatCountdown, formatDayTime, formatWhen, greeting } from './date';
+
+describe('greeting', () => {
+  it.each([
+    ['2026-10-28T06:00:00Z', 'Boa madrugada'],
+    ['2026-10-28T12:00:00Z', 'Bom dia'],
+    ['2026-10-28T18:00:00Z', 'Boa tarde'],
+    ['2026-10-28T23:00:00Z', 'Boa noite'],
+  ])('greets %s (UTC) as %s in Brasília', (iso, expected) => {
+    expect(greeting(new Date(iso))).toBe(expected);
+  });
+});
 
 describe('date formatting (America/Sao_Paulo)', () => {
   it('formats day and time in Brasília time', () => {

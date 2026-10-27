@@ -20,6 +20,21 @@ const timeWithSeconds = new Intl.DateTimeFormat('pt-BR', {
   second: '2-digit',
 });
 
+const hourOfDay = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: TIME_ZONE,
+  hour: 'numeric',
+  hourCycle: 'h23',
+});
+
+/** "Bom dia", "Boa tarde"… by the hour in Brasília. */
+export function greeting(now: Date = new Date()): string {
+  const hour = Number(hourOfDay.format(now));
+  if (hour < 5) return 'Boa madrugada';
+  if (hour < 12) return 'Bom dia';
+  if (hour < 18) return 'Boa tarde';
+  return 'Boa noite';
+}
+
 /** "19:02:41" in Brasília time, for bid timestamps. */
 export function formatClockTime(value: string | Date): string {
   return timeWithSeconds.format(new Date(value));
