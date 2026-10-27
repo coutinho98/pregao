@@ -6,6 +6,16 @@ e histórico de lances à prova de adulteração. Teste técnico Elite Dev (Verz
 > README em construção. A versão completa (deploy, decisões técnicas, auditoria e
 > limitações) chega ao fim do projeto.
 
+## Deploy
+
+| | URL |
+|---|---|
+| Aplicação | https://pregao-m6sh.onrender.com |
+| API | https://api.168.138.151.55.sslip.io |
+| Documentação da API (Scalar) | https://api.168.138.151.55.sslip.io/docs |
+
+Front como Static Site no Render; API e PostgreSQL numa VPS com Dokploy (imagem de `apps/api/Dockerfile`).
+
 ## Stack
 
 - **API:** Node 22, NestJS, Prisma 7, PostgreSQL. Documentação OpenAPI interativa com Scalar em `/docs`.
