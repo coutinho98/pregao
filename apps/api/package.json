@@ -13,7 +13,10 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "postinstall": "prisma generate",
-    "tamper:demo": "node --experimental-strip-types --no-warnings scripts/tamper-demo.mts"
+    "tamper:demo": "node --experimental-strip-types --no-warnings scripts/tamper-demo.mts",
+    "db:seed": "node dist/seed/run.js",
+    "seed:reset": "node dist/seed/run.js --reset",
+    "start:demo": "prisma migrate deploy && node dist/seed/run.js --if-empty && node dist/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^12.2.0",

@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   Max,
@@ -47,6 +48,11 @@ export class Env {
   @IsInt()
   @Min(0)
   SETTLEMENT_INTERVAL_MS: number = 5_000;
+
+  /** Folder with artworks.json + images: when set, the catalog works offline from it. */
+  @IsOptional()
+  @IsString()
+  CATALOG_FIXTURES_DIR?: string;
 }
 
 export function validateEnv(raw: Record<string, unknown>): Env {

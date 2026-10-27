@@ -34,8 +34,9 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 export class RealtimeGateway implements OnGatewayConnection {
   private readonly logger = new Logger(RealtimeGateway.name);
 
+  /** Undefined in scripts that boot the app without an HTTP server (e.g. the seed). */
   @WebSocketServer()
-  private readonly server: Server<ClientToServerEvents, ServerToClientEvents>;
+  private readonly server?: Server<ClientToServerEvents, ServerToClientEvents>;
 
   constructor(
     private readonly jwt: JwtService,
@@ -68,18 +69,18 @@ export class RealtimeGateway implements OnGatewayConnection {
   }
 
   publishBid(payload: BidNewPayload): void {
-    this.server.to(lotRoom(payload.lotId)).emit(SocketEvent.BID_NEW, payload);
+    this.server?.to(lotRoom(payload.lotId)).emit(SocketEvent.BID_NEW, payload);
   }
 
   publishExtension(payload: LotExtendedPayload): void {
-    this.server.to(lotRoom(payload.lotId)).emit(SocketEvent.LOT_EXTENDED, payload);
+    this.server?.to(lotRoom(payload.lotId)).emit(SocketEvent.LOT_EXTENDED, payload);
   }
 
   publishClosed(payload: LotClosedPayload): void {
-    this.server.to(lotRoom(payload.lotId)).emit(SocketEvent.LOT_CLOSED, payload);
+    this.server?.to(lotRoom(payload.lotId)).emit(SocketEvent.LOT_CLOSED, payload);
   }
 
   notifyOutbid(userId: string, payload: YouOutbidPayload): void {
-    this.server.to(userRoom(userId)).emit(SocketEvent.YOU_OUTBID, payload);
+    this.server?.to(userRoom(userId)).emit(SocketEvent.YOU_OUTBID, payload);
   }
 }

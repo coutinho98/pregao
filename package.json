@@ -12,7 +12,8 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "format": "prettier --write .",
-    "tamper:demo": "pnpm --filter @pregao/api tamper:demo"
+    "tamper:demo": "pnpm --filter @pregao/api tamper:demo",
+    "seed:reset": "pnpm --filter @pregao/api build && pnpm --filter @pregao/api seed:reset"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
