@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { LotStatus, type Bid, type Lot, type Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
+import { lockLotRow } from '../../common/prisma/row-locks.js';
 import type { Tx } from '../../common/prisma/transaction-runner.js';
 
 @Injectable()
@@ -22,10 +23,8 @@ export class SettlementRepository {
     return id ? tx.lot.findUnique({ where: { id } }) : null;
   }
 
-  /** Waits for the lot's row lock: used when a reader needs this lot settled now. */
-  async lockLot(tx: Tx, lotId: string): Promise<Lot | null> {
-    await tx.$queryRaw`SELECT id FROM lots WHERE id = ${lotId}::uuid FOR UPDATE`;
-    return tx.lot.findUnique({ where: { id: lotId } });
+  lockLot(tx: Tx, lotId: string): Promise<Lot | null> {
+    return lockLotRow(tx, lotId);
   }
 
   /** Ids of ended lots still waiting for settlement, among the ones matching `where`. */
