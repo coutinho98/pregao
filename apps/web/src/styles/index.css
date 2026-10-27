@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/* Tokens do DESIGN.md ("Salão de Pregão"). Variantes *-texto existem para manter
+   contraste AA quando a cor é usada como texto sobre --papel. */
+:root {
+  --parede: #23392f;
+  --papel: #f1f3ee;
+  --tinta: #17201b;
+  --latao: #b08d3c;
+  --lacre: #9e2a2b;
+  --selo: #3f7d5c;
+  --nevoa: #8a958e;
+
+  --nevoa-texto: #5b6660;
+  --latao-texto: #7a5f1f;
+  --selo-texto: #356b4e;
+  --sobre-parede: #f1f3ee;
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --parede: #1a2a23;
+  --papel: #111814;
+  --tinta: #e6eae4;
+  --lacre: #d9665c;
+  --selo: #5fa37d;
+
+  --nevoa-texto: #8a958e;
+  --latao-texto: #b08d3c;
+  --selo-texto: #5fa37d;
+  --sobre-parede: #e6eae4;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-parede: var(--parede);
+  --color-papel: var(--papel);
+  --color-tinta: var(--tinta);
+  --color-latao: var(--latao);
+  --color-lacre: var(--lacre);
+  --color-selo: var(--selo);
+  --color-nevoa: var(--nevoa);
+  --color-nevoa-texto: var(--nevoa-texto);
+  --color-latao-texto: var(--latao-texto);
+  --color-selo-texto: var(--selo-texto);
+  --color-sobre-parede: var(--sobre-parede);
+
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --font-label: 'Big Shoulders Text', 'Arial Narrow', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* Escala 1.333 a partir de 16px. */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.3125rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.3125rem;
+  --text-3xl: 3.125rem;
+  --text-4xl: 4.1875rem;
+  --text-5xl: 5.5625rem;
+
+  --radius-xs: 2px;
+}
+
+@layer base {
+  body {
+    background-color: var(--papel);
+    color: var(--tinta);
+    font-family: var(--font-serif);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--latao);
+    outline-offset: 2px;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
