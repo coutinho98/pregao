@@ -65,8 +65,9 @@ Deploy público é obrigatório. README detalhado é obrigatório.
   Falha → erro amigável `EXTERNAL_API_UNAVAILABLE`, app continua funcionando.
 
 ### Detalhes da API do Art Institute of Chicago
-- Base: `https://api.artic.edu/api/v1`. Busca: `GET /artworks/search?q=...`
-  sempre com `fields=` (ex.: `id,title,artist_title,date_display,medium_display,
+- Base: `https://api.artic.edu/api/v1`. Busca: `POST /artworks/search` com uma query
+  Elasticsearch que exige todas as palavras (o `q` simples só ordena e devolve o acervo
+  inteiro; ver README), sempre com `fields` (ex.: `id,title,artist_title,date_display,medium_display,
   dimensions,place_of_origin,image_id,is_public_domain`) para respostas leves.
 - Só obras em domínio público: `query[term][is_public_domain]=true`
   (licenciamento; citar no README). Descartar resultados com `image_id` nulo.
