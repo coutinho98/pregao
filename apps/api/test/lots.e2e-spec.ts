@@ -199,6 +199,9 @@ describe('Lots (e2e)', () => {
     expect(image.body.toString()).toBe('full:1');
     const thumbnail = await http().get(lot.body.image.thumbnailUrl).expect(200);
     expect(thumbnail.body.toString()).toBe('thumb:1');
+    // Served to the front on another origin, with the usual security headers.
+    expect(thumbnail.headers['cross-origin-resource-policy']).toBe('cross-origin');
+    expect(thumbnail.headers['x-content-type-options']).toBe('nosniff');
 
     const search = await http()
       .get('/catalog/search')
