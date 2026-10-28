@@ -1,6 +1,7 @@
 import type { LotDetail, PublicBid } from '@pregao/shared';
 import { useState } from 'react';
 import { Segmented } from '@/components/ui/segmented';
+import { useHeldHeight } from '@/lib/use-held-height';
 import { LotFacts } from '@/features/lots/components/lot-facts';
 import { PaddleHistory } from './paddle-history';
 
@@ -12,9 +13,10 @@ interface RoomTabsProps {
   myPseudonym: string | undefined;
 }
 
-/** Under the artwork: the bid history or the catalogue entry. */
+/** Under the artwork: the catalogue entry first, then the bid history. */
 export function RoomTabs({ lot, bids, myPseudonym }: RoomTabsProps) {
-  const [tab, setTab] = useState<Tab>('bids');
+  const [tab, setTab] = useState<Tab>('about');
+  const { contentRef, minHeight } = useHeldHeight<HTMLDivElement>(lot.id);
   return (
     <section className="flex flex-col gap-4">
       <Segmented<Tab>
@@ -23,6 +25,7 @@ export function RoomTabs({ lot, bids, myPseudonym }: RoomTabsProps) {
         value={tab}
         onChange={setTab}
         options={[
+          { value: 'about', label: 'Sobre a obra' },
           {
             value: 'bids',
             label: (
@@ -31,23 +34,27 @@ export function RoomTabs({ lot, bids, myPseudonym }: RoomTabsProps) {
               </>
             ),
           },
-          { value: 'about', label: 'Sobre a obra' },
         ]}
       />
-      {tab === 'bids' && <PaddleHistory bids={bids} myPseudonym={myPseudonym} />}
-      {tab === 'about' && (
-        <div>
-          <LotFacts lot={lot} />
-          <a
-            href={lot.sourceUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-block px-1 text-[13.5px] text-ink-2 underline-offset-4 hover:text-ink hover:underline"
-          >
-            Ver no Art Institute of Chicago ↗
-          </a>
+      {/* Switching tabs never shortens the page, so it stays where the visitor scrolled. */}
+      <div style={{ minHeight }}>
+        <div ref={contentRef}>
+          {tab === 'bids' && <PaddleHistory bids={bids} myPseudonym={myPseudonym} />}
+          {tab === 'about' && (
+            <div>
+              <LotFacts lot={lot} />
+              <a
+                href={lot.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block px-1 text-[13.5px] text-ink-2 underline-offset-4 hover:text-ink hover:underline"
+              >
+                Ver no Art Institute of Chicago ↗
+              </a>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </section>
   );
 }
