@@ -1,8 +1,9 @@
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Volume2, VolumeX } from 'lucide-react';
 import { Link } from 'react-router';
 import { paths } from '@/app/paths';
 import { AccountMenu } from '@/features/auth/components/account-menu';
 import { useSession } from '@/features/auth/hooks/use-session';
+import { useSoundSetting } from '@/lib/sound';
 import { useTheme } from '@/lib/theme';
 import { PaddleMark } from '../icons/paddle-mark';
 import { Button } from '../ui/button';
@@ -15,10 +16,27 @@ export function TopBar() {
         <span className="font-mono text-[14px] font-bold tracking-[0.08em]">PREGÃO</span>
       </Link>
       <div className="flex items-center gap-1">
+        <SoundButton />
         <ThemeButton />
         <AccountActions />
       </div>
     </header>
+  );
+}
+
+function SoundButton() {
+  const { soundOn, toggleSound } = useSoundSetting();
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggleSound}
+      aria-pressed={soundOn}
+      aria-label="Sons dos lances"
+      title={soundOn ? 'Silenciar sons dos lances' : 'Ativar sons dos lances'}
+    >
+      {soundOn ? <Volume2 size={17} /> : <VolumeX size={17} />}
+    </Button>
   );
 }
 

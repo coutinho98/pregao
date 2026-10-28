@@ -4,6 +4,7 @@ import {
   type LotClosedPayload,
   type LotDetail,
   type LotExtendedPayload,
+  type MyLotStanding,
   type PublicBid,
   SocketEvent,
 } from '@pregao/shared';
@@ -12,7 +13,9 @@ import { useEffect, useState } from 'react';
 import { queryKeys } from '@/lib/query-keys';
 import { syncServerClock } from '@/lib/server-clock';
 import { getSocket } from '@/lib/socket';
+import { playSound } from '@/lib/sound';
 import { withBid } from '../bid-history';
+import { ticksForRoomBid } from '../bid-sounds';
 
 /**
  * Joins the lot's room and keeps the TanStack Query cache in step with the server.
@@ -48,6 +51,13 @@ export function useLotRoom(lotId: string): { extendedAt: Date | null } {
     const onBid = (payload: BidNewPayload) => {
       if (payload.lotId !== lotId) return;
       syncServerClock(payload.serverNow);
+      const tick = ticksForRoomBid({
+        bidder: payload.bid.bidderPseudonym,
+        previousLeader: queryClient.getQueryData<PublicBid[]>(queryKeys.lots.bids(lotId))?.[0]
+          ?.bidderPseudonym,
+        me: queryClient.getQueryData<MyLotStanding>(queryKeys.lots.standing(lotId))?.pseudonym,
+      });
+      if (tick) playSound('bid');
       updateLot({
         currentBidCents: payload.currentBidCents,
         minNextBidCents: payload.minNextBidCents,

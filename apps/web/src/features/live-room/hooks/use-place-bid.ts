@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { queryKeys } from '@/lib/query-keys';
 import { syncServerClock } from '@/lib/server-clock';
+import { playSound } from '@/lib/sound';
 import { formatCents } from '@/utils/money';
 import { placeBid } from '../api';
 import { withBid } from '../bid-history';
@@ -26,6 +27,7 @@ export function usePlaceBid(lotId: string) {
       void queryClient.invalidateQueries({ queryKey: queryKeys.lots.standing(lotId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.wallet.all });
       toast.success(`Lance de ${formatCents(bid.amountCents)} aceito. Você está ganhando.`);
+      playSound('myBid');
     },
     // A refusal usually means the room was behind (someone bid first): catch up.
     onError: refreshRoom,

@@ -7,6 +7,7 @@ import { paths } from '@/app/paths';
 import { formatLotNumber } from '@/features/lots/format';
 import { queryKeys } from '@/lib/query-keys';
 import { getSocket } from '@/lib/socket';
+import { playSound } from '@/lib/sound';
 import { formatCents } from '@/utils/money';
 
 /** Wherever the bidder is in the app, tells them right away when they lose the lead. */
@@ -19,6 +20,7 @@ export function useOutbidAlerts(): void {
     const onOutbid = (payload: YouOutbidPayload) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.lots.standing(payload.lotId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.wallet.all });
+      playSound('outbid');
       toast.error(`Você foi superado no ${formatLotNumber(payload.lotNumber)}, ${payload.title}.`, {
         description: `O lance mínimo agora é ${formatCents(payload.minNextBidCents)}.`,
         action: { label: 'Ver lote', onClick: () => navigate(paths.lot(payload.lotId)) },
