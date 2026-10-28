@@ -19,7 +19,6 @@
   --gold: #7f5c00;
   /* Warm accent reserved for keyboard focus, so it always stands out from the neutrals. */
   --focus: #fc6401;
-  --grain-opacity: 0.32;
 
   --elev-pill:
     0 1px 1px rgb(0 0 0 / 0.04), 0 4px 14px rgb(0 0 0 / 0.07), inset 0 0 0 1px rgb(0 0 0 / 0.04);
@@ -46,7 +45,6 @@
   --up: #3ddc84;
   --danger: #ff6b5b;
   --gold: #f5c542;
-  --grain-opacity: 0.12;
 
   --elev-pill:
     0 1px 1px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.45),
@@ -144,27 +142,6 @@
   :focus-visible {
     outline: 2px solid var(--focus, #fc6401);
     outline-offset: 2px;
-  }
-
-  /* Paper grain over the whole page: fractal noise, generated, no image to download. */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: var(--grain-opacity);
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  [data-theme='dark'] body::before {
-    mix-blend-mode: screen;
-  }
-
-  #root {
-    position: relative;
-    z-index: 1;
   }
 }
 
