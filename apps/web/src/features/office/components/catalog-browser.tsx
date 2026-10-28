@@ -23,6 +23,9 @@ export interface CatalogSelection {
  */
 const SEARCH_DELAY_MS = 500;
 
+/** Shown before anything is typed, so the page opens on works to pick from, not an empty box. */
+const FEATURED_QUERY = 'impressionism';
+
 /** Searches the museum's public-domain collection as the auctioneer types. Query and page live in the URL. */
 export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +35,9 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
     resets: [PAGE_PARAM],
   });
   const page = Math.max(1, Number(searchParams.get(PAGE_PARAM)) || 1);
-  const search = useCatalogSearch(query, page);
+  const searching = query.length >= MIN_CATALOG_QUERY_LENGTH;
+  const shownQuery = searching ? query : FEATURED_QUERY;
+  const search = useCatalogSearch(shownQuery, page);
 
   const goToPage = (nextPage: number) => {
     const next = new URLSearchParams(searchParams);
@@ -76,17 +81,21 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
           Buscar
         </Button>
       </form>
-      {query.length < MIN_CATALOG_QUERY_LENGTH ? (
-        <SearchSuggestions onPick={apply} />
-      ) : (
-        <CatalogResults
-          query={query}
-          search={search}
-          selectedId={selectedId}
-          onSelect={onSelect}
-          onPage={goToPage}
-        />
+      {!searching && (
+        <>
+          <SearchSuggestions onPick={apply} />
+          <h3 className="mt-2 px-1 text-[13.5px] font-medium text-ink">
+            Destaques do acervo · impressionistas
+          </h3>
+        </>
       )}
+      <CatalogResults
+        query={shownQuery}
+        search={search}
+        selectedId={selectedId}
+        onSelect={onSelect}
+        onPage={goToPage}
+      />
     </section>
   );
 }
