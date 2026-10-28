@@ -136,6 +136,11 @@
       animation: none;
       mix-blend-mode: normal;
     }
+
+    /* Hidden until the wash takes over, or it would flash in full for a frame first. */
+    ::view-transition-new(root) {
+      opacity: 0;
+    }
   }
 
   /* No single word stranded on the last line of a paragraph. */

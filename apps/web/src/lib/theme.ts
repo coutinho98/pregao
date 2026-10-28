@@ -39,20 +39,31 @@ function toggleTheme(origin?: WashOrigin): void {
     return;
   }
   const root = document.documentElement;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Shaped before the switch, not once the snapshot is up: the new page stays hidden
+  // (index.css) until the wash plays, so it never shows in full before the wash starts.
+  const wash = reducedMotion
+    ? undefined
+    : watercolorKeyframes(
+        origin ?? { x: innerWidth / 2, y: innerHeight / 2 },
+        innerWidth,
+        innerHeight,
+      );
+
   // Colours change at once while the wash runs: the wash is the transition.
   root.dataset.themeSwitching = '';
   const transition = document.startViewTransition(() => flushSync(() => applyTheme(next)));
   void transition.finished.finally(() => delete root.dataset.themeSwitching);
 
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const from = origin ?? { x: innerWidth / 2, y: innerHeight / 2 };
+  if (!wash) return;
   void transition.ready
     .then(() => {
       root.animate(
-        { ...watercolorKeyframes(from, innerWidth, innerHeight) },
+        { ...wash },
         {
           duration: WASH_MS,
           easing: 'linear',
+          fill: 'both',
           pseudoElement: '::view-transition-new(root)',
         },
       );
