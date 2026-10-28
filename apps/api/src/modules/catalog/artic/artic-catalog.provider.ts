@@ -10,6 +10,7 @@ import {
   type ArticSearchResponse,
   toCatalogItem,
 } from './artic.mapper.js';
+import { articSearchBody } from './artic-search.js';
 
 const API_BASE_URL = 'https://api.artic.edu/api/v1';
 const REQUEST_TIMEOUT_MS = 5_000;
@@ -28,14 +29,13 @@ export class ArticCatalogProvider implements CatalogProvider {
   }
 
   async search(query: string, page: number): Promise<CatalogSearchResult> {
-    const params = new URLSearchParams({
-      q: query,
-      page: String(page),
-      limit: String(SEARCH_PAGE_SIZE),
-      fields: ARTIC_FIELDS,
-      'query[term][is_public_domain]': 'true',
+    const response = await this.request(`${API_BASE_URL}/artworks/search`, {
+      init: {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(articSearchBody(query, page, SEARCH_PAGE_SIZE)),
+      },
     });
-    const response = await this.request(`${API_BASE_URL}/artworks/search?${params}`);
     const body = (await response.json()) as ArticSearchResponse;
     return {
       items: body.data.flatMap((artwork) => toCatalogItem(artwork, body.config) ?? []),
@@ -71,11 +71,15 @@ export class ArticCatalogProvider implements CatalogProvider {
     return Buffer.from(await response.arrayBuffer());
   }
 
-  private async request(url: string, { allowNotFound = false } = {}): Promise<Response> {
+  private async request(
+    url: string,
+    { allowNotFound = false, init = {} }: { allowNotFound?: boolean; init?: RequestInit } = {},
+  ): Promise<Response> {
     let response: Response;
     try {
       response = await fetch(url, {
-        headers: this.headers,
+        ...init,
+        headers: { ...this.headers, ...(init.headers as Record<string, string> | undefined) },
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });
     } catch (error) {
