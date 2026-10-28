@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DEMO_ACCOUNTS, DEMO_PASSWORD } from '@pregao/shared';
 import { resolve } from 'node:path';
 import { AppModule } from '../app.module.js';
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from '@pregao/shared';
 import { DemoSeed } from './demo-seed.js';
 
 /**
