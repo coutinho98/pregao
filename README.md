@@ -34,11 +34,11 @@ Front como Static Site no Render; API e PostgreSQL numa VPS com Dokploy (imagem 
 
 Criadas pelo seed. Senha de todas: `pregao123`.
 
-| Papel | E-mail | |
-|---|---|---|
-| Leiloeiro | `leiloeiro@pregao.dev` | dono de todos os lotes da demo |
-| Licitante | `ana@pregao.dev` | R$ 50.000 depositados |
-| Licitante | `bruno@pregao.dev` | R$ 50.000 depositados |
+| Papel | Nome | E-mail | |
+|---|---|---|---|
+| Leiloeiro | Casa Verzeilão | `leiloeiro@pregao.dev` | dono de todos os lotes da demo |
+| Licitante | Ana Martelinho | `ana@pregao.dev` | R$ 50.000 depositados |
+| Licitante | Bruno Dou-lhe-uma | `bruno@pregao.dev` | R$ 50.000 depositados |
 
 Não precisa digitar nada: a página de login lista as três contas e entra em qualquer uma com
 um clique. O topo mostra sempre quem está logado e se é leiloeiro ou licitante.
@@ -68,9 +68,11 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 
 | Lote | Auditoria | Resultado esperado |
 |---|---|---|
-| 001 · Water Lilies (em pregão) | [abrir](https://pregao-m6sh.onrender.com/auditoria/1657c1d3-fb16-46d4-a308-9567258a1987) | Histórico íntegro |
-| 004 · Paris Street (arrematado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/219913ff-569d-4ac7-9253-49d2547e4a5e) | Íntegro, incluindo o comprovante |
-| 005 · Sainte-Adresse (adulterado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/61674add-db56-4ad3-a6ee-f74c7b021a7d) | Adulteração detectada no lance 2 |
+| 001 · Water Lilies (em pregão) | [abrir](https://pregao-m6sh.onrender.com/auditoria/05990470-a06e-4418-a0ed-a330a0c6605a) | Histórico íntegro |
+| 004 · Paris Street (arrematado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/c64b8434-a251-4a95-bee3-7e0dc8f9f90b) | Íntegro, incluindo o comprovante |
+| 005 · Sainte-Adresse (valor alterado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/8800d924-e94c-46cc-8fdd-ac7e5c2cb326) | `BID_ALTERED` no lance 2 |
+| 025 · At the Moulin Rouge (lance apagado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/24821665-b6a0-410a-b011-9bea8eab8026) | `BID_MISSING`: "Lance 2 · ausente" |
+| 026 · Stacks of Wheat (comprovante forjado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/aa64efe8-46e3-4fe6-a405-5ddf27b935a6) | Lances íntegros, `RECEIPT_MISMATCH` no comprovante |
 
 ## Funcionalidades
 
@@ -79,7 +81,8 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 - Carteira com depósito simulado, saldo total, comprometido e disponível, e extrato.
 - Sala do lote ao vivo: lance atual, contagem regressiva sincronizada com o relógio do
   servidor, lances rápidos, posição no ranking ("1º de 3") e aviso "você foi superado"
-  em tempo real, em qualquer tela.
+  em tempo real, em qualquer tela. Abaixo da obra, as abas "Sobre a obra" (ficha do
+  catálogo) e "Lances" (histórico completo), e no painel os lances mais recentes.
 - Sons sutis nos lances, gerados no navegador (sem arquivos de áudio): duas notas subindo
   quando seu lance é aceito, duas descendo quando você é superado e um toque leve quando
   outra pessoa dá lance na sala. O botão de alto-falante no topo liga e desliga.
@@ -89,13 +92,15 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 **Leiloeiro**
 - Escritório em duas abas. **Seus lotes:** total recebido, lotes em pregão, agendados e
   arrematados, e a lista com fase, encerramento, valor e resultado de cada lote, com
-  cancelamento (estorno ao líder). **Novo lote:** em dois passos, escolher a obra no acervo
-  do Art Institute (só domínio público) e definir lance inicial, incremento, abertura e
-  encerramento, com a prévia de como o lote vai aparecer na vitrine.
+  cancelamento (estorno ao líder). **Novo lote:** um guia em etapas (escolher a obra,
+  definir lance e prazo, publicar). A busca no acervo do Art Institute (só domínio público)
+  responde enquanto você digita, com sugestões e uma seleção de impressionistas em destaque
+  antes da primeira busca; depois vêm lance inicial, incremento, abertura e encerramento,
+  com a prévia de como o lote vai aparecer na vitrine.
 
 **Público**
 - Vitrine por fase (em pregão, próximos, encerrados), busca por obra, artista ou número do
-  lote, e ordenação.
+  lote (filtra enquanto você digita), e ordenação.
 - Ao passar o mouse sobre uma obra da vitrine, um cartão acompanha o cursor com título,
   artista (nacionalidade e anos de vida), data, técnica, estilo, origem, dimensões e um trecho
   da história da obra tirado do catálogo do museu.
@@ -109,7 +114,7 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
 | Testes automatizados | 278 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
-| Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
+| Dark Mode | Botão de tema no topo, com a troca revelada por uma mancha de aquarela (cross-fade simples para quem prefere menos movimento); segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
 documentação OpenAPI no Scalar e comprovante compartilhável.
@@ -265,9 +270,10 @@ minutos e circuit breaker (abre após 5 falhas seguidas e falha rápido por 30s)
 cair, a busca responde `EXTERNAL_API_UNAVAILABLE` com mensagem amigável e o resto da
 aplicação segue normal.
 
-**Snapshot do item.** Ao criar o lote, título, artista, atributos (técnica, estilo, origem, dimensões), um trecho da descrição
-do catálogo (até 320 caracteres, cortado no fim de uma frase sempre que possível) e a imagem (1686px e
-miniatura de 400px) são copiados para o banco. Daí em diante vitrine, sala, auditoria e
+**Snapshot do item.** Ao criar o lote, título, artista (com nacionalidade e anos de vida),
+técnica, estilo, origem, dimensões, um trecho da descrição do catálogo (até 320 caracteres,
+cortado no fim de uma frase sempre que possível) e a imagem (1686px e miniatura de 400px)
+são copiados para o banco. Daí em diante vitrine, sala, auditoria e
 comprovante não dependem do museu. As imagens ficam em `bytea` e são servidas pela própria
 API com `Cache-Control: immutable`. Só obras em domínio público entram (filtro
 `is_public_domain`), o que resolve o licenciamento.
@@ -376,6 +382,11 @@ lance exato. `pnpm tamper:demo --restore <bidId> <valor>` desfaz.
   termo em inglês. A busca exige que todas as palavras apareçam (em título, artista, local,
   estilo, assunto ou classificação): o `q` simples do museu só ordena e devolveria o acervo
   inteiro, com obras sem relação depois das que combinam.
+- **Dados da obra em inglês:** a ficha da obra (técnica, estilo, origem, nacionalidade do
+  artista) e o trecho de história do cartão da vitrine vêm do catálogo do museu e ficam como
+  o museu escreve. Traduzir nacionalidades exigiria adivinhar o gênero do artista. Só as
+  dimensões são reescritas (centímetros, vírgula decimal). Lotes criados antes desse campo
+  existir aparecem sem a história.
 - **Catálogo do museu fora do ar:** só a busca de obras para novos lotes fica indisponível
   (mensagem amigável); lotes existentes não dependem do museu.
 - **Rate limit do museu:** 60 req/min por IP. O cache de 10 minutos e o circuit breaker
@@ -395,8 +406,8 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (163) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
-| `apps/web` (90) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
+| `apps/api` (163) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração, o mapeamento do catálogo do museu e o seed. |
+| `apps/web` (90) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro, datas e dimensões das obras. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
 ## Uso de IA
@@ -422,10 +433,12 @@ com direção explícita:
   - Testando na mão, encontrei bugs que a IA não tinha visto: fotos do acervo que não
     carregavam (o CDN do museu bloqueia o navegador; a API passou a servir as miniaturas),
     o botão de auditoria difícil de achar, imagens largas desalinhadas na página do lote e
-    a primeira carta do leque da vitrine que não subia no hover.
+    a primeira carta do leque da vitrine que não subia no hover, e um espaço vazio no fim
+    da vitrine ao trocar de uma aba longa para uma curta.
   - Recusei duas propostas visuais e direcionei a identidade a partir de um projeto meu.
     Corrigi interpretações erradas (moldura dourada aplicada no lugar errado, zoom central
-    quando eu queria zoom seguindo o ponteiro) e simplifiquei o que ficou carregado: a
+    quando eu queria zoom seguindo o ponteiro), recusei molduras nas obras depois de vê-las
+    prontas e simplifiquei o que ficou carregado: a
     abertura da vitrine, a lista de lances e as seções vazias da vitrine.
   - Troquei a hospedagem da API do Render para uma VPS com Dokploy pela instabilidade.
   - Na revisão final, a IA focou em bugs e segurança; redirecionei para organização de
