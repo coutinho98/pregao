@@ -38,9 +38,9 @@ cadeia, usadas pela API (geração) e pelo navegador (verificação). Uma implem
    de `endsAt`, `status` nem cancelamento. A auditoria confere o comprovante contra o
    último lance, mas mudanças nesses campos não são detectadas pela cadeia.
 5. Teste de concorrência verifica invariantes, não "N lances aceitos".
-6. Imagens em `bytea` (disco do Render é efêmero).
-7. Neon: `DATABASE_URL` pooled (`pgbouncer=true`) + `DIRECT_URL` para migrations.
-8. Cold start do Render: coberto pela liquidação sob demanda; documentar.
+6. Imagens em `bytea`, para não depender do disco do servidor (planejado para o Render, cujo disco é efêmero).
+7. ~~Neon com `pgbouncer=true`~~ — superado: a API e o Postgres foram para uma VPS com Dokploy. `DIRECT_URL` segue existindo para migrations caso se use um pooler.
+8. Cold start: planejado para a API no Render; com a API na VPS, a liquidação sob demanda cobre só o caso de a API ficar fora do ar no encerramento.
 9. Rate limit da AIC é por IP do servidor: cache desde o início.
 10. JWT via Bearer (domínios diferentes); trade-off documentado.
 
