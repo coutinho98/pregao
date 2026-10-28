@@ -17,7 +17,7 @@ export function Paddle({ pseudonym, mine = false, className }: PaddleProps) {
     >
       <span
         className={cn(
-          'grid size-8 place-items-center rounded-full font-mono text-[8.5px] font-bold tracking-tight',
+          'grid size-8 place-items-center rounded-full font-mono text-[9.5px] font-bold tracking-tight',
           mine ? 'bg-ink text-bg' : 'bg-chip text-ink-2',
         )}
       >

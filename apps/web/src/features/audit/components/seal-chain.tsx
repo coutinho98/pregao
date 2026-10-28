@@ -36,14 +36,14 @@ export function SealChain({ links }: { links: ChainLink[] }) {
             broken={link.status === 'broken'}
             className={cn('size-11 shrink-0', sealTone[link.status])}
           />
-          <div className={cn('min-w-0 pt-1.5', link.status === 'unchecked' && 'opacity-50')}>
+          <div className={cn('min-w-0 pt-1.5', link.status === 'unchecked' && 'text-ink-3')}>
             <p
               className={cn('text-[14.5px] font-[560]', link.status === 'broken' && 'text-danger')}
             >
               {link.title}
             </p>
             <p className="text-[12.5px] text-ink-3">{link.detail}</p>
-            <p className="tabular mt-0.5 truncate text-[11px] text-ink-3">{link.hash}</p>
+            <p className="tabular mt-0.5 truncate text-[12px] text-ink-3">{link.hash}</p>
           </div>
         </motion.li>
       ))}

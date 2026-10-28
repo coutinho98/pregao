@@ -38,12 +38,16 @@ Tokens em `:root` e `[data-theme="dark"]`; o Tailwind consome as variáveis.
 | `--chip` | `#ececec` | `#222225` | Chips no texto, campos de busca |
 | `--line` / `--line-strong` | preto 7% / 13% | branco 7% / 14% | Linhas finas, bordas |
 | `--ink` | `#141414` | `#ededed` | Texto principal |
-| `--ink-2` | `#6c6c6c` | `#9b9ba1` | Texto secundário |
-| `--ink-3` | `#a4a4a4` | `#5d5d63` | Rótulos, metadados (nunca texto essencial) |
+| `--ink-2` | `#545454` | `#b0b0b6` | Texto secundário, instruções e dicas de campo |
+| `--ink-3` | `#6b6b6b` | `#8d8d94` | Rótulos, metadados, placeholders |
 | `--primary` / `--primary-ink` | `#141414` / branco | `#f0f0f0` / `#0a0a0b` | Ação principal |
-| `--up` | `#1f9d55` | `#3ddc84` | Você está ganhando, ao vivo, sucesso |
-| `--danger` | `#d4402f` | `#ff6b5b` | Você foi superado, erros, adulteração |
-| `--gold` | `#b88600` | `#f5c542` | Arrematado (vencedor) |
+| `--up` | `#13753d` | `#3ddc84` | Você está ganhando, ao vivo, sucesso |
+| `--danger` | `#b8321f` | `#ff6b5b` | Você foi superado, erros, adulteração |
+| `--gold` | `#7f5c00` | `#f5c542` | Arrematado (vencedor) |
+
+Todo texto, inclusive rótulo, placeholder e status colorido, tem contraste de pelo menos
+4,5:1 (WCAG AA) em `--bg`, `--card`, `--surface` e `--chip`, nos dois temas. Ao mexer num
+token de texto, conferir esse mínimo em cada fundo.
 
 Proibido: gradientes decorativos, cor de marca espalhada, verde/limão da Verzel.
 

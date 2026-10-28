@@ -19,7 +19,7 @@ export function LotCard({ lot, now }: { lot: LotSummary; now: Date }) {
       />
       <div className="flex items-start justify-between gap-3 px-1 pt-3">
         <div className="min-w-0">
-          <h3 className="artwork-title truncate text-[16px]">{lot.title}</h3>
+          <h2 className="artwork-title truncate text-[16px]">{lot.title}</h2>
           <p className="truncate text-[12.5px] text-ink-3">
             {formatLotNumber(lot.number)}
             {lot.artist && ` · ${lot.artist}`}

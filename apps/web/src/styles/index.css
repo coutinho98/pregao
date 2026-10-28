@@ -10,13 +10,13 @@
   --line: rgb(0 0 0 / 0.07);
   --line-strong: rgb(0 0 0 / 0.13);
   --ink: #141414;
-  --ink-2: #6c6c6c;
-  --ink-3: #a4a4a4;
+  --ink-2: #545454;
+  --ink-3: #6b6b6b;
   --primary: #141414;
   --primary-ink: #ffffff;
-  --up: #1f9d55;
-  --danger: #d4402f;
-  --gold: #b88600;
+  --up: #13753d;
+  --danger: #b8321f;
+  --gold: #7f5c00;
   /* Warm accent reserved for keyboard focus, so it always stands out from the neutrals. */
   --focus: #fc6401;
   --grain-opacity: 0.32;
@@ -39,8 +39,8 @@
   --line: rgb(255 255 255 / 0.07);
   --line-strong: rgb(255 255 255 / 0.14);
   --ink: #ededed;
-  --ink-2: #9b9ba1;
-  --ink-3: #5d5d63;
+  --ink-2: #b0b0b6;
+  --ink-3: #8d8d94;
   --primary: #f0f0f0;
   --primary-ink: #0a0a0b;
   --up: #3ddc84;
@@ -116,8 +116,29 @@
     line-height: 1.2;
   }
 
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* No single word stranded on the last line of a paragraph. */
+  p {
+    text-wrap: pretty;
+  }
+
   input::placeholder {
     color: var(--ink-3);
+  }
+
+  ::selection {
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--ink);
   }
 
   :focus-visible {
