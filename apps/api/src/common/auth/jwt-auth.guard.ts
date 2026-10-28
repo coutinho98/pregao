@@ -4,7 +4,7 @@ import { ErrorCode } from '@pregao/shared';
 import { DomainError } from '../errors/domain-error.js';
 import type { AuthenticatedRequest, JwtPayload } from './request-user.js';
 
-export function extractBearerToken(header: string | undefined): string | null {
+function extractBearerToken(header: string | undefined): string | null {
   const [scheme, token] = header?.split(' ') ?? [];
   return scheme === 'Bearer' && token ? token : null;
 }

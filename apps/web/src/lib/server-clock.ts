@@ -7,7 +7,7 @@ export function syncServerClock(serverNowIso: string): void {
   offsetMs = new Date(serverNowIso).getTime() - Date.now();
 }
 
-export function serverNow(): Date {
+function serverNow(): Date {
   return new Date(Date.now() + offsetMs);
 }
 
