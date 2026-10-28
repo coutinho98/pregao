@@ -12,7 +12,15 @@ export function ShowcaseSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get(QUERY_PARAM) ?? '';
   const [draft, setDraft] = useState(query);
+  const [shownQuery, setShownQuery] = useState(query);
   const pending = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // The URL can change without typing (Back, a shared link): show what is being searched.
+  // Adjusted while rendering, as React recommends, instead of in an effect.
+  if (query !== shownQuery) {
+    setShownQuery(query);
+    if (draft.trim() !== query) setDraft(query);
+  }
 
   const apply = (value: string) => {
     clearTimeout(pending.current);
@@ -39,11 +47,6 @@ export function ShowcaseSearch() {
     event.preventDefault();
     apply(draft.trim());
   };
-
-  // The URL can change without typing (Back, a shared link): show what is being searched.
-  useEffect(() => {
-    setDraft((current) => (current.trim() === query ? current : query));
-  }, [query]);
 
   useEffect(() => () => clearTimeout(pending.current), []);
 
