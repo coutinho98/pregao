@@ -47,7 +47,11 @@ function ThemeButton() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={toggleTheme}
+      onClick={(event) => {
+        // From the button's centre, so mouse and keyboard look the same.
+        const box = event.currentTarget.getBoundingClientRect();
+        toggleTheme({ x: box.left + box.width / 2, y: box.top + box.height / 2 });
+      }}
       aria-label={dark ? 'Usar tema claro' : 'Usar tema escuro'}
     >
       {dark ? <Sun size={17} /> : <Moon size={17} />}

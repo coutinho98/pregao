@@ -1,11 +1,12 @@
 import { useSyncExternalStore } from 'react';
 import { flushSync } from 'react-dom';
-import { paintOver } from './paint-transition';
+import { type WashOrigin, watercolorKeyframes } from './watercolor-transition';
 
 export type Theme = 'light' | 'dark';
 
 const listeners = new Set<() => void>();
-let painting = false;
+
+const WASH_MS = 1900;
 
 function getTheme(): Theme {
   return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -26,41 +27,40 @@ function applyTheme(next: Theme): void {
   listeners.forEach((notify) => notify());
 }
 
-/** The page background of `theme`, read from the CSS tokens without repainting the page. */
-function themeBackground(theme: Theme): string {
-  const root = document.documentElement;
-  const current = root.dataset.theme;
-  root.dataset.theme = theme;
-  const color = getComputedStyle(root).getPropertyValue('--bg').trim();
-  if (current) root.dataset.theme = current;
-  else delete root.dataset.theme;
-  return color;
-}
-
 /**
- * Switches the theme by painting the new background over the screen with a brush, top to
- * bottom, then swapping the theme under the paint. With reduced motion it just swaps.
+ * Switches the theme. With the View Transitions API the page in its new theme is revealed
+ * as a watercolour wash blooming from the switch; with reduced motion the browser's
+ * cross-fade stays, and older browsers just swap.
  */
-function toggleTheme(): void {
-  if (painting) return;
+function toggleTheme(origin?: WashOrigin): void {
   const next: Theme = getTheme() === 'dark' ? 'light' : 'dark';
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!document.startViewTransition) {
     applyTheme(next);
     return;
   }
-
   const root = document.documentElement;
-  painting = true;
-  void paintOver(themeBackground(next), () => {
-    // Under the paint the page changes at once; the drying paint is the transition.
-    root.dataset.themeSwitching = '';
-    flushSync(() => applyTheme(next));
-    requestAnimationFrame(() => delete root.dataset.themeSwitching);
-  }).finally(() => {
-    painting = false;
-  });
+  // Colours change at once while the wash runs: the wash is the transition.
+  root.dataset.themeSwitching = '';
+  const transition = document.startViewTransition(() => flushSync(() => applyTheme(next)));
+  void transition.finished.finally(() => delete root.dataset.themeSwitching);
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const from = origin ?? { x: innerWidth / 2, y: innerHeight / 2 };
+  void transition.ready
+    .then(() => {
+      root.animate(
+        { ...watercolorKeyframes(from, innerWidth, innerHeight) },
+        {
+          duration: WASH_MS,
+          easing: 'linear',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      );
+    })
+    // A second click before the wash finishes skips this transition: nothing left to animate.
+    .catch(() => undefined);
 }
 
-export function useTheme(): { theme: Theme; toggleTheme: () => void } {
+export function useTheme(): { theme: Theme; toggleTheme: (origin?: WashOrigin) => void } {
   return { theme: useSyncExternalStore(subscribe, getTheme), toggleTheme };
 }

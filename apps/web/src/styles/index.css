@@ -122,12 +122,20 @@
     text-wrap: balance;
   }
 
-  /* Theme switch: the page changes under the brush paint at once (lib/paint-transition.ts),
-     so nothing animates its colours meanwhile. */
+  /* Theme switch: a watercolour wash reveals the page in its new theme (lib/theme.ts), so nothing
+     else animates its colours meanwhile. With reduced motion the browser's cross-fade stays. */
   :root[data-theme-switching] *,
   :root[data-theme-switching] *::before,
   :root[data-theme-switching] *::after {
     transition: none !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
   }
 
   /* No single word stranded on the last line of a paragraph. */
