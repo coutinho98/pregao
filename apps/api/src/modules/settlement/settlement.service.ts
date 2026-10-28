@@ -29,6 +29,8 @@ const BATCH_LIMIT = 50;
 @Injectable()
 export class SettlementService {
   private readonly logger = new Logger(SettlementService.name);
+  /** Lots already reported as unsafe to charge, so each one is logged once, not every tick. */
+  private readonly reported = new Set<string>();
 
   constructor(
     private readonly settlement: SettlementRepository,
@@ -46,7 +48,9 @@ export class SettlementService {
     while (closedCount < BATCH_LIMIT) {
       const outcome = await this.transactions.run(async (tx) => {
         const lot = await this.settlement.lockNextDueLot(tx, this.clock.now(), skipped);
-        return lot && { lot, closed: await this.close(tx, lot) };
+        if (!lot) return null;
+        // Re-checked on the locked row: a last-second bid may have pushed the end out.
+        return { lot, closed: this.isDue(lot) ? await this.close(tx, lot) : null };
       });
       if (!outcome) break;
       if (!outcome.closed) {
@@ -90,7 +94,7 @@ export class SettlementService {
     const lastBid = await this.settlement.findBid(tx, lot.id, lot.bidCount);
     const problem = settlementProblem(lot, lastBid, this.pseudonyms.forLot(lot.leaderId, lot.id));
     if (problem || !lastBid) {
-      this.logger.error(`Lot ${lot.id} not settled: ${problem}`);
+      this.reportOnce(lot.id, problem ?? 'last bid is missing');
       return null;
     }
 
@@ -98,7 +102,7 @@ export class SettlementService {
     const winnerWallet = wallets.find((wallet) => wallet.userId === lot.leaderId);
     const auctioneerWallet = wallets.find((wallet) => wallet.userId === lot.auctioneerId);
     if (!winnerWallet || !auctioneerWallet) {
-      this.logger.error(`Lot ${lot.id} not settled: wallet missing`);
+      this.reportOnce(lot.id, 'wallet missing');
       return null;
     }
     const amountCents = lot.currentBidCents;
@@ -127,6 +131,12 @@ export class SettlementService {
       winnerPseudonym: lastBid.bidderPseudonym,
       finalPriceCents: centsToNumber(amountCents),
     };
+  }
+
+  private reportOnce(lotId: string, problem: string): void {
+    if (this.reported.has(lotId)) return;
+    this.reported.add(lotId);
+    this.logger.error(`Lot ${lotId} not settled: ${problem}`);
   }
 
   /** Runs after the commit, like every realtime event. */
