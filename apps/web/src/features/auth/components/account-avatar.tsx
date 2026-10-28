@@ -6,7 +6,7 @@ const roleTone: Record<Role, string> = {
   [Role.BIDDER]: 'bg-chip text-ink',
 };
 
-/** "Ana Licitante" → "AL". */
+/** "Ana Martelinho" → "AM". */
 function initials(name: string): string {
   return name
     .split(/\s+/)
