@@ -5,6 +5,7 @@ import { cn } from '@/lib/cn';
 import { EASE } from '@/lib/motion';
 import { formatClockTime } from '@/utils/date';
 import { formatCents } from '@/utils/money';
+import { pluralize } from '@/utils/plural';
 import { paddleCode } from '../bid-history';
 import { Paddle } from './paddle';
 
@@ -12,7 +13,7 @@ import { Paddle } from './paddle';
 const RECENT = 5;
 
 const olderLabel = (count: number) =>
-  count === 1 ? 'o lance anterior' : `os ${count} lances anteriores`;
+  pluralize(count, 'o lance anterior', `os ${count} lances anteriores`);
 
 interface PaddleHistoryProps {
   bids: PublicBid[];

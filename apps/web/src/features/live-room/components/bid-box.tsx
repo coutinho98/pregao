@@ -9,6 +9,7 @@ import { phaseLabel } from '@/features/lots/phase-labels';
 import { cn } from '@/lib/cn';
 import { formatDayTime } from '@/utils/date';
 import { formatCents } from '@/utils/money';
+import { pluralize } from '@/utils/plural';
 import type { CountdownView } from '../room-clock';
 import { AuctioneerLine } from './auctioneer-line';
 import { BidPanel } from './bid-panel';
@@ -87,8 +88,9 @@ export function BidBox({
           {formatCents(amount)}
         </BlurIn>
         <p className="mt-1 text-[13px] text-ink-2">
-          <span className="tabular">{lot.bidCount}</span> {lot.bidCount === 1 ? 'lance' : 'lances'}{' '}
-          · <span className="tabular">{bidders}</span> {bidders === 1 ? 'licitante' : 'licitantes'}
+          <span className="tabular">{lot.bidCount}</span>{' '}
+          {pluralize(lot.bidCount, 'lance', 'lances')} · <span className="tabular">{bidders}</span>{' '}
+          {pluralize(bidders, 'licitante', 'licitantes')}
         </p>
       </div>
 

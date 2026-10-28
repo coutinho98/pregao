@@ -1,6 +1,7 @@
 import type { AuditLocation, AuditResult, AuditTrail } from '@pregao/shared';
 import { formatCents } from '@/utils/money';
 import { formatDayTime } from '@/utils/date';
+import { countLabel } from '@/utils/plural';
 
 export type LinkStatus = 'ok' | 'broken' | 'unchecked';
 
@@ -45,7 +46,7 @@ export function chainLinks(trail: AuditTrail, result: AuditResult): ChainLink[] 
     {
       key: 'head',
       title: 'Fechamento assinado',
-      detail: `${trail.head.bidCount} ${trail.head.bidCount === 1 ? 'lance' : 'lances'} no histórico`,
+      detail: `${countLabel(trail.head.bidCount, 'lance', 'lances')} no histórico`,
       hash: trail.head.lastHash,
     },
     ...(trail.receipt

@@ -1,12 +1,11 @@
 import { LotPhase } from '@pregao/shared';
 import { BlurIn } from '@/components/motion/blur-in';
 import { formatWhen, greeting } from '@/utils/date';
+import { countLabel } from '@/utils/plural';
 import { useLotPage } from '../hooks/use-lot-page';
 import { LotFan } from './lot-fan';
 
 const FAN_SIZE = 4;
-
-const lotsLabel = (count: number) => (count === 1 ? '1 lote' : `${count} lotes`);
 
 /** Opening of the showcase. Reuses the live and upcoming queries the page already makes. */
 export function ShowcaseIntro() {
@@ -26,7 +25,8 @@ export function ShowcaseIntro() {
         </p>
         {data && live > 0 && (
           <p className="mt-5">
-            <b className="font-[560] text-ink">{lotsLabel(live)}</b> em pregão agora
+            <b className="font-[560] text-ink">{countLabel(live, 'lote', 'lotes')}</b> em pregão
+            agora
             {endingNext && (
               <>
                 ; o próximo encerra às{' '}

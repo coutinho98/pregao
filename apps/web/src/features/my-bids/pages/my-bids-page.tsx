@@ -6,6 +6,7 @@ import { Page } from '@/components/layout/page';
 import { Chip } from '@/components/ui/chip';
 import { Segmented } from '@/components/ui/segmented';
 import { errorMessage } from '@/lib/errors';
+import { countLabel } from '@/utils/plural';
 import { MyBidRow } from '../components/my-bid-row';
 import { useMyBids } from '../hooks/use-my-bids';
 import { ALL, filterMyBids, myBidFilters } from '../my-bid-filters';
@@ -15,7 +16,7 @@ const options = [
   { value: ALL, label: 'Todos' },
   ...myBidFilters.map(({ slug, label }) => ({ value: slug, label })),
 ];
-const lots = (count: number) => (count === 1 ? '1 lote' : `${count} lotes`);
+const lots = (count: number) => countLabel(count, 'lote', 'lotes');
 
 export function MyBidsPage() {
   const myBids = useMyBids();
