@@ -1,4 +1,4 @@
-# Pregão · Casa de Leilões
+# Verzeilão · Casa de Leilões
 
 Casa de leilões online de obras em domínio público. O leiloeiro monta lotes a partir do
 acervo do Art Institute of Chicago; licitantes depositam saldo simulado, dão lances ao vivo
@@ -46,9 +46,15 @@ um clique. O topo mostra sempre quem está logado e se é leiloeiro ou licitante
 Para ver o tempo real, abra a mesma sala em dois navegadores (ou uma aba anônima), um com a
 Ana e outro com o Bruno, e dispute o lote.
 
-Lotes da demo: um em pregão por 30 dias já com lances, um que encerra em poucas horas, um
-agendado, um arrematado com comprovante e um arrematado **adulterado de propósito** direto
-no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
+Lotes da demo: 10 obras de épocas e escolas diferentes (Monet, Seurat, Van Gogh, Caillebotte,
+Hokusai, El Greco, Mary Cassatt, Degas), espalhadas pelas três abas da vitrine:
+
+- **Em pregão:** Water Lilies (30 dias, com lances), Grande Jatte (encerra em poucas horas),
+  A Grande Onda de Hokusai (com lances) e o Autorretrato de Van Gogh (ainda sem lances).
+- **Próximos:** The Bedroom e A Assunção da Virgem de El Greco.
+- **Encerrados:** Paris Street e O Banho da Criança, arrematados com comprovante; A Chapelaria
+  de Degas, encerrado sem lances; e um lote **adulterado de propósito** direto no banco
+  (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 
 **Veja a auditoria funcionando no deploy** (pública, sem login; a verificação roda no seu navegador):
 

@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Tokens do docs/DESIGN.md ("Pregão"). Claro por padrão, escuro via [data-theme=dark]. */
+/* Tokens do docs/DESIGN.md (identidade "Pregão", hoje a marca Verzeilão). Claro por padrão, escuro via [data-theme=dark]. */
 :root {
   --bg: #fafafa;
   --surface: #f1f1f1;

@@ -20,7 +20,7 @@ export function ShowcaseIntro() {
       <BlurIn className="max-w-[52ch] text-[16px] leading-[1.65] text-ink-2">
         <p className="text-ink-3">{greeting()},</p>
         <p className="mt-5">
-          Esta é a <b className="font-[560] text-ink">Pregão</b>, uma casa de leilões de obras em
+          Este é o <b className="font-[560] text-ink">Verzeilão</b>, uma casa de leilões de obras em
           domínio público, vindas do acervo do Art Institute of Chicago.
         </p>
         {data && live > 0 && (

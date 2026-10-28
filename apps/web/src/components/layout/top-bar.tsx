@@ -11,9 +11,13 @@ import { Button } from '../ui/button';
 export function TopBar() {
   return (
     <header className="mx-auto flex w-full max-w-[1080px] items-center justify-between px-5 pt-[calc(20px+env(safe-area-inset-top))]">
-      <Link to={paths.home} className="inline-flex items-center gap-2" aria-label="Pregão, vitrine">
+      <Link
+        to={paths.home}
+        className="inline-flex items-center gap-2"
+        aria-label="Verzeilão, vitrine"
+      >
         <PaddleMark className="h-[19px] w-[14px]" />
-        <span className="font-mono text-[14px] font-bold tracking-[0.08em]">PREGÃO</span>
+        <span className="font-mono text-[14px] font-bold tracking-[0.08em]">VERZEILÃO</span>
       </Link>
       <div className="flex items-center gap-1">
         <SoundButton />

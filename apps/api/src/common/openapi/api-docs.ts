@@ -5,7 +5,7 @@ import type { Request, Response } from 'express';
 
 export function setupApiDocs(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('Casa de Leilões API')
+    .setTitle('Verzeilão · Casa de Leilões API')
     .setDescription(
       'API da Casa de Leilões. Valores monetários sempre em centavos inteiros. ' +
         'Erros seguem o formato { code, message, details?, minNextBidCents? }.',

@@ -35,7 +35,7 @@ function Footer() {
   const now = useServerNow();
   return (
     <footer className="mt-16 flex justify-between text-[12.5px] text-ink-3">
-      <span>Pregão · bons lances</span>
+      <span>Verzeilão · bons lances</span>
       <span className="tabular">{formatClockTime(now)}</span>
     </footer>
   );

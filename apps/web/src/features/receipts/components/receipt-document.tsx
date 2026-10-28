@@ -28,7 +28,7 @@ export function ReceiptDocument({ receipt }: { receipt: ReceiptView }) {
       <header className="flex items-center justify-between border-b border-line pb-4">
         <span className="inline-flex items-center gap-2">
           <PaddleMark className="h-[19px] w-[14px]" />
-          <span className="font-mono text-[13px] font-bold tracking-[0.08em]">PREGÃO</span>
+          <span className="font-mono text-[13px] font-bold tracking-[0.08em]">VERZEILÃO</span>
         </span>
         <span className="text-[12.5px] text-ink-3">Comprovante de arremate</span>
       </header>
