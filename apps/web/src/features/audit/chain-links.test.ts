@@ -59,4 +59,23 @@ describe('chainLinks', () => {
     };
     expect(statuses(head).slice(-2)).toEqual(['broken', 'unchecked']);
   });
+
+  it('puts a broken placeholder where a deleted bid was', () => {
+    const withoutBid2 = { ...trail, bids: [bid(1), bid(3)] };
+    const links = chainLinks(withoutBid2, {
+      ok: false,
+      failure: AuditFailure.BID_MISSING,
+      at: 2,
+      message: 'O lance 2 sumiu do histórico',
+      verifiedBids: 1,
+    });
+    expect(links.map((link) => [link.title.split(' ·')[0], link.status])).toEqual([
+      ['Abertura do lote', 'ok'],
+      ['Lance 1', 'ok'],
+      ['Lance 2', 'broken'],
+      ['Lance 3', 'unchecked'],
+      ['Fechamento assinado', 'unchecked'],
+      ['Comprovante de arremate', 'unchecked'],
+    ]);
+  });
 });
