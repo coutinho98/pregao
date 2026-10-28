@@ -8,7 +8,7 @@ const MOVE = { duration: 0.34, ease: EASE };
 const MotionLink = motion.create(NavLink);
 
 /** Floating navigation capsule: the active item grows and shows its name. */
-export function Dock({ items }: { items: NavItem[] }) {
+export function Dock({ items, className }: { items: NavItem[]; className?: string }) {
   const { pathname } = useLocation();
   return (
     <motion.nav
@@ -16,7 +16,10 @@ export function Dock({ items }: { items: NavItem[] }) {
       transition={MOVE}
       aria-label="Navegação"
       style={{ borderRadius: 999 }}
-      className="glass fixed inset-x-0 bottom-[calc(16px+env(safe-area-inset-bottom))] z-50 mx-auto flex w-max gap-0.5 p-[5px]"
+      className={cn(
+        'glass fixed inset-x-0 bottom-[calc(16px+env(safe-area-inset-bottom))] z-50 mx-auto flex w-max gap-0.5 p-[5px]',
+        className,
+      )}
     >
       {items.map(({ to, label, icon: Icon, matches }) => {
         const active = matches(pathname);

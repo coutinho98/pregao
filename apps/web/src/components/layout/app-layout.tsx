@@ -2,12 +2,16 @@ import { Role } from '@pregao/shared';
 import { Outlet, useLocation } from 'react-router';
 import { useSession } from '@/features/auth/hooks/use-session';
 import { useOutbidAlerts } from '@/features/live-room/hooks/use-outbid-alerts';
+import { cn } from '@/lib/cn';
 import { Dock } from './dock';
 import { navItemsByAudience } from './nav-items';
 import { TopBar } from './top-bar';
 
-/** The live room has its own bottom bar (the bid bar), so the dock steps aside there. */
-const hidesDock = (pathname: string) => pathname.startsWith('/lotes/');
+/**
+ * On phones the live room pins its bid bar to the bottom, where the dock sits, so the dock
+ * steps aside there; on wider screens the bid box is beside the artwork and the dock stays.
+ */
+const bidBarTakesBottom = (pathname: string) => pathname.startsWith('/lotes/');
 
 export function AppLayout() {
   const { user } = useSession();
@@ -21,7 +25,10 @@ export function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      {!hidesDock(pathname) && <Dock items={navItemsByAudience[user?.role ?? 'GUEST']} />}
+      <Dock
+        items={navItemsByAudience[user?.role ?? 'GUEST']}
+        className={cn(bidBarTakesBottom(pathname) && 'max-lg:hidden')}
+      />
     </div>
   );
 }
