@@ -47,14 +47,7 @@ function BidPanelContent({
     return (
       <Notice
         action={
-          receiptToken && (
-            <Link
-              to={paths.receipt(receiptToken)}
-              className="inline-flex h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-[14px] font-[550] text-primary-ink"
-            >
-              Ver comprovante <ChevronRight size={15} />
-            </Link>
-          )
+          receiptToken && <NoticeLink to={paths.receipt(receiptToken)}>Ver comprovante</NoticeLink>
         }
       >
         Você arrematou este lote.
@@ -67,16 +60,7 @@ function BidPanelContent({
   if (!user) {
     const next = encodeURIComponent(location.pathname);
     return (
-      <Notice
-        action={
-          <Link
-            to={`${paths.login}?next=${next}`}
-            className="inline-flex h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-[14px] font-[550] text-primary-ink"
-          >
-            Entrar <ChevronRight size={15} />
-          </Link>
-        }
-      >
+      <Notice action={<NoticeLink to={`${paths.login}?next=${next}`}>Entrar</NoticeLink>}>
         Entre como licitante para dar lances.
       </Notice>
     );
@@ -103,5 +87,16 @@ function Notice({ children, action }: { children: ReactNode; action?: ReactNode 
       <span className="grow">{children}</span>
       {action}
     </div>
+  );
+}
+
+function NoticeLink({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <Link
+      to={to}
+      className="inline-flex h-[40px] items-center gap-1 rounded-full bg-primary px-4 text-[14px] font-[550] text-primary-ink"
+    >
+      {children} <ChevronRight size={15} />
+    </Link>
   );
 }
