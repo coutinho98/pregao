@@ -73,28 +73,39 @@ describe('Demo seed (e2e)', () => {
   });
 
   it('leaves balances consistent with every bid, win and sale', async () => {
-    // Ana won Paris Street (R$ 2.500) and The Child's Bath (R$ 1.700), and leads Water
-    // Lilies (R$ 1.500) and The Great Wave (R$ 4.500).
+    // Ana won Paris Street (R$ 2.500), The Child's Bath (R$ 1.700) and At the Moulin Rouge
+    // (R$ 1.900), and leads Water Lilies (R$ 1.500) and The Great Wave (R$ 4.500).
     expect(await wallet('ana@pregao.dev')).toMatchObject({
-      totalCents: 4_580_000n,
+      totalCents: 4_390_000n,
       committedCents: 600_000n,
     });
+    // Bruno won the tampered lot (R$ 2.100) and Stacks of Wheat (R$ 3.400).
     expect(await wallet('bruno@pregao.dev')).toMatchObject({
-      totalCents: 4_790_000n,
+      totalCents: 4_450_000n,
       committedCents: 300_000n,
     });
-    expect(await wallet('leiloeiro@pregao.dev')).toMatchObject({ totalCents: 630_000n });
+    expect(await wallet('leiloeiro@pregao.dev')).toMatchObject({ totalCents: 1_160_000n });
     // The Millinery Shop closed without bids: settled, but no receipt.
-    expect(await prisma.receipt.count()).toBe(3);
+    expect(await prisma.receipt.count()).toBe(5);
   });
 
-  it('keeps genuine lots verifiable and the tampered one broken at bid 2', async () => {
+  it('keeps genuine lots verifiable and points each tampered one at what was changed', async () => {
     expect(await audit(lots.live)).toEqual({ ok: true, verifiedBids: 3 });
     expect(await audit(lots.sold)).toEqual({ ok: true, verifiedBids: 3 });
     expect(await audit(lots.tampered)).toMatchObject({
       ok: false,
       failure: AuditFailure.BID_ALTERED,
       at: 2,
+    });
+    expect(await audit(lots.bidRemoved)).toMatchObject({
+      ok: false,
+      failure: AuditFailure.BID_MISSING,
+      at: 2,
+    });
+    expect(await audit(lots.receiptForged)).toMatchObject({
+      ok: false,
+      failure: AuditFailure.RECEIPT_MISMATCH,
+      at: 'receipt',
     });
   });
 });

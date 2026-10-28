@@ -36,6 +36,16 @@ export class DemoSeedRepository {
     });
   }
 
+  /** Deletes a bid from the middle of a history, leaving the rest untouched. */
+  async deleteBid(lotId: string, seq: number): Promise<void> {
+    await this.prisma.bid.delete({ where: { lotId_seq: { lotId, seq } } });
+  }
+
+  /** Changes what a receipt says was paid, without touching the bids behind it. */
+  async overwriteReceiptAmount(lotId: string, amountCents: bigint): Promise<void> {
+    await this.prisma.receipt.update({ where: { lotId }, data: { amountCents } });
+  }
+
   async renameLotArtwork(lotId: string, title: string): Promise<void> {
     const lot = await this.prisma.lot.findUniqueOrThrow({ where: { id: lotId } });
     await this.prisma.itemSnapshot.update({ where: { id: lot.itemSnapshotId }, data: { title } });

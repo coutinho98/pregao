@@ -18,6 +18,10 @@ export interface DemoLots {
   scheduled: string;
   sold: string;
   tampered: string;
+  /** Sold, then bid #2 was deleted from its history. */
+  bidRemoved: string;
+  /** Sold, then its receipt was changed to a lower price. */
+  receiptForged: string;
 }
 
 type Bidder = Exclude<DemoAccountKey, 'auctioneer'>;
@@ -27,7 +31,8 @@ type Bidder = Exclude<DemoAccountKey, 'auctioneer'>;
  * 30 days with bids, one ending in a few hours, one scheduled, one sold with a receipt, and
  * one sold lot whose history was tampered with on purpose to show the audit catching it,
  * plus five more works spread over the phases (live with and without bids, scheduled,
- * sold, and closed without bids).
+ * sold, and closed without bids), and two more tampered lots showing other attacks the
+ * audit catches: a bid deleted from the history and a forged receipt.
  * Everything goes through the real services, so chains, signatures and ledgers are genuine.
  */
 export class DemoSeed {
@@ -78,7 +83,27 @@ export class DemoSeed {
 
     await this.createGallery(at);
 
-    return { live, endingSoon, scheduled, sold, tampered };
+    const bidRemoved = await this.createLot('61128', 160_000, 10_000, at(-30_000), at(6 * MINUTE));
+    await this.bid(bidRemoved, 'ana', 160_000);
+    await this.bid(bidRemoved, 'bruno', 175_000);
+    await this.bid(bidRemoved, 'ana', 190_000);
+    await this.hammer(bidRemoved);
+    await this.removeBid(bidRemoved);
+
+    const receiptForged = await this.createLot(
+      '64818',
+      280_000,
+      20_000,
+      at(-30_000),
+      at(6 * MINUTE),
+    );
+    await this.bid(receiptForged, 'bruno', 280_000);
+    await this.bid(receiptForged, 'ana', 300_000);
+    await this.bid(receiptForged, 'bruno', 340_000);
+    await this.hammer(receiptForged);
+    await this.forgeReceipt(receiptForged);
+
+    return { live, endingSoon, scheduled, sold, tampered, bidRemoved, receiptForged };
   }
 
   /** More works across the tabs, so the showcase has something in every phase. */
@@ -145,6 +170,24 @@ export class DemoSeed {
     await this.repository.renameLotArtwork(
       lotId,
       'The Beach at Sainte-Adresse (demonstração de adulteração)',
+    );
+  }
+
+  /** Another attack: a bid deleted from the middle of the history. */
+  private async removeBid(lotId: string): Promise<void> {
+    await this.repository.deleteBid(lotId, 2);
+    await this.repository.renameLotArtwork(
+      lotId,
+      'At the Moulin Rouge (lance apagado do histórico)',
+    );
+  }
+
+  /** Another attack: the receipt says the winner paid less than the last bid. */
+  private async forgeReceipt(lotId: string): Promise<void> {
+    await this.repository.overwriteReceiptAmount(lotId, 240_000n);
+    await this.repository.renameLotArtwork(
+      lotId,
+      'Stacks of Wheat (End of Summer) (comprovante falsificado)',
     );
   }
 

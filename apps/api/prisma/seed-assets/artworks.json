@@ -148,5 +148,35 @@
     "altText": "Impressionist painting of woman wearing green dress trying on hats.",
     "image": "14572.jpg",
     "thumbnail": "14572-thumb.jpg"
+  },
+  {
+    "externalId": "61128",
+    "title": "At the Moulin Rouge",
+    "artist": "Henri de Toulouse-Lautrec",
+    "dateDisplay": "1892–95",
+    "medium": "Oil on canvas",
+    "dimensions": "123 × 141 cm (48 7/16 × 55 1/2 in.); Framed: 136.9 × 154.7 × 8.5 cm (53 7/8 × 60 7/8 × 3 5/16 in.)",
+    "placeOfOrigin": "France",
+    "sourceUrl": "https://www.artic.edu/artworks/61128",
+    "imageWidth": 7788,
+    "imageHeight": 6807,
+    "altText": "Painting, heavy in tones of blue-green and burnt orange, depicting a bar scene at night. The men wear top hats and many are bearded; the women are dressed in voluminous gowns and decorative hats. Five people converse in the center of the composition and a woman with a green face dominates the right foreground.",
+    "image": "61128.jpg",
+    "thumbnail": "61128-thumb.jpg"
+  },
+  {
+    "externalId": "64818",
+    "title": "Stacks of Wheat (End of Summer)",
+    "artist": "Claude Monet",
+    "dateDisplay": "1890–91",
+    "medium": "Oil on canvas",
+    "dimensions": "60 × 100.5 cm (23 5/8 × 39 9/16 in.); Framed: 75.6 × 116.6 × 7.4 cm (29 3/4 × 45 7/8 × 2 7/8 in.)",
+    "placeOfOrigin": "France",
+    "sourceUrl": "https://www.artic.edu/artworks/64818",
+    "imageWidth": 6884,
+    "imageHeight": 4068,
+    "altText": "Painting composed of short, dense brushstrokes depicts two domed stacks of wheat that cast long shadows on a field. The angled light indicates either a rising or setting sun.",
+    "image": "64818.jpg",
+    "thumbnail": "64818-thumb.jpg"
   }
 ]
