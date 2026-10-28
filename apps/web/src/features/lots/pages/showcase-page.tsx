@@ -1,6 +1,5 @@
 import { useSearchParams } from 'react-router';
 import { Page } from '@/components/layout/page';
-import { useHeldHeight } from '@/lib/use-held-height';
 import { PhaseFilter } from '../components/phase-filter';
 import { ShowcaseIntro } from '../components/showcase-intro';
 import { ShowcaseSearch } from '../components/showcase-search';
@@ -19,7 +18,6 @@ export function ShowcasePage() {
   const query = searchParams.get(QUERY_PARAM) ?? '';
   const section = sectionForSlug(searchParams.get(PHASE_PARAM));
   const sort = sortFromParam(searchParams.get(SORT_PARAM));
-  const { contentRef, minHeight } = useHeldHeight<HTMLDivElement>(query);
 
   return (
     <Page width="wide">
@@ -32,12 +30,7 @@ export function ShowcasePage() {
           <SortSelect />
         </div>
       </div>
-      {/* Switching tabs never shortens the page, so it stays where the visitor scrolled. */}
-      <div style={{ minHeight }}>
-        <div ref={contentRef}>
-          <WallSection section={section} query={query} sort={sort} />
-        </div>
-      </div>
+      <WallSection section={section} query={query} sort={sort} />
     </Page>
   );
 }
