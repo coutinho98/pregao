@@ -68,4 +68,14 @@ describe('CatalogService thumbnails', () => {
 
     expect(provider.calls).toBe(callsAfterSearch + 1);
   });
+
+  it('refuses thumbnails of artworks no search has shown, without calling the museum', async () => {
+    const provider = new FakeCatalogProvider([catalogItem({ externalId: '7', title: 'Monet' })]);
+    const service = new CatalogService(provider);
+
+    await expect(service.getThumbnail('7')).rejects.toMatchObject({
+      code: ErrorCode.ARTWORK_NOT_FOUND,
+    });
+    expect(provider.calls).toBe(0);
+  });
 });

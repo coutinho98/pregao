@@ -209,6 +209,13 @@ describe('Lots (e2e)', () => {
   });
 
   it('proxies catalog thumbnails so browsers never hit the museum CDN', async () => {
+    const search = (q: string) =>
+      http().get('/catalog/search').query({ q }).set('Authorization', `Bearer ${auctioneerToken}`);
+    const unseen = await http().get('/catalog/items/2/thumbnail').expect(404);
+    expect(unseen.body.code).toBe(ErrorCode.ARTWORK_NOT_FOUND);
+
+    await search('gogh').expect(200);
+    await search('hopper').expect(200);
     const thumbnail = await http().get('/catalog/items/2/thumbnail').expect(200);
     expect(thumbnail.headers['content-type']).toBe('image/jpeg');
     expect(thumbnail.body.toString()).toBe('thumb:2');

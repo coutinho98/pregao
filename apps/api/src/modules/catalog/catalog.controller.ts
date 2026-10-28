@@ -32,7 +32,8 @@ export class CatalogController {
     summary: 'Miniatura (400px) de uma obra do acervo, servida pela própria API',
     description:
       'Público porque é carregado por <img>. O CDN do museu bloqueia o navegador, então a API ' +
-      'busca com o header AIC-User-Agent e guarda em cache por 1 hora.',
+      'busca com o header AIC-User-Agent e guarda em cache por 1 hora. Só atende obras que ' +
+      'apareceram numa busca da última hora, para ninguém gastar o limite do museu varrendo ids.',
   })
   @ApiParam({ name: 'externalId', example: '16568' })
   @ApiProduces('image/jpeg')
