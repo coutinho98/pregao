@@ -1,7 +1,9 @@
 import { ErrorCode, Role } from '@pregao/shared';
 import { describe, expect, it } from 'vitest';
 import { LotStatus } from '../../generated/prisma/client.js';
+import { DomainError } from '../../common/errors/domain-error.js';
 import {
+  assertBidAcceptable,
   type BidAttempt,
   bidRejection,
   extendedEndsAt,
@@ -138,6 +140,35 @@ describe('myBidResult', () => {
     expect(myBidResult({ ...ended, leaderId: 'bia' }, 'ana', now)).toBe('LOST');
     expect(myBidResult({ ...timing, status: LotStatus.SETTLED, leaderId: 'ana' }, 'ana', now)).toBe(
       'WON',
+    );
+  });
+});
+
+describe('assertBidAcceptable', () => {
+  it('lets a valid bid through', () => {
+    expect(() => assertBidAcceptable(attempt())).not.toThrow();
+  });
+
+  it('throws the refusal with the next acceptable amount', () => {
+    const refusal = attempt(
+      { amountCents: 104_999n },
+      { currentBidCents: 100_000n, leaderId: 'other' },
+    );
+    expect(() => assertBidAcceptable(refusal)).toThrow(
+      expect.objectContaining({
+        code: ErrorCode.BELOW_MINIMUM,
+        meta: expect.objectContaining({ minNextBidCents: 105_000 }),
+      }) as DomainError,
+    );
+  });
+
+  it('tells how much is available when funds are short', () => {
+    const refusal = attempt({ amountCents: 200_000n, availableCents: 150_000n });
+    expect(() => assertBidAcceptable(refusal)).toThrow(
+      expect.objectContaining({
+        code: ErrorCode.INSUFFICIENT_FUNDS,
+        meta: expect.objectContaining({ details: { availableCents: 150_000 } }),
+      }) as DomainError,
     );
   });
 });

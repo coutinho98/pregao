@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorCode, LedgerEntryType, type PlaceBidResult, type PublicBid } from '@pregao/shared';
 import { randomUUID } from 'node:crypto';
-import type { Lot } from '../../generated/prisma/client.js';
 import type { RequestUser } from '../../common/auth/request-user.js';
 import { Pseudonyms } from '../../common/crypto/pseudonyms.js';
 import { DomainError } from '../../common/errors/domain-error.js';
-import { centsToNumber } from '../../common/money.js';
 import { TransactionRunner, type Tx } from '../../common/prisma/transaction-runner.js';
 import { Clock } from '../../common/time/clock.js';
 import { AuditChainService } from '../audit/audit-chain.service.js';
@@ -13,7 +11,7 @@ import { toLotDetail } from '../lots/lots.mapper.js';
 import { RealtimeGateway } from '../realtime/realtime.gateway.js';
 import { availableCents } from '../wallet/wallet-rules.js';
 import { WalletService } from '../wallet/wallet.service.js';
-import { bidRejection, extendedEndsAt, nextMinimumBid } from './bid-rules.js';
+import { assertBidAcceptable, extendedEndsAt } from './bid-rules.js';
 import { toBidNewPayload, toOutbidPayload, toPublicBid } from './bids.mapper.js';
 import { BidsRepository } from './bids.repository.js';
 
@@ -73,7 +71,14 @@ export class BidsService {
     const previousLeaderWallet = wallets.find((wallet) => wallet.userId === lot.leaderId);
 
     const amount = BigInt(amountCents);
-    this.ensureAcceptable(lot, user, amount, availableCents(bidderWallet), now);
+    assertBidAcceptable({
+      bidderId: user.id,
+      bidderRole: user.role,
+      amountCents: amount,
+      availableCents: availableCents(bidderWallet),
+      now,
+      lot,
+    });
 
     const seq = lot.bidCount + 1;
     const bidderPseudonym = this.pseudonyms.forLot(user.id, lot.id);
@@ -145,30 +150,6 @@ export class BidsService {
     if (previousLeaderId) {
       this.realtime.notifyOutbid(previousLeaderId, toOutbidPayload(result, serverNow));
     }
-  }
-
-  private ensureAcceptable(
-    lot: Lot,
-    user: RequestUser,
-    amount: bigint,
-    available: bigint,
-    now: Date,
-  ): void {
-    const rejection = bidRejection({
-      bidderId: user.id,
-      bidderRole: user.role,
-      amountCents: amount,
-      availableCents: available,
-      now,
-      lot,
-    });
-    if (!rejection) return;
-    throw new DomainError(rejection.code, rejection.message, {
-      minNextBidCents: centsToNumber(nextMinimumBid(lot)),
-      ...(rejection.code === ErrorCode.INSUFFICIENT_FUNDS && {
-        details: { availableCents: centsToNumber(available) },
-      }),
-    });
   }
 
   private async ensureLotExists(lotId: string): Promise<void> {

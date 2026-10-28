@@ -9,6 +9,7 @@ import {
   Role,
 } from '@pregao/shared';
 import { LotStatus } from '../../generated/prisma/client.js';
+import { DomainError } from '../../common/errors/domain-error.js';
 import { centsToNumber } from '../../common/money.js';
 
 export interface BidAttempt {
@@ -79,6 +80,21 @@ export function bidRejection({
     };
   }
   return null;
+}
+
+/**
+ * Throws the refusal as a DomainError carrying the next acceptable amount, so the bidder
+ * sees what to bid; insufficient funds also carry what they have available.
+ */
+export function assertBidAcceptable(attempt: BidAttempt): void {
+  const rejection = bidRejection(attempt);
+  if (!rejection) return;
+  throw new DomainError(rejection.code, rejection.message, {
+    minNextBidCents: centsToNumber(nextMinimumBid(attempt.lot)),
+    ...(rejection.code === ErrorCode.INSUFFICIENT_FUNDS && {
+      details: { availableCents: centsToNumber(attempt.availableCents) },
+    }),
+  });
 }
 
 /**
