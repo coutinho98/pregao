@@ -1,0 +1,31 @@
+import { type AuctioneerLot, LotPhase, LotResult } from '@pregao/shared';
+import { countLabel } from '@/utils/plural';
+
+export interface LotNote {
+  text: string;
+  tone: string;
+}
+
+const resultNote: Record<LotResult, LotNote> = {
+  [LotResult.SOLD]: { text: 'Arrematado', tone: 'text-up' },
+  [LotResult.UNSOLD]: { text: 'Sem lances', tone: 'text-ink-3' },
+};
+
+/** The small line under the amount in the auctioneer's list. */
+export function lotNote(lot: AuctioneerLot): LotNote {
+  if (lot.result) return resultNote[lot.result];
+  if (lot.phase === LotPhase.SCHEDULED) return { text: 'inicial', tone: 'text-ink-3' };
+  return { text: countLabel(lot.bidCount, 'lance', 'lances'), tone: 'text-ink-3' };
+}
+
+/** Scheduled or live lots can still be cancelled by their auctioneer. */
+export function canCancel(lot: AuctioneerLot): boolean {
+  return lot.phase === LotPhase.SCHEDULED || lot.phase === LotPhase.LIVE;
+}
+
+export function countResults(lots: AuctioneerLot[]): Record<LotResult, number> {
+  return {
+    [LotResult.SOLD]: lots.filter((lot) => lot.result === LotResult.SOLD).length,
+    [LotResult.UNSOLD]: lots.filter((lot) => lot.result === LotResult.UNSOLD).length,
+  };
+}
