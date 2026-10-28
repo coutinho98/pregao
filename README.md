@@ -51,9 +51,9 @@ no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 
 | Lote | Auditoria | Resultado esperado |
 |---|---|---|
-| 001 · Water Lilies (em pregão) | [abrir](https://pregao-m6sh.onrender.com/auditoria/ce88ba51-22cb-46a6-9f06-ed1a3953fb51) | Histórico íntegro |
-| 004 · Paris Street (arrematado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/7cd75e65-2532-4797-a439-ec4fa8f53d1c) | Íntegro, incluindo o comprovante |
-| 005 · Sainte-Adresse (adulterado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/9b4d1e5b-32d9-4103-834d-77dfb76dce6c) | Adulteração detectada no lance 2 |
+| 001 · Water Lilies (em pregão) | [abrir](https://pregao-m6sh.onrender.com/auditoria/1657c1d3-fb16-46d4-a308-9567258a1987) | Histórico íntegro |
+| 004 · Paris Street (arrematado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/219913ff-569d-4ac7-9253-49d2547e4a5e) | Íntegro, incluindo o comprovante |
+| 005 · Sainte-Adresse (adulterado) | [abrir](https://pregao-m6sh.onrender.com/auditoria/61674add-db56-4ad3-a6ee-f74c7b021a7d) | Adulteração detectada no lance 2 |
 
 ## Funcionalidades
 
