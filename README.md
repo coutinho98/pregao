@@ -369,8 +369,6 @@ pnpm test
 
 ## Uso de IA
 
-> **Rascunho para revisão.** Esta seção deve ser revisada e completada pelo autor.
-
 O projeto foi desenvolvido com o Claude Code como par de programação, em fases curtas e
 com direção explícita:
 
@@ -385,4 +383,19 @@ com direção explícita:
 - **Onde a IA mais ajudou:** testes de integração e de concorrência, documentação OpenAPI,
   o verificador rodando no navegador e iterações rápidas de visual com revisão por
   screenshots.
-- **Onde corrigi a IA:** _(completar com exemplos reais)_.
+- **Onde corrigi a IA:**
+  - No plano inicial, separei os bytes das imagens num model próprio (`ItemImage`) para que
+    consultas nunca carreguem imagem, e exigi que o que a cadeia de auditoria não cobre
+    fosse documentado como limitação.
+  - Testando na mão, encontrei bugs que a IA não tinha visto: fotos do acervo que não
+    carregavam (o CDN do museu bloqueia o navegador; a API passou a servir as miniaturas),
+    o botão de auditoria difícil de achar, imagens largas desalinhadas na página do lote e
+    a primeira carta do leque da vitrine que não subia no hover.
+  - Recusei duas propostas visuais e direcionei a identidade a partir de um projeto meu.
+    Corrigi interpretações erradas (moldura dourada aplicada no lugar errado, zoom central
+    quando eu queria zoom seguindo o ponteiro) e simplifiquei o que ficou carregado: a
+    abertura da vitrine, a lista de lances e as seções vazias da vitrine.
+  - Troquei a hospedagem da API do Render para uma VPS com Dokploy pela instabilidade.
+  - Na revisão final, a IA focou em bugs e segurança; redirecionei para organização de
+    código, que foi a crítica do meu teste anterior. Isso revelou um bug de plural e oito
+    pontos de organização, corrigidos em commits separados.
