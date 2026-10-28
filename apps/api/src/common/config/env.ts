@@ -44,6 +44,11 @@ export class Env {
   @MinLength(32)
   PSEUDONYM_SECRET: string;
 
+  /** Login and sign-up attempts allowed per IP per minute (brute-force protection). */
+  @IsInt()
+  @Min(1)
+  AUTH_ATTEMPTS_PER_MINUTE: number = 10;
+
   /** How often the settlement worker looks for ended lots; 0 turns the worker off. */
   @IsInt()
   @Min(0)

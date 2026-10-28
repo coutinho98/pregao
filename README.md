@@ -179,6 +179,7 @@ pnpm dev                               # API em :3000, web em :5173
 | `AUDIT_PRIVATE_KEY` | Chave Ed25519 (32 bytes em hex) que assina a cadeia de lances |
 | `PSEUDONYM_SECRET` | Segredo do HMAC que gera o pseudônimo do licitante em cada lote |
 | `AIC_CONTACT_EMAIL` | Contato no header `AIC-User-Agent`, pedido pelo museu |
+| `AUTH_ATTEMPTS_PER_MINUTE` | Tentativas de login e cadastro por IP por minuto (padrão 10) |
 | `SETTLEMENT_INTERVAL_MS` | Intervalo do worker de liquidação (0 desliga) |
 | `APP_URL` | URL do front, usada pelo `tamper:demo` para imprimir o link |
 | `CATALOG_FIXTURES_DIR` | Opcional: catálogo offline a partir de arquivos (o seed usa) |

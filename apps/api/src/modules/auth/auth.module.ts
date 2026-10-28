@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { Env } from '../../common/config/env.js';
 import { UsersModule } from '../users/users.module.js';
 import { AuthController } from './auth.controller.js';
@@ -9,6 +10,12 @@ import { AuthService } from './auth.service.js';
 @Module({
   imports: [
     UsersModule,
+    ThrottlerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) => [
+        { ttl: 60_000, limit: config.get('AUTH_ATTEMPTS_PER_MINUTE', { infer: true }) },
+      ],
+    }),
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

@@ -1,4 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import type { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Env } from './common/config/env.js';
 import { DomainExceptionFilter } from './common/errors/domain-exception.filter.js';
@@ -17,6 +18,10 @@ export function parseCorsOrigins(raw: string): string[] {
 export function configureApp(app: INestApplication): void {
   const config = app.get<ConfigService<Env, true>>(ConfigService);
   const origins = parseCorsOrigins(config.get('CORS_ORIGINS', { infer: true }));
+  // Behind a reverse proxy the client IP (used by the login rate limit) comes in
+  // X-Forwarded-For; only proxies on private networks are trusted to set it.
+  const http = app.getHttpAdapter().getInstance() as Express;
+  http.set('trust proxy', 'loopback, linklocal, uniquelocal');
   app.enableCors({ origin: origins });
   app.useWebSocketAdapter(new CorsIoAdapter(app, origins));
   app.useGlobalPipes(
