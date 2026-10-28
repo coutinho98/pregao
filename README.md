@@ -76,9 +76,18 @@ no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
   lote, e ordenação.
 - Auditoria de qualquer lote (`/auditoria/:lotId`), verificada no navegador.
 
-**Opcionais do desafio:** cancelamento com lances (estorno registrado no extrato), busca e
-ordenação, seed com demo completa, script de adulteração para demonstração, Docker Compose
-com toda a stack.
+**Opcionais do desafio**, todos feitos:
+
+| Opcional | Onde ver |
+|---|---|
+| Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
+| Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
+| Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
+| Testes automatizados | 246 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
+
+Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
+documentação OpenAPI no Scalar e comprovante compartilhável.
 
 ## Arquitetura
 
@@ -251,6 +260,15 @@ de `packages/shared` (`NOT_STARTED`, `LOT_ENDED`, `ALREADY_WINNING`, `BELOW_MINI
 `minNextBidCents`, `INSUFFICIENT_FUNDS`, `AUCTIONEER_CANNOT_BID`…), e o front traduz cada um
 em uma mensagem específica.
 
+**Segurança.** Senhas com scrypt e salt, comparação em tempo constante e a mesma mensagem
+para e-mail inexistente ou senha errada. Login e cadastro limitados a 10 tentativas por IP
+por minuto (`AUTH_ATTEMPTS_PER_MINUTE`), respondendo `TOO_MANY_REQUESTS`. Cada rota declara
+o papel exigido (leiloeiro ou licitante), e os ids da URL são validados antes de chegar ao
+banco. CORS só para o domínio do front, cabeçalhos de segurança com `helmet` e segredos
+validados na subida (a API não sobe com segredo curto ou chave em formato errado). O proxy
+de miniaturas do acervo é público (uma `<img>` não envia token), então só atende obras que
+apareceram numa busca recente, para ninguém varrer ids e gastar o limite do museu.
+
 ## Prova de adulteração
 
 Cada lote tem uma cadeia de hashes assinada:
@@ -345,8 +363,8 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (140) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
-| `apps/web` (66) | Criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
+| `apps/api` (145) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
+| `apps/web` (76) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
 ## Uso de IA
