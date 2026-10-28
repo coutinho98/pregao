@@ -1,5 +1,7 @@
+import { Plus } from 'lucide-react';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { errorMessage } from '@/lib/errors';
 import { formatCents } from '@/utils/money';
@@ -18,10 +20,11 @@ export function MyLots({ onNewLot }: { onNewLot: () => void }) {
   if (data.lots.length === 0) {
     return (
       <EmptyState>
-        Você ainda não montou nenhum lote.{' '}
-        <button type="button" onClick={onNewLot} className="font-medium text-ink underline">
-          Montar o primeiro
-        </button>
+        Você ainda não tem lotes. Um lote é uma obra do acervo com lance inicial e prazo: depois de
+        publicado, ele aparece na vitrine e os licitantes começam a dar lances.
+        <Button variant="primary" size="pill" onClick={onNewLot} className="mx-auto mt-4 flex">
+          <Plus size={17} /> Montar meu primeiro lote
+        </Button>
       </EmptyState>
     );
   }

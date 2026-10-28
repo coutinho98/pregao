@@ -1,4 +1,6 @@
+import { Plus } from 'lucide-react';
 import { Page } from '@/components/layout/page';
+import { Button } from '@/components/ui/button';
 import { Segmented } from '@/components/ui/segmented';
 import { useSession } from '@/features/auth/hooks/use-session';
 import { greeting } from '@/utils/date';
@@ -24,7 +26,7 @@ export function OfficePage() {
           casa: o lote continua de pé mesmo se o museu sair do ar.
         </p>
       </header>
-      <div className="mb-8">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <Segmented
           id="office-tabs"
           label="Escritório"
@@ -32,6 +34,11 @@ export function OfficePage() {
           value={tab}
           onChange={setTab}
         />
+        {tab === 'lotes' && (
+          <Button variant="primary" size="pill" onClick={() => setTab('novo')}>
+            <Plus size={17} /> Montar novo lote
+          </Button>
+        )}
       </div>
       {tab === 'lotes' && <MyLots onNewLot={() => setTab('novo')} />}
       {tab === 'novo' && <LotWorkbench onCreated={() => setTab('lotes')} />}

@@ -10,7 +10,7 @@ import { toDateTimeLocal } from '@/utils/date';
 import { useCreateLot } from '../hooks/use-create-lot';
 import { type LotFormInput, type LotFormValues, lotFormSchema, toCreateLotInput } from '../schemas';
 import { LotPreview } from './lot-preview';
-import { StepHeading } from './step-heading';
+import { SectionHeading } from './section-heading';
 
 const DAY_MS = 24 * 60 * 60_000;
 
@@ -48,9 +48,9 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
   return (
     <section aria-labelledby="composer-heading" className="rounded-[22px] bg-card p-4 shadow-card">
       <div className="flex items-start justify-between">
-        <StepHeading id="composer-heading" step={2} hint="Como o lote vai aparecer na vitrine.">
+        <SectionHeading id="composer-heading" hint="Como o lote vai aparecer na vitrine.">
           Lance e prazo
-        </StepHeading>
+        </SectionHeading>
         <Button
           variant="ghost"
           size="icon"
@@ -71,6 +71,7 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
           <FormField
             id="startingPrice"
             label="Lance inicial (R$)"
+            hint="O menor valor aceito no primeiro lance."
             error={fieldError('startingPrice')}
           >
             <Input
@@ -81,7 +82,12 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
               {...register('startingPrice')}
             />
           </FormField>
-          <FormField id="minIncrement" label="Incremento (R$)" error={fieldError('minIncrement')}>
+          <FormField
+            id="minIncrement"
+            label="Incremento (R$)"
+            hint="Quanto cada novo lance precisa subir."
+            error={fieldError('minIncrement')}
+          >
             <Input
               inputMode="decimal"
               placeholder="100"
@@ -93,6 +99,7 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
           <FormField
             id="startsAt"
             label="Abertura"
+            hint="Quando o lote começa a receber lances."
             error={fieldError('startsAt')}
             className="col-span-2"
           >
@@ -105,6 +112,7 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
           <FormField
             id="endsAt"
             label="Encerramento"
+            hint="Quando o martelo bate. Um lance nos últimos 2 minutos adia o fim em 2 minutos."
             error={fieldError('endsAt')}
             className="col-span-2"
           >
@@ -116,8 +124,11 @@ export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
           </FormField>
         </div>
         <Button type="submit" variant="primary" disabled={isPending} className="mt-2 w-full">
-          {isPending ? 'Copiando a obra do acervo…' : 'Criar lote'}
+          {isPending ? 'Copiando a obra do acervo…' : 'Publicar lote na vitrine'}
         </Button>
+        <p className="px-1 text-center text-[12.5px] text-ink-2">
+          Depois de publicado, o lote não pode ser editado, só cancelado.
+        </p>
       </form>
     </section>
   );

@@ -44,6 +44,11 @@ export function CatalogResults({
 
   return (
     <>
+      <p className="px-1 text-[13.5px] text-ink-2">
+        {selectedId
+          ? 'Obra escolhida. Agora defina o lance e o prazo no passo 2.'
+          : 'Clique na obra que você quer leiloar.'}
+      </p>
       <ul className={cn('grid gap-x-3 gap-y-5', RESULT_COLUMNS)}>
         {items.map((item) => (
           <li key={item.externalId}>

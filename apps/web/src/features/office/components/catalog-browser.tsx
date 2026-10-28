@@ -2,11 +2,12 @@ import type { CatalogItem } from '@pregao/shared';
 import { Search } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useSearchParams } from 'react-router';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MIN_CATALOG_QUERY_LENGTH, useCatalogSearch } from '../hooks/use-catalog-search';
 import { CatalogResults } from './catalog-results';
 import { SearchSuggestions } from './search-suggestions';
-import { StepHeading } from './step-heading';
+import { SectionHeading } from './section-heading';
 
 const QUERY_PARAM = 'busca';
 const PAGE_PARAM = 'pagina';
@@ -37,13 +38,12 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
 
   return (
     <section aria-labelledby="catalog-heading" className="@container flex flex-col gap-4">
-      <StepHeading
+      <SectionHeading
         id="catalog-heading"
-        step={1}
-        hint="Acervo do Art Institute of Chicago, só obras em domínio público."
+        hint="Busque por artista, tema ou lugar no acervo do Art Institute of Chicago. Só aparecem obras em domínio público, que a casa pode leiloar."
       >
         Escolha a obra
-      </StepHeading>
+      </SectionHeading>
       <form role="search" onSubmit={submit} className="relative">
         <label htmlFor="catalog-q" className="sr-only">
           Buscar obra, artista ou movimento
@@ -59,11 +59,19 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
           name={QUERY_PARAM}
           type="search"
           defaultValue={query}
-          placeholder="Monet, retrato, Japão… e Enter"
+          placeholder="Ex.: Monet, retrato, Japão"
           minLength={MIN_CATALOG_QUERY_LENGTH}
           maxLength={100}
-          className="pl-10"
+          className="pr-[6.5rem] pl-10"
         />
+        <Button
+          type="submit"
+          variant="primary"
+          size="sm"
+          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded-full px-4"
+        >
+          Buscar
+        </Button>
       </form>
       {query.length < MIN_CATALOG_QUERY_LENGTH ? (
         <SearchSuggestions onPick={(suggestion) => goTo(suggestion, 1)} />

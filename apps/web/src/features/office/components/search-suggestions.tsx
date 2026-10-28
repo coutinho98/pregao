@@ -3,8 +3,8 @@ const SUGGESTIONS = ['Monet', 'Van Gogh', 'Hokusai', 'retrato', 'paisagem', 'Jap
 /** A few starting points for the search, instead of an empty box. */
 export function SearchSuggestions({ onPick }: { onPick: (query: string) => void }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 px-1 text-[13.5px] text-ink-3">
-      <span>Experimente:</span>
+    <div className="flex flex-wrap items-center gap-2 px-1 text-[13.5px] text-ink-2">
+      <span>Sem ideia? Experimente:</span>
       {SUGGESTIONS.map((suggestion) => (
         <button
           key={suggestion}
