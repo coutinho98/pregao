@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { LotPhase, LotSort, parseLotNumber, type PublicLotPhase } from '@pregao/shared';
+import type { LotSort, PublicLotPhase } from '@pregao/shared';
 import { type Lot, LotStatus, type Prisma } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { lockLotRow } from '../../common/prisma/row-locks.js';
 import type { Tx } from '../../common/prisma/transaction-runner.js';
+import { phaseFilter, sortOrder, searchFilter } from './lot-queries.js';
 
 export type LotWithSnapshot = Prisma.LotGetPayload<{ include: { itemSnapshot: true } }>;
 
@@ -36,48 +37,6 @@ export interface LotPageQuery {
 }
 
 const withSnapshot = { itemSnapshot: true } as const;
-
-function phaseFilter(phase: PublicLotPhase, now: Date): Prisma.LotWhereInput {
-  const filters: Record<PublicLotPhase, Prisma.LotWhereInput> = {
-    [LotPhase.LIVE]: { status: LotStatus.ACTIVE, startsAt: { lte: now }, endsAt: { gt: now } },
-    [LotPhase.SCHEDULED]: { status: LotStatus.ACTIVE, startsAt: { gt: now } },
-    [LotPhase.ENDED]: {
-      OR: [{ status: LotStatus.SETTLED }, { status: LotStatus.ACTIVE, endsAt: { lte: now } }],
-    },
-  };
-  return filters[phase];
-}
-
-const phaseOrder: Record<PublicLotPhase, Prisma.LotOrderByWithRelationInput> = {
-  [LotPhase.LIVE]: { endsAt: 'asc' },
-  [LotPhase.SCHEDULED]: { startsAt: 'asc' },
-  [LotPhase.ENDED]: { endsAt: 'desc' },
-};
-
-function sortOrder(sort: LotSort, phase: PublicLotPhase): Prisma.LotOrderByWithRelationInput[] {
-  const orders: Record<LotSort, Prisma.LotOrderByWithRelationInput[]> = {
-    [LotSort.SOON]: [phaseOrder[phase]],
-    [LotSort.NEWEST]: [{ createdAt: 'desc' }],
-    [LotSort.MOST_BIDS]: [{ bidCount: 'desc' }, phaseOrder[phase]],
-    [LotSort.HIGHEST_BID]: [
-      { currentBidCents: { sort: 'desc', nulls: 'last' } },
-      phaseOrder[phase],
-    ],
-  };
-  return [...orders[sort], { number: 'asc' }];
-}
-
-/** Title, artist or the lot number ("7", "lote 007"). */
-function searchFilter(q: string): Prisma.LotWhereInput {
-  const lotNumber = parseLotNumber(q);
-  return {
-    OR: [
-      { itemSnapshot: { title: { contains: q, mode: 'insensitive' } } },
-      { itemSnapshot: { artist: { contains: q, mode: 'insensitive' } } },
-      ...(lotNumber === null ? [] : [{ number: lotNumber }]),
-    ],
-  };
-}
 
 @Injectable()
 export class LotsRepository {
