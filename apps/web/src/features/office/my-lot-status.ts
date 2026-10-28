@@ -23,9 +23,20 @@ export function canCancel(lot: AuctioneerLot): boolean {
   return lot.phase === LotPhase.SCHEDULED || lot.phase === LotPhase.LIVE;
 }
 
-export function countResults(lots: AuctioneerLot[]): Record<LotResult, number> {
+export interface LotTotals {
+  live: number;
+  scheduled: number;
+  sold: number;
+  unsold: number;
+}
+
+/** How the auctioneer's lots are spread: running now, waiting to open, and their results. */
+export function lotTotals(lots: AuctioneerLot[]): LotTotals {
+  const count = (matches: (lot: AuctioneerLot) => boolean) => lots.filter(matches).length;
   return {
-    [LotResult.SOLD]: lots.filter((lot) => lot.result === LotResult.SOLD).length,
-    [LotResult.UNSOLD]: lots.filter((lot) => lot.result === LotResult.UNSOLD).length,
+    live: count((lot) => lot.phase === LotPhase.LIVE),
+    scheduled: count((lot) => lot.phase === LotPhase.SCHEDULED),
+    sold: count((lot) => lot.result === LotResult.SOLD),
+    unsold: count((lot) => lot.result === LotResult.UNSOLD),
   };
 }

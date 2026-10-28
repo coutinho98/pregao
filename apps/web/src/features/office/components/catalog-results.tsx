@@ -2,10 +2,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/cn';
 import { errorMessage } from '@/lib/errors';
-import { MIN_CATALOG_QUERY_LENGTH, type useCatalogSearch } from '../hooks/use-catalog-search';
+import type { useCatalogSearch } from '../hooks/use-catalog-search';
 import type { CatalogSelection } from './catalog-browser';
 import { CatalogResultCard } from './catalog-result-card';
+
+/** Columns follow the width the search has (container query), not the window. */
+const RESULT_COLUMNS = 'grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4';
 
 interface CatalogResultsProps extends CatalogSelection {
   query: string;
@@ -20,17 +24,10 @@ export function CatalogResults({
   onSelect,
   onPage,
 }: CatalogResultsProps) {
-  if (query.length < MIN_CATALOG_QUERY_LENGTH) {
-    return (
-      <EmptyState>
-        Busque no acervo para escolher a obra do próximo lote. Só aparecem obras em domínio público.
-      </EmptyState>
-    );
-  }
   if (search.isPending) {
     return (
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3" aria-busy="true">
-        {[0, 1, 2].map((key) => (
+      <div className={cn('grid gap-3', RESULT_COLUMNS)} aria-busy="true">
+        {[0, 1, 2, 3].map((key) => (
           <div key={key} className="tile h-[140px] rounded-[22px] motion-safe:animate-pulse" />
         ))}
       </div>
@@ -47,7 +44,7 @@ export function CatalogResults({
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3">
+      <ul className={cn('grid gap-x-3 gap-y-5', RESULT_COLUMNS)}>
         {items.map((item) => (
           <li key={item.externalId}>
             <CatalogResultCard

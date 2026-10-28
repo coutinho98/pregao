@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/cn';
 
 interface FormFieldProps {
   id: string;
@@ -6,12 +7,13 @@ interface FormFieldProps {
   error?: string;
   hint?: string;
   children: ReactNode;
+  className?: string;
 }
 
 /** Label, control and error message wired together for screen readers. */
-export function FormField({ id, label, error, hint, children }: FormFieldProps) {
+export function FormField({ id, label, error, hint, children, className }: FormFieldProps) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={cn('flex flex-col gap-1.5', className)}>
       <label htmlFor={id} className="ml-1 text-[13px] font-medium text-ink-2">
         {label}
       </label>

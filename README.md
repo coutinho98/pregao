@@ -67,9 +67,11 @@ no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 - Comprovante público e compartilhável (`/r/:token`), sem nome nem e-mail.
 
 **Leiloeiro**
-- Busca no acervo do Art Institute (só domínio público), prévia e criação do lote com
-  lance inicial, incremento, abertura e encerramento.
-- Escritório com os próprios lotes, total recebido e cancelamento (com estorno ao líder).
+- Escritório em duas abas. **Seus lotes:** total recebido, lotes em pregão, agendados e
+  arrematados, e a lista com fase, encerramento, valor e resultado de cada lote, com
+  cancelamento (estorno ao líder). **Novo lote:** em dois passos, escolher a obra no acervo
+  do Art Institute (só domínio público) e definir lance inicial, incremento, abertura e
+  encerramento, com a prévia de como o lote vai aparecer na vitrine.
 
 **Público**
 - Vitrine por fase (em pregão, próximos, encerrados), busca por obra, artista ou número do

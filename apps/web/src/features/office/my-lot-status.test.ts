@@ -1,6 +1,6 @@
 import { type AuctioneerLot, LotPhase, LotResult } from '@pregao/shared';
 import { describe, expect, it } from 'vitest';
-import { canCancel, countResults, lotNote } from './my-lot-status';
+import { canCancel, lotNote, lotTotals } from './my-lot-status';
 
 const lot = (overrides: Partial<AuctioneerLot>): AuctioneerLot => ({
   id: 'lot-1',
@@ -52,14 +52,16 @@ describe('canCancel', () => {
   });
 });
 
-describe('countResults', () => {
-  it('counts sold and unsold lots', () => {
+describe('lotTotals', () => {
+  it('counts running lots by phase and finished ones by result', () => {
     const lots = [
-      lot({ result: LotResult.SOLD }),
-      lot({ result: LotResult.SOLD }),
-      lot({ result: LotResult.UNSOLD }),
-      lot({}),
+      lot({ phase: LotPhase.LIVE }),
+      lot({ phase: LotPhase.LIVE }),
+      lot({ phase: LotPhase.SCHEDULED }),
+      lot({ phase: LotPhase.ENDED, result: LotResult.SOLD }),
+      lot({ phase: LotPhase.ENDED, result: LotResult.UNSOLD }),
+      lot({ phase: LotPhase.CANCELLED }),
     ];
-    expect(countResults(lots)).toEqual({ [LotResult.SOLD]: 2, [LotResult.UNSOLD]: 1 });
+    expect(lotTotals(lots)).toEqual({ live: 2, scheduled: 1, sold: 1, unsold: 1 });
   });
 });

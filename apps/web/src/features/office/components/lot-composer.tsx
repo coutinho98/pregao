@@ -10,6 +10,7 @@ import { toDateTimeLocal } from '@/utils/date';
 import { useCreateLot } from '../hooks/use-create-lot';
 import { type LotFormInput, type LotFormValues, lotFormSchema, toCreateLotInput } from '../schemas';
 import { LotPreview } from './lot-preview';
+import { StepHeading } from './step-heading';
 
 const DAY_MS = 24 * 60 * 60_000;
 
@@ -25,12 +26,13 @@ function defaultValues(): LotFormInput {
 
 interface LotComposerProps {
   item: CatalogItem;
-  onDone: () => void;
+  onCancel: () => void;
+  onCreated: () => void;
 }
 
-/** Card that turns the chosen artwork into a lot, with a live preview of its tile. */
-export function LotComposer({ item, onDone }: LotComposerProps) {
-  const { createLot, isPending } = useCreateLot({ onCreated: onDone });
+/** Step 2: turns the chosen artwork into a lot, with a live preview of its showcase card. */
+export function LotComposer({ item, onCancel, onCreated }: LotComposerProps) {
+  const { createLot, isPending } = useCreateLot({ onCreated });
   const {
     register,
     control,
@@ -45,14 +47,14 @@ export function LotComposer({ item, onDone }: LotComposerProps) {
 
   return (
     <section aria-labelledby="composer-heading" className="rounded-[22px] bg-card p-4 shadow-card">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 id="composer-heading" className="text-[16px] font-semibold tracking-[-0.01em]">
-          Montar lote
-        </h2>
+      <div className="flex items-start justify-between">
+        <StepHeading id="composer-heading" step={2} hint="Como o lote vai aparecer na vitrine.">
+          Lance e prazo
+        </StepHeading>
         <Button
           variant="ghost"
           size="icon"
-          onClick={onDone}
+          onClick={onCancel}
           disabled={isPending}
           aria-label="Escolher outra obra"
         >
@@ -88,14 +90,24 @@ export function LotComposer({ item, onDone }: LotComposerProps) {
               {...register('minIncrement')}
             />
           </FormField>
-          <FormField id="startsAt" label="Abertura" error={fieldError('startsAt')}>
+          <FormField
+            id="startsAt"
+            label="Abertura"
+            error={fieldError('startsAt')}
+            className="col-span-2"
+          >
             <Input
               type="datetime-local"
               {...fieldAria('startsAt', fieldError('startsAt'))}
               {...register('startsAt')}
             />
           </FormField>
-          <FormField id="endsAt" label="Encerramento" error={fieldError('endsAt')}>
+          <FormField
+            id="endsAt"
+            label="Encerramento"
+            error={fieldError('endsAt')}
+            className="col-span-2"
+          >
             <Input
               type="datetime-local"
               {...fieldAria('endsAt', fieldError('endsAt'))}

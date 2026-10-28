@@ -17,12 +17,13 @@ export function LotPreview({ item, control }: LotPreviewProps) {
     control,
     name: ['startingPrice', 'startsAt', 'endsAt'],
   });
+  const priceCents = parseBrlToCents(startingPrice);
   const opensLater = startsAt !== '' && new Date(startsAt) > new Date();
   const status = lotStatus({
     phase: opensLater ? LotPhase.SCHEDULED : LotPhase.LIVE,
     startsAt: startsAt || new Date().toISOString(),
     endsAt: endsAt || new Date().toISOString(),
-    startingPriceCents: parseBrlToCents(startingPrice) ?? 0,
+    startingPriceCents: priceCents ?? 0,
     currentBidCents: null,
   });
 
@@ -42,7 +43,7 @@ export function LotPreview({ item, control }: LotPreviewProps) {
         </span>
         <span className="shrink-0 text-right">
           <span className="tabular block text-[13.5px] font-medium">
-            {formatCents(status.amountCents)}
+            {priceCents === null ? 'R$ —' : formatCents(status.amountCents)}
           </span>
           <span className="block text-[12px] text-ink-3">{status.note}</span>
         </span>

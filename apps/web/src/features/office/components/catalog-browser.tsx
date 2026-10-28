@@ -5,6 +5,8 @@ import { useSearchParams } from 'react-router';
 import { Input } from '@/components/ui/input';
 import { MIN_CATALOG_QUERY_LENGTH, useCatalogSearch } from '../hooks/use-catalog-search';
 import { CatalogResults } from './catalog-results';
+import { SearchSuggestions } from './search-suggestions';
+import { StepHeading } from './step-heading';
 
 const QUERY_PARAM = 'busca';
 const PAGE_PARAM = 'pagina';
@@ -34,10 +36,14 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
   };
 
   return (
-    <section aria-labelledby="catalog-heading" className="flex flex-col gap-4">
-      <h2 id="catalog-heading" className="px-1 text-[13px] font-medium tracking-normal text-ink-3">
-        Acervo do Art Institute of Chicago
-      </h2>
+    <section aria-labelledby="catalog-heading" className="@container flex flex-col gap-4">
+      <StepHeading
+        id="catalog-heading"
+        step={1}
+        hint="Acervo do Art Institute of Chicago, só obras em domínio público."
+      >
+        Escolha a obra
+      </StepHeading>
       <form role="search" onSubmit={submit} className="relative">
         <label htmlFor="catalog-q" className="sr-only">
           Buscar obra, artista ou movimento
@@ -59,13 +65,17 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
           className="pl-10"
         />
       </form>
-      <CatalogResults
-        query={query}
-        search={search}
-        selectedId={selectedId}
-        onSelect={onSelect}
-        onPage={(nextPage) => goTo(query, nextPage)}
-      />
+      {query.length < MIN_CATALOG_QUERY_LENGTH ? (
+        <SearchSuggestions onPick={(suggestion) => goTo(suggestion, 1)} />
+      ) : (
+        <CatalogResults
+          query={query}
+          search={search}
+          selectedId={selectedId}
+          onSelect={onSelect}
+          onPage={(nextPage) => goTo(query, nextPage)}
+        />
+      )}
     </section>
   );
 }

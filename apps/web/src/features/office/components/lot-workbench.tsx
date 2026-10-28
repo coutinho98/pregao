@@ -1,23 +1,40 @@
 import type { CatalogItem } from '@pregao/shared';
-import { useState } from 'react';
-import { EmptyState } from '@/components/feedback/empty-state';
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/cn';
 import { CatalogBrowser } from './catalog-browser';
 import { LotComposer } from './lot-composer';
 
-/** Pick an artwork on the left, compose the lot on the right. */
-export function LotWorkbench() {
+/** Below this width step 2 sits under the results instead of beside them (Tailwind `lg`). */
+const STACKED_QUERY = '(max-width: 1023px)';
+
+/**
+ * Two steps: pick an artwork, then set its price and schedule. The second column only
+ * appears once there is an artwork to compose, so the search starts with the full width.
+ */
+export function LotWorkbench({ onCreated }: { onCreated: () => void }) {
   const [selected, setSelected] = useState<CatalogItem | null>(null);
+  const composerRef = useRef<HTMLElement>(null);
+
+  // On phones step 2 opens below the results; bring it into view so it is not missed.
+  useEffect(() => {
+    if (selected && window.matchMedia(STACKED_QUERY).matches) {
+      composerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selected]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
+    <div className={cn('grid gap-8', selected && 'lg:grid-cols-[minmax(0,1fr)_24rem]')}>
       <CatalogBrowser selectedId={selected?.externalId ?? null} onSelect={setSelected} />
-      <aside className="lg:sticky lg:top-8 lg:self-start">
-        {selected ? (
-          <LotComposer key={selected.externalId} item={selected} onDone={() => setSelected(null)} />
-        ) : (
-          <EmptyState>Escolha uma obra do acervo para montar o lote.</EmptyState>
-        )}
-      </aside>
+      {selected && (
+        <aside ref={composerRef} className="scroll-mt-6 lg:sticky lg:top-8 lg:self-start">
+          <LotComposer
+            key={selected.externalId}
+            item={selected}
+            onCancel={() => setSelected(null)}
+            onCreated={onCreated}
+          />
+        </aside>
+      )}
     </div>
   );
 }
