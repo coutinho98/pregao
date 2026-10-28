@@ -46,12 +46,15 @@ um clique. O topo mostra sempre quem está logado e se é leiloeiro ou licitante
 Para ver o tempo real, abra a mesma sala em dois navegadores (ou uma aba anônima), um com a
 Ana e outro com o Bruno, e dispute o lote.
 
-Lotes da demo: 12 obras de épocas e escolas diferentes (Monet, Seurat, Van Gogh, Caillebotte,
-Hokusai, El Greco, Mary Cassatt, Degas, Toulouse-Lautrec), espalhadas pelas três abas da vitrine:
+Lotes da demo: 26 obras de épocas e escolas diferentes (Monet, Seurat, Van Gogh, Caillebotte,
+Hokusai, El Greco, Mary Cassatt, Degas, Toulouse-Lautrec, Renoir, Cézanne, Gauguin, Rembrandt,
+Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 
 - **Em pregão:** Water Lilies (30 dias, com lances), Grande Jatte (encerra em poucas horas),
   A Grande Onda de Hokusai (com lances) e o Autorretrato de Van Gogh (ainda sem lances).
-- **Próximos:** The Bedroom e A Assunção da Virgem de El Greco.
+- **Próximos:** The Bedroom, A Assunção da Virgem de El Greco e **duas sessões por dia útil
+  nos sete dias úteis seguintes** (às 10h e às 15h de Brasília, abertas por três dias). As datas
+  contam a partir de quando o seed roda, então a aba nunca nasce vazia.
 - **Encerrados:** Paris Street e O Banho da Criança, arrematados com comprovante; A Chapelaria
   de Degas, encerrado sem lances; e **três lotes adulterados de propósito** direto no banco,
   cada um com um ataque diferente, para ver a auditoria apontar exatamente onde quebrou:
@@ -102,7 +105,7 @@ Hokusai, El Greco, Mary Cassatt, Degas, Toulouse-Lautrec), espalhadas pelas trê
 | Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
-| Testes automatizados | 261 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Testes automatizados | 266 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
 | Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
@@ -388,7 +391,7 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (148) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
+| `apps/api` (153) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
 | `apps/web` (88) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 

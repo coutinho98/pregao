@@ -72,6 +72,12 @@ describe('Demo seed (e2e)', () => {
     expect(new Date(live.body.endsAt).getTime() - Date.now()).toBeGreaterThan(29 * 86_400_000);
   });
 
+  it('fills the upcoming tab with two sessions every weekday', async () => {
+    const upcoming = await http().get('/lots').query({ phase: LotPhase.SCHEDULED }).expect(200);
+    // The Bedroom, the El Greco and fourteen weekday sessions.
+    expect(upcoming.body.total).toBe(16);
+  });
+
   it('leaves balances consistent with every bid, win and sale', async () => {
     // Ana won Paris Street (R$ 2.500), The Child's Bath (R$ 1.700) and At the Moulin Rouge
     // (R$ 1.900), and leads Water Lilies (R$ 1.500) and The Great Wave (R$ 4.500).

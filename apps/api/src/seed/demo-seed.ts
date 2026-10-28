@@ -7,10 +7,29 @@ import { LotsService } from '../modules/lots/lots.service.js';
 import { SettlementService } from '../modules/settlement/settlement.service.js';
 import { WalletService } from '../modules/wallet/wallet.service.js';
 import { DemoSeedRepository } from './demo-seed.repository.js';
+import { upcomingWeekdaySessions } from './demo-schedule.js';
 
 const DEPOSIT_CENTS = 5_000_000;
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
+
+/** Works for the upcoming sessions, two a weekday over the next seven weekdays. */
+const UPCOMING_ARTWORKS = [
+  '14655',
+  '111436',
+  '19339',
+  '95998',
+  '25865',
+  '69780',
+  '153799',
+  '16499',
+  '56905',
+  '35427',
+  '111559',
+  '4796',
+  '96559',
+  '11723',
+];
 
 export interface DemoLots {
   live: string;
@@ -32,7 +51,8 @@ type Bidder = Exclude<DemoAccountKey, 'auctioneer'>;
  * one sold lot whose history was tampered with on purpose to show the audit catching it,
  * plus five more works spread over the phases (live with and without bids, scheduled,
  * sold, and closed without bids), and two more tampered lots showing other attacks the
- * audit catches: a bid deleted from the history and a forged receipt.
+ * audit catches: a bid deleted from the history and a forged receipt. The upcoming tab gets
+ * two sessions every weekday over the next seven weekdays, counted from when the seed runs.
  * Everything goes through the real services, so chains, signatures and ledgers are genuine.
  */
 export class DemoSeed {
@@ -82,6 +102,7 @@ export class DemoSeed {
     await this.tamper(tampered);
 
     await this.createGallery(at);
+    await this.scheduleUpcomingWeek(new Date(now));
 
     const bidRemoved = await this.createLot('61128', 160_000, 10_000, at(-30_000), at(6 * MINUTE));
     await this.bid(bidRemoved, 'ana', 160_000);
@@ -104,6 +125,22 @@ export class DemoSeed {
     await this.forgeReceipt(receiptForged);
 
     return { live, endingSoon, scheduled, sold, tampered, bidRemoved, receiptForged };
+  }
+
+  /** Fills the upcoming tab: two sessions every weekday over the next seven weekdays. */
+  private async scheduleUpcomingWeek(now: Date): Promise<void> {
+    const sessions = upcomingWeekdaySessions(now, UPCOMING_ARTWORKS.length / 2);
+    for (const [index, { startsAt, endsAt }] of sessions.entries()) {
+      // Prices step up through the week, so the upcoming lots are not all alike.
+      const startingPriceCents = 100_000 + (index % 7) * 25_000;
+      await this.createLot(
+        UPCOMING_ARTWORKS[index]!,
+        startingPriceCents,
+        10_000,
+        startsAt.toISOString(),
+        endsAt.toISOString(),
+      );
+    }
   }
 
   /** More works across the tabs, so the showcase has something in every phase. */
