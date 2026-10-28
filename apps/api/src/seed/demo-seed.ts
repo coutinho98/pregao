@@ -6,6 +6,7 @@ import { BidsService } from '../modules/bids/bids.service.js';
 import { LotsService } from '../modules/lots/lots.service.js';
 import { SettlementService } from '../modules/settlement/settlement.service.js';
 import { WalletService } from '../modules/wallet/wallet.service.js';
+import { DemoSeedRepository } from './demo-seed.repository.js';
 
 export const DEMO_PASSWORD = 'pregao123';
 
@@ -36,25 +37,21 @@ type Bidder = 'ana' | 'bruno';
  * Everything goes through the real services, so chains, signatures and ledgers are genuine.
  */
 export class DemoSeed {
-  private readonly prisma: PrismaService;
+  private readonly repository: DemoSeedRepository;
   private readonly users = new Map<keyof typeof DEMO_ACCOUNTS, string>();
 
   constructor(private readonly app: INestApplicationContext) {
-    this.prisma = app.get(PrismaService);
+    this.repository = new DemoSeedRepository(app.get(PrismaService));
   }
 
   /** The demo only goes into a database nobody has used yet (or one just reset). */
   async isEmpty(): Promise<boolean> {
-    return (await this.prisma.user.count()) === 0;
+    return !(await this.repository.hasUsers());
   }
 
   /** Wipes every table (keeps the migrations) so the demo starts from scratch. */
   async reset(): Promise<void> {
-    const tables = await this.prisma.$queryRaw<{ tablename: string }[]>`
-      SELECT tablename FROM pg_tables
-      WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
-    const list = tables.map(({ tablename }) => `"${tablename}"`).join(', ');
-    await this.prisma.$executeRawUnsafe(`TRUNCATE ${list} RESTART IDENTITY CASCADE`);
+    await this.repository.truncateAll();
   }
 
   async run(): Promise<DemoLots> {
@@ -121,30 +118,19 @@ export class DemoSeed {
       .placeBid({ id: this.userId(bidder), role: Role.BIDDER }, lotId, amountCents);
   }
 
-  /**
-   * Ends a lot that just received its bids and settles it. Only endsAt moves (it is not
-   * part of the signed chain), so the history stays valid.
-   */
+  /** Ends a lot that just received its bids and settles it. */
   private async hammer(lotId: string): Promise<void> {
-    const endsAt = new Date();
-    await this.prisma.lot.update({
-      where: { id: lotId },
-      data: { endsAt, originalEndsAt: endsAt },
-    });
+    await this.repository.endNow(lotId, new Date());
     await this.app.get(SettlementService).settleIfDue(lotId);
   }
 
   /** What an attacker with database access would do: change bid #2, recompute nothing. */
   private async tamper(lotId: string): Promise<void> {
-    await this.prisma.bid.update({
-      where: { lotId_seq: { lotId, seq: 2 } },
-      data: { amountCents: 290_000n },
-    });
-    const lot = await this.prisma.lot.findUniqueOrThrow({ where: { id: lotId } });
-    await this.prisma.itemSnapshot.update({
-      where: { id: lot.itemSnapshotId },
-      data: { title: 'The Beach at Sainte-Adresse (demonstração de adulteração)' },
-    });
+    await this.repository.overwriteBidAmount(lotId, 2, 290_000n);
+    await this.repository.renameLotArtwork(
+      lotId,
+      'The Beach at Sainte-Adresse (demonstração de adulteração)',
+    );
   }
 
   private userId(key: keyof typeof DEMO_ACCOUNTS): string {
