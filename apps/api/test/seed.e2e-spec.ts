@@ -1,6 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import * as ed from '@noble/ed25519';
 import {
+  DEMO_ACCOUNTS,
   type AuditCrypto,
   AuditFailure,
   type AuditTrail,
@@ -14,7 +15,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaService } from '../src/common/prisma/prisma.service.js';
 import { Clock } from '../src/common/time/clock.js';
 import { FixtureCatalogProvider } from '../src/modules/catalog/fixture-catalog.provider.js';
-import { DEMO_ACCOUNTS, type DemoLots, DemoSeed } from '../src/seed/demo-seed.js';
+import { type DemoLots, DemoSeed } from '../src/seed/demo-seed.js';
 import { createTestApp, resetDatabase } from './test-app.js';
 
 const nodeCrypto: AuditCrypto = {

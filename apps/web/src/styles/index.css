@@ -212,7 +212,10 @@
 
 /* Menus open from their trigger with a short drop; no movement for reduced motion. */
 @utility menu-in {
-  transform-origin: var(--radix-select-content-transform-origin);
+  transform-origin: var(
+    --radix-select-content-transform-origin,
+    var(--radix-dropdown-menu-content-transform-origin)
+  );
   animation: menu-in 0.18s var(--ease-ios);
 
   @media (prefers-reduced-motion: reduce) {

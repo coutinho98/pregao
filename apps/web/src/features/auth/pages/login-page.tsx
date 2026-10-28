@@ -1,7 +1,9 @@
 import { Link, useSearchParams } from 'react-router';
 import { paths } from '@/app/paths';
 import { AuthFrame } from '../components/auth-frame';
+import { DemoAccountPicker } from '../components/demo-account-picker';
 import { LoginForm } from '../components/login-form';
+import { demoAccountsEnabled } from '../demo-accounts';
 
 export function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -24,6 +26,7 @@ export function LoginPage() {
       }
     >
       <LoginForm />
+      {demoAccountsEnabled && <DemoAccountPicker />}
     </AuthFrame>
   );
 }

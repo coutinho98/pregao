@@ -3,6 +3,7 @@ export * from './audit-chain';
 export * from './auth';
 export * from './bids';
 export * from './catalog';
+export * from './demo';
 export * from './error-codes';
 export * from './lot-phase';
 export * from './lot-rules';

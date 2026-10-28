@@ -3,7 +3,8 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { resolve } from 'node:path';
 import { AppModule } from '../app.module.js';
-import { DEMO_ACCOUNTS, DEMO_PASSWORD, DemoSeed } from './demo-seed.js';
+import { DEMO_ACCOUNTS, DEMO_PASSWORD } from '@pregao/shared';
+import { DemoSeed } from './demo-seed.js';
 
 /**
  *   node dist/seed/run.js             seeds an empty database (refuses otherwise)

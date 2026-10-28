@@ -40,6 +40,10 @@ Criadas pelo seed. Senha de todas: `pregao123`.
 | Licitante | `ana@pregao.dev` | R$ 50.000 depositados |
 | Licitante | `bruno@pregao.dev` | R$ 50.000 depositados |
 
+Não precisa digitar nada: o botão **Contas de teste** no topo (e a lista na página de login)
+entra em qualquer uma delas com um clique, e o menu da conta troca de conta sem sair da tela.
+O topo mostra sempre quem está logado e se é leiloeiro ou licitante.
+
 Para ver o tempo real, abra a mesma sala em dois navegadores (ou uma aba anônima), um com a
 Ana e outro com o Bruno, e dispute o lote.
 
@@ -85,7 +89,7 @@ no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 | Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
-| Testes automatizados | 248 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Testes automatizados | 250 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
 | Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
@@ -195,7 +199,8 @@ pnpm dev                               # API em :3000, web em :5173
 | `APP_URL` | URL do front, usada pelo `tamper:demo` para imprimir o link |
 | `CATALOG_FIXTURES_DIR` | Opcional: catálogo offline a partir de arquivos (o seed usa) |
 
-**Web** (`apps/web/.env.example`): `VITE_API_URL`, a URL pública da API.
+**Web** (`apps/web/.env.example`): `VITE_API_URL`, a URL pública da API, e `VITE_DEMO_ACCOUNTS`
+(`false` esconde o atalho das contas de teste).
 
 Segredos só via ambiente; nenhum `.env` é versionado.
 
@@ -366,7 +371,7 @@ pnpm test
 | Pacote | O que cobre |
 |---|---|
 | `apps/api` (145) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
-| `apps/web` (78) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
+| `apps/web` (80) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
 ## Uso de IA

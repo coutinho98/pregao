@@ -1,7 +1,9 @@
-import { LogOut, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { Link } from 'react-router';
 import { paths } from '@/app/paths';
-import { useLogout } from '@/features/auth/hooks/use-logout';
+import { AccountMenu } from '@/features/auth/components/account-menu';
+import { DemoAccountsMenu } from '@/features/auth/components/demo-accounts-menu';
+import { demoAccountsEnabled } from '@/features/auth/demo-accounts';
 import { useSession } from '@/features/auth/hooks/use-session';
 import { useTheme } from '@/lib/theme';
 import { PaddleMark } from '../icons/paddle-mark';
@@ -37,26 +39,26 @@ function ThemeButton() {
   );
 }
 
+/** Signed out: test accounts, sign in and sign up. Signed in: who it is and as what. */
 function AccountActions() {
   const { user, isLoading } = useSession();
-  const logout = useLogout();
 
   if (isLoading) return null;
-  if (!user) {
-    return (
-      <Button asChild variant="primary" size="sm" className="ml-1 rounded-full px-4">
+  if (user) return <AccountMenu user={user} />;
+  return (
+    <div className="ml-1 flex items-center gap-1.5">
+      {demoAccountsEnabled && <DemoAccountsMenu />}
+      <Button asChild variant="ghost" size="sm" className="rounded-full px-3.5 text-ink">
+        <Link to={paths.login}>Entrar</Link>
+      </Button>
+      <Button
+        asChild
+        variant="primary"
+        size="sm"
+        className="hidden rounded-full px-4 sm:inline-flex"
+      >
         <Link to={paths.register}>Cadastrar</Link>
       </Button>
-    );
-  }
-  return (
-    <>
-      <span className="ml-1 hidden max-w-[16ch] truncate text-[13.5px] text-ink-2 sm:inline">
-        {user.name}
-      </span>
-      <Button variant="ghost" size="icon" onClick={logout} aria-label="Sair">
-        <LogOut size={17} />
-      </Button>
-    </>
+    </div>
   );
 }

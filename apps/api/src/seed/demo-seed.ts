@@ -1,5 +1,5 @@
 import type { INestApplicationContext } from '@nestjs/common';
-import { Role } from '@pregao/shared';
+import { DEMO_ACCOUNTS, type DemoAccountKey, DEMO_PASSWORD, Role } from '@pregao/shared';
 import { PrismaService } from '../common/prisma/prisma.service.js';
 import { AuthService } from '../modules/auth/auth.service.js';
 import { BidsService } from '../modules/bids/bids.service.js';
@@ -7,14 +7,6 @@ import { LotsService } from '../modules/lots/lots.service.js';
 import { SettlementService } from '../modules/settlement/settlement.service.js';
 import { WalletService } from '../modules/wallet/wallet.service.js';
 import { DemoSeedRepository } from './demo-seed.repository.js';
-
-export const DEMO_PASSWORD = 'pregao123';
-
-export const DEMO_ACCOUNTS = {
-  auctioneer: { name: 'Casa Pregão', email: 'leiloeiro@pregao.dev', role: Role.AUCTIONEER },
-  ana: { name: 'Ana Licitante', email: 'ana@pregao.dev', role: Role.BIDDER },
-  bruno: { name: 'Bruno Licitante', email: 'bruno@pregao.dev', role: Role.BIDDER },
-} as const;
 
 const DEPOSIT_CENTS = 5_000_000;
 const MINUTE = 60_000;
@@ -28,7 +20,7 @@ export interface DemoLots {
   tampered: string;
 }
 
-type Bidder = 'ana' | 'bruno';
+type Bidder = Exclude<DemoAccountKey, 'auctioneer'>;
 
 /**
  * The demo the evaluator walks through: one auctioneer, two funded bidders, a lot open for
@@ -38,7 +30,7 @@ type Bidder = 'ana' | 'bruno';
  */
 export class DemoSeed {
   private readonly repository: DemoSeedRepository;
-  private readonly users = new Map<keyof typeof DEMO_ACCOUNTS, string>();
+  private readonly users = new Map<DemoAccountKey, string>();
 
   constructor(private readonly app: INestApplicationContext) {
     this.repository = new DemoSeedRepository(app.get(PrismaService));
@@ -90,7 +82,7 @@ export class DemoSeed {
     const wallet = this.app.get(WalletService);
     for (const [key, account] of Object.entries(DEMO_ACCOUNTS)) {
       const { user } = await auth.register({ ...account, password: DEMO_PASSWORD });
-      this.users.set(key as keyof typeof DEMO_ACCOUNTS, user.id);
+      this.users.set(key as DemoAccountKey, user.id);
       if (account.role === Role.BIDDER) await wallet.deposit(user.id, DEPOSIT_CENTS);
     }
   }
@@ -133,7 +125,7 @@ export class DemoSeed {
     );
   }
 
-  private userId(key: keyof typeof DEMO_ACCOUNTS): string {
+  private userId(key: DemoAccountKey): string {
     const id = this.users.get(key);
     if (!id) throw new Error(`Demo account ${key} was not created`);
     return id;
