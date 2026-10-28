@@ -1,31 +1,14 @@
 import type { AuthUser } from '@pregao/shared';
 import { ChevronDown, LogOut } from 'lucide-react';
-import {
-  Menu,
-  MenuContent,
-  MenuItem,
-  MenuLabel,
-  MenuSeparator,
-  MenuTrigger,
-} from '@/components/ui/menu';
-import { demoAccounts, demoAccountsEnabled } from '../demo-accounts';
-import { useDemoLogin } from '../hooks/use-demo-login';
+import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ui/menu';
 import { useLogout } from '../hooks/use-logout';
 import { roleLabel } from '../role-labels';
 import { AccountAvatar } from './account-avatar';
-import { DemoAccountItem } from './demo-account-item';
 import { RoleBadge } from './role-badge';
 
-/**
- * Who is signed in, and as what: the avatar and role are always visible. The menu shows the
- * account, switches to another test account in one click, and signs out.
- */
+/** Who is signed in, and as what: the avatar and role are always visible; the menu signs out. */
 export function AccountMenu({ user }: { user: AuthUser }) {
   const logout = useLogout();
-  const { loginAs, pendingEmail } = useDemoLogin();
-  const otherAccounts = demoAccountsEnabled
-    ? demoAccounts.filter((account) => account.email !== user.email)
-    : [];
 
   return (
     <Menu>
@@ -45,7 +28,7 @@ export function AccountMenu({ user }: { user: AuthUser }) {
           className="text-ink-3 transition-transform duration-200 ease-ios group-data-[state=open]:rotate-180"
         />
       </MenuTrigger>
-      <MenuContent className="w-80">
+      <MenuContent className="w-72">
         <div className="flex items-center gap-3 px-2.5 py-2">
           <AccountAvatar name={user.name} role={user.role} className="size-10 text-[13px]" />
           <span className="flex min-w-0 flex-col gap-1">
@@ -54,17 +37,6 @@ export function AccountMenu({ user }: { user: AuthUser }) {
             <RoleBadge role={user.role} className="self-start" />
           </span>
         </div>
-        {otherAccounts.length > 0 && (
-          <>
-            <MenuSeparator />
-            <MenuLabel>Trocar para outra conta de teste</MenuLabel>
-            {otherAccounts.map((account) => (
-              <MenuItem key={account.key} onSelect={() => loginAs(account)}>
-                <DemoAccountItem account={account} pending={pendingEmail === account.email} />
-              </MenuItem>
-            ))}
-          </>
-        )}
         <MenuSeparator />
         <MenuItem onSelect={logout}>
           <LogOut size={16} className="mx-2" />

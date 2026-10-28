@@ -1,6 +1,6 @@
 import { DEMO_ACCOUNTS, type DemoAccountKey } from '@pregao/shared';
 
-/** One-click logins into the seeded accounts; set VITE_DEMO_ACCOUNTS=false to hide them. */
+/** One-click logins into the seeded accounts on the login page; VITE_DEMO_ACCOUNTS=false hides them. */
 export const demoAccountsEnabled = import.meta.env.VITE_DEMO_ACCOUNTS !== 'false';
 
 const hint: Record<DemoAccountKey, string> = {

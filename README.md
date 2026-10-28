@@ -40,9 +40,8 @@ Criadas pelo seed. Senha de todas: `pregao123`.
 | Licitante | `ana@pregao.dev` | R$ 50.000 depositados |
 | Licitante | `bruno@pregao.dev` | R$ 50.000 depositados |
 
-Não precisa digitar nada: o botão **Contas de teste** no topo (e a lista na página de login)
-entra em qualquer uma delas com um clique, e o menu da conta troca de conta sem sair da tela.
-O topo mostra sempre quem está logado e se é leiloeiro ou licitante.
+Não precisa digitar nada: a página de login lista as três contas e entra em qualquer uma com
+um clique. O topo mostra sempre quem está logado e se é leiloeiro ou licitante.
 
 Para ver o tempo real, abra a mesma sala em dois navegadores (ou uma aba anônima), um com a
 Ana e outro com o Bruno, e dispute o lote.
@@ -200,7 +199,7 @@ pnpm dev                               # API em :3000, web em :5173
 | `CATALOG_FIXTURES_DIR` | Opcional: catálogo offline a partir de arquivos (o seed usa) |
 
 **Web** (`apps/web/.env.example`): `VITE_API_URL`, a URL pública da API, e `VITE_DEMO_ACCOUNTS`
-(`false` esconde o atalho das contas de teste).
+(`false` esconde as contas de teste da página de login).
 
 Segredos só via ambiente; nenhum `.env` é versionado.
 
