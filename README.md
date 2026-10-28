@@ -96,6 +96,9 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 **Público**
 - Vitrine por fase (em pregão, próximos, encerrados), busca por obra, artista ou número do
   lote, e ordenação.
+- Ao passar o mouse sobre uma obra da vitrine, um cartão acompanha o cursor com título,
+  artista (nacionalidade e anos de vida), data, técnica, estilo, origem, dimensões e um trecho
+  da história da obra tirado do catálogo do museu.
 - Auditoria de qualquer lote (`/auditoria/:lotId`), verificada no navegador.
 
 **Opcionais do desafio**, todos feitos:
@@ -105,7 +108,7 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 | Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
-| Testes automatizados | 266 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Testes automatizados | 278 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
 | Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
@@ -262,7 +265,8 @@ minutos e circuit breaker (abre após 5 falhas seguidas e falha rápido por 30s)
 cair, a busca responde `EXTERNAL_API_UNAVAILABLE` com mensagem amigável e o resto da
 aplicação segue normal.
 
-**Snapshot do item.** Ao criar o lote, título, artista, atributos e a imagem (1686px e
+**Snapshot do item.** Ao criar o lote, título, artista, atributos (técnica, estilo, origem, dimensões), um trecho da descrição
+do catálogo (até 320 caracteres, cortado no fim de uma frase sempre que possível) e a imagem (1686px e
 miniatura de 400px) são copiados para o banco. Daí em diante vitrine, sala, auditoria e
 comprovante não dependem do museu. As imagens ficam em `bytea` e são servidas pela própria
 API com `Cache-Control: immutable`. Só obras em domínio público entram (filtro
@@ -391,8 +395,8 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (153) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
-| `apps/web` (88) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
+| `apps/api` (163) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
+| `apps/web` (90) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
 ## Uso de IA

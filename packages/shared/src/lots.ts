@@ -22,12 +22,18 @@ export interface LotSummary {
   currentBidCents: number | null;
   bidCount: number;
   image: LotImage;
+  medium: string | null;
+  /** Nationality and life of the artist, as the museum writes it: "French, 1859–1891". */
+  artistBio: string | null;
+  /** Movement or period, as the museum names it: "Pointillism". */
+  style: string | null;
+  dimensions: string | null;
+  placeOfOrigin: string | null;
+  /** A few sentences about the work, from the museum's catalogue (in English). */
+  story: string | null;
 }
 
 export interface LotDetail extends LotSummary {
-  medium: string | null;
-  dimensions: string | null;
-  placeOfOrigin: string | null;
   sourceUrl: string;
   minIncrementCents: number;
   minNextBidCents: number;

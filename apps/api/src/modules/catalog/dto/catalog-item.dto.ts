@@ -11,6 +11,14 @@ export class CatalogItemDto implements CatalogItem {
   @ApiProperty({ type: String, nullable: true, example: 'Claude Monet' })
   artist: string | null;
 
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    example: 'French, 1840–1926',
+    description: 'Nacionalidade e vida do artista, como o museu escreve (em inglês)',
+  })
+  artistBio: string | null;
+
   @ApiProperty({ type: String, nullable: true, example: '1906' })
   dateDisplay: string | null;
 
@@ -22,6 +30,9 @@ export class CatalogItemDto implements CatalogItem {
 
   @ApiProperty({ type: String, nullable: true, example: 'France' })
   placeOfOrigin: string | null;
+
+  @ApiProperty({ type: String, nullable: true, example: 'Impressionism' })
+  style: string | null;
 
   @ApiProperty({ example: 'https://www.artic.edu/artworks/16568' })
   sourceUrl: string;
@@ -40,6 +51,13 @@ export class CatalogItemDto implements CatalogItem {
 
   @ApiProperty({ type: String, nullable: true })
   altText: string | null;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description: 'Trecho sobre a obra, do catálogo do museu (em inglês)',
+  })
+  story: string | null;
 }
 
 export class CatalogSearchResultDto implements CatalogSearchResult {

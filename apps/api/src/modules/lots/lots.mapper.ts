@@ -28,6 +28,12 @@ export function toLotSummary(lot: LotWithSnapshot, now: Date): LotSummary {
     currentBidCents: lot.currentBidCents === null ? null : centsToNumber(lot.currentBidCents),
     bidCount: lot.bidCount,
     image: toLotImage(snapshot),
+    medium: snapshot.medium,
+    artistBio: snapshot.artistBio,
+    style: snapshot.style,
+    dimensions: snapshot.dimensions,
+    placeOfOrigin: snapshot.placeOfOrigin,
+    story: snapshot.story,
   };
 }
 
@@ -54,9 +60,6 @@ export function toLotDetail(lot: LotWithSnapshot, now: Date): LotDetail {
   const minIncrementCents = centsToNumber(lot.minIncrementCents);
   return {
     ...summary,
-    medium: lot.itemSnapshot.medium,
-    dimensions: lot.itemSnapshot.dimensions,
-    placeOfOrigin: lot.itemSnapshot.placeOfOrigin,
     sourceUrl: lot.itemSnapshot.sourceUrl,
     minIncrementCents,
     minNextBidCents: minNextBidCents({
@@ -75,13 +78,16 @@ export function snapshotFromCatalogItem(item: CatalogItem): NewLot['snapshot'] {
     externalId: item.externalId,
     title: item.title,
     artist: item.artist,
+    artistBio: item.artistBio,
     dateDisplay: item.dateDisplay,
     medium: item.medium,
     dimensions: item.dimensions,
     placeOfOrigin: item.placeOfOrigin,
+    style: item.style,
     sourceUrl: item.sourceUrl,
     imageWidth: item.imageWidth,
     imageHeight: item.imageHeight,
     altText: item.altText,
+    story: item.story,
   };
 }

@@ -85,14 +85,20 @@ model ItemSnapshot {
   externalId    String
   title         String
   artist        String?
+  /// Nationality and life of the artist, as the museum writes it (in English).
+  artistBio     String?
   dateDisplay   String?
   medium        String?
   dimensions    String?
   placeOfOrigin String?
+  /// Movement or period, as the museum names it (in English).
+  style         String?
   sourceUrl     String
   imageWidth    Int?
   imageHeight   Int?
   altText       String?
+  /// A few sentences about the work, from the museum's catalogue (in English).
+  story         String?
   createdAt     DateTime @default(now()) @db.Timestamptz(3)
 
   image ItemImage?

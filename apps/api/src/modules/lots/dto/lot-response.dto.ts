@@ -63,11 +63,20 @@ export class LotSummaryDto implements LotSummary {
 
   @ApiProperty({ type: LotImageDto })
   image: LotImageDto;
-}
 
-export class LotDetailDto extends LotSummaryDto implements LotDetail {
-  @ApiProperty({ type: String, nullable: true })
+  @ApiProperty({ type: String, nullable: true, example: 'Oil on canvas' })
   medium: string | null;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    example: 'French, 1840–1926',
+    description: 'Nacionalidade e vida do artista, como o museu escreve (em inglês)',
+  })
+  artistBio: string | null;
+
+  @ApiProperty({ type: String, nullable: true, example: 'Impressionism' })
+  style: string | null;
 
   @ApiProperty({ type: String, nullable: true })
   dimensions: string | null;
@@ -75,6 +84,15 @@ export class LotDetailDto extends LotSummaryDto implements LotDetail {
   @ApiProperty({ type: String, nullable: true })
   placeOfOrigin: string | null;
 
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description: 'Trecho sobre a obra, do catálogo do museu (em inglês)',
+  })
+  story: string | null;
+}
+
+export class LotDetailDto extends LotSummaryDto implements LotDetail {
   @ApiProperty({ description: 'Página da obra no museu' })
   sourceUrl: string;
 

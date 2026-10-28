@@ -21,6 +21,12 @@ const lot = (overrides: Partial<AuctioneerLot>): AuctioneerLot => ({
     height: null,
     altText: null,
   },
+  medium: 'Oil on canvas',
+  artistBio: null,
+  style: null,
+  dimensions: null,
+  placeOfOrigin: null,
+  story: null,
   result: null,
   ...overrides,
 });
