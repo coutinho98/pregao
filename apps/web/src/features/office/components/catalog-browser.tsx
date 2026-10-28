@@ -40,7 +40,7 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
     <section aria-labelledby="catalog-heading" className="@container flex flex-col gap-4">
       <SectionHeading
         id="catalog-heading"
-        hint="Busque por artista, tema ou lugar no acervo do Art Institute of Chicago. Só aparecem obras em domínio público, que a casa pode leiloar."
+        hint="Busque por artista, tema ou lugar no acervo do Art Institute of Chicago. O acervo é em inglês: use termos como portrait, landscape ou Japan. Só aparecem obras em domínio público, que a casa pode leiloar."
       >
         Escolha a obra
       </SectionHeading>
@@ -59,7 +59,7 @@ export function CatalogBrowser({ selectedId, onSelect }: CatalogSelection) {
           name={QUERY_PARAM}
           type="search"
           defaultValue={query}
-          placeholder="Ex.: Monet, retrato, Japão"
+          placeholder="Ex.: Monet, portrait, Japan"
           minLength={MIN_CATALOG_QUERY_LENGTH}
           maxLength={100}
           className="pr-[6.5rem] pl-10"

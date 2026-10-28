@@ -40,7 +40,12 @@ export function CatalogResults({
   }
   const { items, page, totalPages } = search.data;
   if (items.length === 0)
-    return <EmptyState>Nenhuma obra em domínio público para “{query}”.</EmptyState>;
+    return (
+      <EmptyState>
+        Nenhuma obra em domínio público para “{query}”. O acervo é em inglês: tente o termo em
+        inglês ou o nome do artista.
+      </EmptyState>
+    );
 
   return (
     <>

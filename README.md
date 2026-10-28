@@ -91,7 +91,7 @@ no banco (lance #2), para ver a auditoria apontar exatamente onde quebrou.
 | Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
-| Testes automatizados | 254 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Testes automatizados | 257 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
 | Dark Mode | Botão de tema no topo; segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
@@ -353,6 +353,11 @@ lance exato. `pnpm tamper:demo --restore <bidId> <valor>` desfaz.
   cobrar e registra o erro. É intencional: melhor um lote parado do que cobrar a pessoa errada.
 - **Primeiro acesso ao front:** o Render serve o site estático, mas o primeiro carregamento
   depois de um tempo parado pode demorar alguns segundos.
+- **Busca do acervo em inglês:** o catálogo do Art Institute é em inglês, então "Japão" não
+  encontra nada e "Japan" encontra. A tela avisa isso, e as sugestões em português buscam o
+  termo em inglês. A busca exige que todas as palavras apareçam (em título, artista, local,
+  estilo, assunto ou classificação): o `q` simples do museu só ordena e devolveria o acervo
+  inteiro, com obras sem relação depois das que combinam.
 - **Catálogo do museu fora do ar:** só a busca de obras para novos lotes fica indisponível
   (mensagem amigável); lotes existentes não dependem do museu.
 - **Rate limit do museu:** 60 req/min por IP. O cache de 10 minutos e o circuit breaker
@@ -372,7 +377,7 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (145) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
+| `apps/api` (148) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração e o seed. |
 | `apps/web` (84) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro e datas. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
