@@ -1,54 +1,11 @@
 import { Search } from 'lucide-react';
-import { type FormEvent, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { Input } from '@/components/ui/input';
+import { useLiveSearch } from '@/lib/use-live-search';
 import { QUERY_PARAM } from '../showcase-filters';
-
-/** How long typing has to pause before the showcase searches. */
-const SEARCH_DELAY_MS = 300;
 
 /** Searches the showcase as the visitor types; the query lives in the URL (?q=). */
 export function ShowcaseSearch() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get(QUERY_PARAM) ?? '';
-  const [draft, setDraft] = useState(query);
-  const [shownQuery, setShownQuery] = useState(query);
-  const pending = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  // The URL can change without typing (Back, a shared link): show what is being searched.
-  // Adjusted while rendering, as React recommends, instead of in an effect.
-  if (query !== shownQuery) {
-    setShownQuery(query);
-    if (draft.trim() !== query) setDraft(query);
-  }
-
-  const apply = (value: string) => {
-    clearTimeout(pending.current);
-    // From the current URL, so a tab or order picked meanwhile is kept. Replace, so Back
-    // leaves the showcase instead of undoing one letter at a time.
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        if (value) next.set(QUERY_PARAM, value);
-        else next.delete(QUERY_PARAM);
-        return next;
-      },
-      { replace: true },
-    );
-  };
-
-  const type = (value: string) => {
-    setDraft(value);
-    clearTimeout(pending.current);
-    pending.current = setTimeout(() => apply(value.trim()), SEARCH_DELAY_MS);
-  };
-
-  const searchNow = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    apply(draft.trim());
-  };
-
-  useEffect(() => () => clearTimeout(pending.current), []);
+  const { draft, type, searchNow } = useLiveSearch({ param: QUERY_PARAM, delayMs: 300 });
 
   return (
     <form role="search" onSubmit={searchNow} className="relative w-full sm:max-w-xs">

@@ -10,5 +10,7 @@ export function useCatalogSearch(q: string, page: number) {
     queryFn: () => searchCatalog(q, page),
     enabled: q.length >= MIN_CATALOG_QUERY_LENGTH,
     staleTime: 5 * 60_000,
+    // While the next search loads, keep the current results on screen instead of a skeleton.
+    placeholderData: (previous) => previous,
   });
 }
