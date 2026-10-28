@@ -73,16 +73,19 @@ describe('Demo seed (e2e)', () => {
   });
 
   it('leaves balances consistent with every bid, win and sale', async () => {
+    // Ana won Paris Street (R$ 2.500) and The Child's Bath (R$ 1.700), and leads Water
+    // Lilies (R$ 1.500) and The Great Wave (R$ 4.500).
     expect(await wallet('ana@pregao.dev')).toMatchObject({
-      totalCents: 4_750_000n,
-      committedCents: 150_000n,
+      totalCents: 4_580_000n,
+      committedCents: 600_000n,
     });
     expect(await wallet('bruno@pregao.dev')).toMatchObject({
       totalCents: 4_790_000n,
       committedCents: 300_000n,
     });
-    expect(await wallet('leiloeiro@pregao.dev')).toMatchObject({ totalCents: 460_000n });
-    expect(await prisma.receipt.count()).toBe(2);
+    expect(await wallet('leiloeiro@pregao.dev')).toMatchObject({ totalCents: 630_000n });
+    // The Millinery Shop closed without bids: settled, but no receipt.
+    expect(await prisma.receipt.count()).toBe(3);
   });
 
   it('keeps genuine lots verifiable and the tampered one broken at bid 2', async () => {

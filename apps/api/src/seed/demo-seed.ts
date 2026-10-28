@@ -25,7 +25,9 @@ type Bidder = Exclude<DemoAccountKey, 'auctioneer'>;
 /**
  * The demo the evaluator walks through: one auctioneer, two funded bidders, a lot open for
  * 30 days with bids, one ending in a few hours, one scheduled, one sold with a receipt, and
- * one sold lot whose history was tampered with on purpose to show the audit catching it.
+ * one sold lot whose history was tampered with on purpose to show the audit catching it,
+ * plus five more works spread over the phases (live with and without bids, scheduled,
+ * sold, and closed without bids).
  * Everything goes through the real services, so chains, signatures and ledgers are genuine.
  */
 export class DemoSeed {
@@ -74,7 +76,28 @@ export class DemoSeed {
     await this.hammer(tampered);
     await this.tamper(tampered);
 
+    await this.createGallery(at);
+
     return { live, endingSoon, scheduled, sold, tampered };
+  }
+
+  /** More works across the tabs, so the showcase has something in every phase. */
+  private async createGallery(at: (offset: number) => string): Promise<void> {
+    const wave = await this.createLot('24645', 400_000, 20_000, at(0), at(10 * DAY));
+    await this.bid(wave, 'bruno', 400_000);
+    await this.bid(wave, 'ana', 450_000);
+
+    await this.createLot('80607', 350_000, 25_000, at(0), at(6 * DAY));
+
+    await this.createLot('87479', 500_000, 50_000, at(DAY), at(8 * DAY));
+
+    const bath = await this.createLot('111442', 150_000, 10_000, at(-30_000), at(6 * MINUTE));
+    await this.bid(bath, 'bruno', 150_000);
+    await this.bid(bath, 'ana', 170_000);
+    await this.hammer(bath);
+
+    const millinery = await this.createLot('14572', 220_000, 10_000, at(-30_000), at(6 * MINUTE));
+    await this.hammer(millinery);
   }
 
   private async createAccounts(): Promise<void> {
