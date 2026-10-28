@@ -3,15 +3,6 @@ import { flushSync } from 'react-dom';
 
 export type Theme = 'light' | 'dark';
 
-/** Where the switch was pressed: the new theme spreads from there. */
-export interface ThemeOrigin {
-  x: number;
-  y: number;
-}
-
-const REVEAL_MS = 650;
-const REVEAL_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
-
 const listeners = new Set<() => void>();
 
 function getTheme(): Theme {
@@ -33,43 +24,23 @@ function applyTheme(next: Theme): void {
   listeners.forEach((notify) => notify());
 }
 
-/** Radius that covers the whole viewport from the origin, so the circle ends off-screen. */
-function revealRadius({ x, y }: ThemeOrigin): number {
-  return Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-}
-
 /**
- * Switches the theme. With the View Transitions API the new theme spreads in a circle from
- * the switch; with reduced motion it cross-fades instead (CSS), and older browsers just swap.
+ * Switches the theme. With the View Transitions API the new theme is painted over the page
+ * in one brush stroke (the mask and its timing live in the CSS); browsers without it swap.
  */
-function toggleTheme(origin?: ThemeOrigin): void {
+function toggleTheme(): void {
   const next: Theme = getTheme() === 'dark' ? 'light' : 'dark';
   if (!document.startViewTransition) {
     applyTheme(next);
     return;
   }
-
   const root = document.documentElement;
-  // Colours change at once while the circle runs: the circle is the transition.
+  // Colours change at once while the stroke runs: the stroke is the transition.
   root.dataset.themeSwitching = '';
   const transition = document.startViewTransition(() => flushSync(() => applyTheme(next)));
   void transition.finished.finally(() => delete root.dataset.themeSwitching);
-
-  if (!origin || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const { x, y } = origin;
-  void transition.ready.then(() => {
-    root.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${revealRadius(origin)}px at ${x}px ${y}px)`,
-        ],
-      },
-      { duration: REVEAL_MS, easing: REVEAL_EASE, pseudoElement: '::view-transition-new(root)' },
-    );
-  });
 }
 
-export function useTheme(): { theme: Theme; toggleTheme: (origin?: ThemeOrigin) => void } {
+export function useTheme(): { theme: Theme; toggleTheme: () => void } {
   return { theme: useSyncExternalStore(subscribe, getTheme), toggleTheme };
 }
