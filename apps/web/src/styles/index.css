@@ -131,6 +131,14 @@
     color: var(--ink-3);
   }
 
+  /* Tailwind 4 leaves buttons with the default arrow; anything clickable gets the hand. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary,
+  select {
+    cursor: pointer;
+  }
+
   ::selection {
     background-color: var(--ink);
     color: var(--bg);
