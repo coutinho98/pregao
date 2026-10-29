@@ -1,4 +1,6 @@
 import { LotPhase } from '@pregao/shared';
+import { Link } from 'react-router';
+import { paths } from '@/app/paths';
 import { BlurIn } from '@/components/motion/blur-in';
 import { formatWhen, greeting } from '@/utils/date';
 import { countLabel } from '@/utils/plural';
@@ -42,6 +44,13 @@ export function ShowcaseIntro() {
             <b className="font-[560] text-ink">próximas sessões</b> ou os lotes já encerrados.
           </p>
         )}
+        <p className="mt-5">
+          Primeira vez aqui?{' '}
+          <Link to={paths.guide} className="font-[560] text-ink underline-offset-4 hover:underline">
+            Veja como funciona
+          </Link>
+          .
+        </p>
       </BlurIn>
       {fan.length > 0 && (
         <div className="order-first md:order-last">

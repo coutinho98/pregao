@@ -12,6 +12,13 @@ export const router = createBrowserRouter([
     children: [
       { path: paths.home, element: <ShowcasePage /> },
       {
+        path: paths.guide,
+        lazy: async () => {
+          const { GuidePage } = await import('@/features/guide/pages/guide-page');
+          return { element: <GuidePage /> };
+        },
+      },
+      {
         path: paths.login,
         lazy: async () => {
           const { LoginPage } = await import('@/features/auth/pages/login-page');

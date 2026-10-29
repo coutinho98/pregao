@@ -1,5 +1,6 @@
 export const paths = {
   home: '/',
+  guide: '/como-funciona',
   login: '/entrar',
   register: '/cadastro',
   wallet: '/carteira',

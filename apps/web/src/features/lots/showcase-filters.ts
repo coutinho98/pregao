@@ -48,3 +48,11 @@ export function sortFromParam(value: string | null): LotSort {
 export function sectionForSlug(slug: string | null): ShowcaseSection {
   return showcaseSections.find((section) => section.slug === slug) ?? showcaseSections[0];
 }
+
+/** Showcase URL opened on a tab, optionally with a search. */
+export function showcaseUrl(phase: PublicLotPhase, query = ''): string {
+  const slug = showcaseSections.find((section) => section.phase === phase)?.slug ?? '';
+  const params = new URLSearchParams({ [PHASE_PARAM]: slug });
+  if (query) params.set(QUERY_PARAM, query);
+  return `/?${params}`;
+}

@@ -105,6 +105,9 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
   artista (nacionalidade e anos de vida), data, técnica, estilo, origem, dimensões e um trecho
   da história da obra tirado do catálogo do museu.
 - Auditoria de qualquer lote (`/auditoria/:lotId`), verificada no navegador.
+- Página **Como funciona** (`/como-funciona`, no dock e na vitrine): um roteiro curto em quatro
+  passos pela demo, com um link para experimentar cada um (os lotes da demo são achados pelo
+  título, já que os ids mudam a cada seed).
 
 **Opcionais do desafio**, todos feitos:
 
