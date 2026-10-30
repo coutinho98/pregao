@@ -19,7 +19,9 @@ import { ticksForRoomBid } from '../bid-sounds';
 
 /**
  * Joins the lot's room and keeps the TanStack Query cache in step with the server.
- * After a reconnect it refetches everything, since events may have been missed.
+ * Every join, the first included, refetches the room once the server confirms it: a bid
+ * placed before that (between the page's first fetch and the join, or while disconnected)
+ * never reaches this socket, and every later one does.
  * Returns when the last anti-sniping extension happened (server time).
  */
 export function useLotRoom(lotId: string): { extendedAt: Date | null } {
@@ -29,8 +31,6 @@ export function useLotRoom(lotId: string): { extendedAt: Date | null } {
   useEffect(() => {
     const socket = getSocket();
     const detailKey = queryKeys.lots.detail(lotId);
-    let joinedBefore = false;
-
     const refetchRoom = () => {
       for (const queryKey of [
         detailKey,
@@ -44,9 +44,10 @@ export function useLotRoom(lotId: string): { extendedAt: Date | null } {
       queryClient.setQueryData<LotDetail>(detailKey, (lot) => lot && { ...lot, ...changes });
 
     const join = () => {
-      socket.emit(SocketEvent.JOIN_LOT, lotId, (ack: JoinLotAck) => syncServerClock(ack.serverNow));
-      if (joinedBefore) refetchRoom();
-      joinedBefore = true;
+      socket.emit(SocketEvent.JOIN_LOT, lotId, (ack: JoinLotAck) => {
+        syncServerClock(ack.serverNow);
+        refetchRoom();
+      });
     };
     const onBid = (payload: BidNewPayload) => {
       if (payload.lotId !== lotId) return;
