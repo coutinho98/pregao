@@ -158,6 +158,15 @@ describe('Settlement (e2e)', () => {
     expect(await prisma.receipt.count({ where: { lotId: lot.id } })).toBe(1);
   });
 
+  it('settles on demand when an ended lot is audited', async () => {
+    const lot = await contestedLot();
+    clock.advance(61 * MINUTE);
+
+    const response = await s.http().get(`/audit/${lot.id}`).expect(200);
+
+    expect(response.body.receipt).toMatchObject({ finalHash: response.body.head.lastHash });
+  });
+
   it('refuses to charge anyone when the leader was swapped in the database', async () => {
     const lot = await contestedLot();
     await prisma.lot.update({ where: { id: lot.id }, data: { leaderId: ana.user.id } });
