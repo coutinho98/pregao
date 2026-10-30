@@ -26,7 +26,7 @@ export class WalletController {
   @Auth(Role.BIDDER)
   @ApiOperation({ summary: 'Depósito simulado na carteira do licitante' })
   @ApiCreatedResponse({ type: WalletSummaryDto })
-  @ApiDomainErrors(ErrorCode.VALIDATION_FAILED)
+  @ApiDomainErrors(ErrorCode.VALIDATION_FAILED, ErrorCode.BALANCE_LIMIT_REACHED)
   deposit(
     @CurrentUser() user: RequestUser,
     @Body() { amountCents }: DepositDto,

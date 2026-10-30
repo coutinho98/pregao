@@ -1,6 +1,6 @@
-import { LedgerEntryType } from '@pregao/shared';
+import { LedgerEntryType, MAX_BALANCE_CENTS } from '@pregao/shared';
 import { describe, expect, it } from 'vitest';
-import { applyMovement, availableCents } from './wallet-rules.js';
+import { applyMovement, availableCents, depositRoomCents } from './wallet-rules.js';
 
 const wallet = { totalCents: 10_000n, committedCents: 3_000n };
 
@@ -30,5 +30,17 @@ describe('applyMovement', () => {
 
   it('computes the available balance', () => {
     expect(availableCents(wallet)).toBe(7_000n);
+  });
+});
+
+describe('depositRoomCents', () => {
+  const max = BigInt(MAX_BALANCE_CENTS);
+
+  it('leaves room up to the balance limit', () => {
+    expect(depositRoomCents({ totalCents: max - 500n, committedCents: 0n })).toBe(500n);
+  });
+
+  it('leaves none once the limit is reached', () => {
+    expect(depositRoomCents({ totalCents: max, committedCents: 0n })).toBe(0n);
   });
 });

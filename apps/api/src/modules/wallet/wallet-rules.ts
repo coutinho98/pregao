@@ -1,4 +1,4 @@
-import { LedgerEntryType } from '@pregao/shared';
+import { LedgerEntryType, MAX_BALANCE_CENTS } from '@pregao/shared';
 
 export interface Balances {
   totalCents: bigint;
@@ -16,6 +16,12 @@ const EFFECTS: Record<LedgerEntryType, { total: Sign; committed: Sign }> = {
   [LedgerEntryType.CREDIT]: { total: 1n, committed: 0n },
   [LedgerEntryType.REFUND]: { total: 0n, committed: -1n },
 };
+
+/** How much more a deposit may add before the total reaches MAX_BALANCE_CENTS. */
+export function depositRoomCents({ totalCents }: Balances): bigint {
+  const room = BigInt(MAX_BALANCE_CENTS) - totalCents;
+  return room > 0n ? room : 0n;
+}
 
 export function availableCents({ totalCents, committedCents }: Balances): bigint {
   return totalCents - committedCents;

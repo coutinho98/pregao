@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ErrorCode, LedgerEntryType, type LedgerPage, type WalletSummary } from '@pregao/shared';
 import type { Wallet } from '../../generated/prisma/client.js';
 import { DomainError } from '../../common/errors/domain-error.js';
+import { centsToNumber } from '../../common/money.js';
 import { TransactionRunner, type Tx } from '../../common/prisma/transaction-runner.js';
 import { toLedgerEntry, toWalletSummary } from './wallet.mapper.js';
-import { applyMovement } from './wallet-rules.js';
+import { applyMovement, depositRoomCents } from './wallet-rules.js';
 import { type MovementRecord, WalletsRepository } from './wallets.repository.js';
 
 const LEDGER_PAGE_SIZE = 20;
+const MAX_BALANCE_LABEL = 'R$ 100.000.000,00';
 
 @Injectable()
 export class WalletService {
@@ -24,6 +26,14 @@ export class WalletService {
     return this.transactions.run(async (tx) => {
       const [wallet] = await this.lockWallets(tx, [userId]);
       if (!wallet) throw new DomainError(ErrorCode.NOT_FOUND, 'Carteira não encontrada.');
+      const roomCents = depositRoomCents(wallet);
+      if (BigInt(amountCents) > roomCents) {
+        throw new DomainError(
+          ErrorCode.BALANCE_LIMIT_REACHED,
+          `O saldo da carteira vai até ${MAX_BALANCE_LABEL}. Este depósito passaria do limite.`,
+          { details: { maxDepositCents: centsToNumber(roomCents) } },
+        );
+      }
       const updated = await this.move(tx, wallet, {
         type: LedgerEntryType.DEPOSIT,
         amountCents: BigInt(amountCents),
