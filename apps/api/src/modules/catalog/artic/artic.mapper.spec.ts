@@ -110,9 +110,9 @@ describe('artistBio', () => {
   });
 
   it('drops another name given before a semicolon', () => {
-    expect(artistBio('El Greco (Doménikos Theotokópoulos; Greek, active in Spain, 1541–1614)')).toBe(
-      'Greek, active in Spain, 1541–1614',
-    );
+    expect(
+      artistBio('El Greco (Doménikos Theotokópoulos; Greek, active in Spain, 1541–1614)'),
+    ).toBe('Greek, active in Spain, 1541–1614');
   });
 
   it('reads the second line and writes the years with an en dash', () => {
