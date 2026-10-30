@@ -116,7 +116,7 @@ Hiroshige, Goya, Turner e outros), espalhadas pelas três abas da vitrine:
 | Busca e filtro de lotes | Vitrine: abas por fase, busca por obra, artista ou número do lote, e ordenação |
 | Cancelamento com estorno automático | Escritório do leiloeiro: cancelar um lote com lances devolve o comprometido do líder (`REFUND` no extrato) |
 | Docker Compose | `docker compose up --build` sobe Postgres, API e web já com a demo |
-| Testes automatizados | 278 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
+| Testes automatizados | 286 testes: unitários e de integração contra Postgres real ([detalhes](#testes)) |
 | Dark Mode | Botão de tema no topo, com a troca revelada por uma mancha de aquarela (cross-fade simples para quem prefere menos movimento); segue o tema do sistema na primeira visita |
 
 Extras: seed com a demo completa, script `pnpm tamper:demo` para demonstrar a auditoria,
@@ -364,7 +364,7 @@ lance exato. `pnpm tamper:demo --restore <bidId> <valor>` desfaz.
 | Papéis | Escolhidos no cadastro. O leiloeiro não dá lances (`AUCTIONEER_CANNOT_BID`), mas tem carteira para receber os créditos. |
 | Posição | Ranking pelo maior lance de cada licitante no lote. |
 | Agenda do lote | Abertura a partir de agora (tolerância de 1 min); duração entre 5 min e 60 dias. |
-| Depósito | Entre R$ 1 e R$ 1.000.000 por operação; saque fora de escopo. |
+| Depósito | Entre R$ 1 e R$ 1.000.000 por operação, com saldo total de até R$ 100.000.000 (o maior lance aceito; `BALANCE_LIMIT_REACHED` acima disso); saque fora de escopo. |
 | Fuso | Servidor e banco em UTC; a interface mostra horários em `America/Sao_Paulo`. |
 
 ## Comportamentos inesperados e limitações conhecidas
@@ -378,6 +378,9 @@ lance exato. `pnpm tamper:demo --restore <bidId> <valor>` desfaz.
 - **Lote com dados inconsistentes não é liquidado:** se o banco foi adulterado de forma que
   o último lance não bate com o líder (veja a prova de adulteração), o worker se recusa a
   cobrar e registra o erro. É intencional: melhor um lote parado do que cobrar a pessoa errada.
+- **Aba aberta durante um deploy:** cada deploy troca os arquivos das páginas. Uma aba aberta
+  antes dele não acharia mais a página seguinte, então o front recarrega sozinho e cai no
+  mesmo endereço, já na versão nova.
 - **Primeiro acesso ao front:** o Render serve o site estático, mas o primeiro carregamento
   depois de um tempo parado pode demorar alguns segundos.
 - **Busca do acervo em inglês:** o catálogo do Art Institute é em inglês, então "Japão" não
@@ -409,8 +412,8 @@ pnpm test
 
 | Pacote | O que cobre |
 |---|---|
-| `apps/api` (163) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração, o mapeamento do catálogo do museu e o seed. |
-| `apps/web` (90) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro, datas e dimensões das obras. |
+| `apps/api` (167) | Regras puras (lance, carteira, liquidação, anti-sniping) e integração com Supertest + Postgres real: auth e limite de tentativas, carteira, lances (incluindo 20 lances concorrentes), tempo real, liquidação idempotente, cancelamento com estorno, auditoria detectando cada tipo de adulteração, o mapeamento do catálogo do museu e o seed. |
+| `apps/web` (94) | Montagem da sala ao vivo, criptografia da auditoria no navegador e encadeamento exibido, relógio do servidor, posição e mensagens de recusa de lance, filtros, schemas dos formulários, formatação de dinheiro, datas e dimensões das obras. |
 | `packages/shared` (25) | Serialização canônica, verificador da auditoria contra cada ataque, fases do lote e limites. |
 
 ## Uso de IA
